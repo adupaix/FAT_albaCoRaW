@@ -145,11 +145,44 @@ class Tuna:
         self.y[p+1] = self.y[p] + math.sin(self.theta[p])*Tuna.l
         
         self.p += 1
+    
+        
+    def add_res_time(self, CRTs):
+        """
+        Dans le cas ou add_CRTs est vrai
+        on prend un CRT au hasard dans la liste fournie
+        et le thon attend ce temps sous le DCP
+        
+        Les CRT fournis doivent être en jour
+        """
+        crt_day = rd.choice(CRTs)
+        
+        crt_steps = crt_day * 24 * 3600 / step_time
+        
+        p = self.p
+        
+        # If there are enough steps to wait under the FAD
+        if p+crt_steps < self.lifetime:
+            self.x[p+crt_steps] = x_fadReached
+            self.y[p+crt_steps] = y_fadReached
+            #pour que le thon reparte dans la meme direction que celle d'arrivee:
+            self.theta[p+crt_steps-1] = self.theta[p-1] 
+            
+        # If there are not enough steps, stops
+        else:
+            steps_left = self.lifetime-(p+1)
+            self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
+            self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
+            
+            print("Warning: Not enough steps to add CRT")
+            
+        self.p += crt_steps    
+        
         
         
     def OMove(self, x_fadReached, y_fadReached):
         """ On change la position du thon dans le cas
-        d'un Oriented Movment (A MODIFIER EN PRENANT LE CODE DE GERALDINE)
+        d'un Oriented Movment
         i.e. si le thon est a moins de R0 d'un DCP + c'est le jour """
         
         p = self.p
@@ -174,7 +207,7 @@ class Tuna:
         # replace the random alpha in the alpha array
         self.alpha[p] = self.theta[p] - self.theta[p-1]
         
-        # If there are enough steps to reach the FAD, the following step is the FAD position
+        # If there are enough steps to reach the FAD, the following position is the FAD position
         if p+nstep_jump < self.lifetime:
             self.x[p+nstep_jump] = x_fadReached
             self.y[p+nstep_jump] = y_fadReached
@@ -186,11 +219,14 @@ class Tuna:
             steps_left = self.lifetime-(p+1)
             self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
             self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
+            
             print("Warning: Not enough steps to reach last FAD")
      
         self.p += nstep_jump
         
-        
+        if add_CRTs == True and p+nstep_jump >= self.lifetime:
+            add_res_time(self, CRTs)
+    
         
     def checkEnv(self, FADs):
         '''

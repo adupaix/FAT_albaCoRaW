@@ -165,7 +165,8 @@ plot_zoom = PLOT_ZOOM
 RESET = RESET
 
 ## Add CRT when tuna associates with a FAD
-addCRTs = ADD_CRTS ## POUR LE MOMENT PAS MIS EN PLACE 
+addCRTs = ADD_CRTS
+CRTs = [9] # voir avec Manuela pour avoir les vraies valeurs (Tolotti et al. 2020)
 
 #~~~ OUTPUTS
 # ----------

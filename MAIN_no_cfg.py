@@ -30,8 +30,8 @@ import csv as csv
 
 
 #~ Path
-path_machine='/home/adupaix/Documents/CRW/CRW_model_modif/files' #where the data files are saved
-path_script='/home/adupaix/Documents/CRW/CRW_model_modif' #where the script are save
+path_machine='/home/adupaix/Documents/CRW/CRW_model/files' #where the data files are saved
+path_script='/home/adupaix/Documents/CRW/CRW_model' #where the script are save
 #Tu peux aussi creer un fichier .py avec ces deux precedentes lignes de code qui varient
 #en fonction de la machine que tu utilises pour ne pas avoir de probleme de chemin
 #> exec(open("path.py").read()) #pour executer le code
@@ -159,7 +159,8 @@ plot_zoom = True
 RESET = True
 
 ## Add CRT when tuna associates with a FAD
-addCRTs = False ## POUR LE MOMENT PAS MIS EN PLACE 
+addCRTs = False
+CRTs = [9] # voir avec Manuela pour mettre les vraies valeurs
 
 #~~~ OUTPUTS
 # ----------
