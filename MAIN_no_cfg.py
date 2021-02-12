@@ -210,7 +210,7 @@ if sum(files_exist)<Nreplica or RESET == True:
     begin=list()
     end = list()
 
-    exec(open(str(path_script)+"/MODEL_openOcean.py").read())
+    exec(open(str(path_script)+"/MODEL_sim_tuna_path.py").read())
 
     times = [end[i] - begin[i] for i in range(len(end))]
     time_tot = sum(times)
