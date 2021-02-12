@@ -70,7 +70,7 @@ for replica in range(Nreplica):
             x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
             y_fadReached = FADs.y[FADs.id == tuna.in_R0_FAD]
             
-            tuna.OMove(x_fadReached, y_fadReached)
+            tuna.OMove(x_fadReached, y_fadReached, CRTs)
         #~~~~
         ## CRW -> All the case where the tuna have a random search behaviour (research behaviour at night and away from FADs)
         else:

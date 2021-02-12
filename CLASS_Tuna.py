@@ -180,7 +180,7 @@ class Tuna:
         
         
         
-    def OMove(self, x_fadReached, y_fadReached):
+    def OMove(self, x_fadReached, y_fadReached, CRTs):
         """ On change la position du thon dans le cas
         d'un Oriented Movment
         i.e. si le thon est a moins de R0 d'un DCP + c'est le jour """
@@ -224,7 +224,7 @@ class Tuna:
      
         self.p += nstep_jump
         
-        if add_CRTs == True and p+nstep_jump >= self.lifetime:
+        if addCRTs == True and p+nstep_jump >= self.lifetime:
             add_res_time(self, CRTs)
     
         
