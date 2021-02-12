@@ -1,0 +1,9 @@
+modelOutput
+Rmd
+__pycache__
+open_R.R
+open_R.py
+.Rhistory
+cfg
+
+!cfg/ex_cfg.py
