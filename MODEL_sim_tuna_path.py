@@ -10,13 +10,9 @@ Modified on Feb 05 2021, by adupaix
 
 ###############################################################################
 #~~~~ Start the simulation ~~~~
-# if first_FAD_only == False:
-#     str_while_condition = "tuna_alive = tuna.p < tuna.lifetime-1"
-# else:
-#     str_while_condition = "tuna_alive = tuna.p < tuna.lifetime-1 and len(np.unique(tuna.num_ass_FAD))<=2"
 
 for replica in range(Nreplica):
-    print("Tuna n"+str(replica))
+    print("\nTuna n"+str(replica))
     begin_r = time.time()
     begin.append(time.time())
     
@@ -64,7 +60,7 @@ for replica in range(Nreplica):
             DAY = 1
         
         #~~~~
-        ## BCRW -> All the case where tuna oriented itself toward a FAD (only during days)
+        ## BCRW -> All the cases when a tuna orients itself towards a FAD (only during daytime)
         if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD:
             
             x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
@@ -133,6 +129,6 @@ for replica in range(Nreplica):
             plt.ylim(tuna.y[0]-interval, tuna.y[0]+interval)
     
     end_r = time.time()
-    print("  t="+str(round(end_r-begin_r,2)))
+    print("- t="+str(round(end_r-begin_r,2)))
     end.append(time.time())
 
