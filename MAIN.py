@@ -65,8 +65,6 @@ distFAD = DIST_FAD #Distance between FADs, in km
 L = L #Width of the environment, in km
 dr = DR #Detection radius of FADs, in km
 
-first_FAD_only = FIRST_FAD_ONLY # wether to stop the simulation avec the first encountered FAD or not
-
 # get the following variables:
     # environment
     # studyYear
