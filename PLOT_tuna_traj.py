@@ -43,6 +43,13 @@ if environment!="square" and environment != "maldives":
         plt.plot(Island.x[i:i+2],
                  Island.y[i:i+2],
                  "-", color = "black")
+elif environment == "maldives":
+    for j in range(len(Island)):
+        for i in range(len(Island[j].x)):
+            plt.plot(Island[j].x[i:i+2],
+                 Island[j].y[i:i+2],
+                 "-", color = "black")
+            
 if plot_zoom==True and environment=="square":
     dist_one_day = (tuna.v*3600*24)/1000 #distance parcourue en 1 jour
     interval = dist_one_day*path_duration/15 #distance parcourue sur l'ensemble du trajet / 15
