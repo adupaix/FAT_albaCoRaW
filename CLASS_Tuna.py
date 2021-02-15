@@ -15,7 +15,7 @@ class Tuna:
         - sa position geographique (x et y)
         - ses angles alpha et theta
         - in_R0_FAD: boleen pour savoir si le thon est a moins de R0 d'un DCP
-        - num_ass_FAD: suivi des associations (pour chaque pas de temps, 0 si pas detecte par un DCP, num du DCP sinon)
+        - num_asso_FAD: suivi des associations (pour chaque pas de temps, 0 si pas detecte par un DCP, num du DCP sinon)
         - last_FAD: numero du DCP qui vient d'etre visite, pour ne pas revenir en arriere (reinitialise quand sort du rayon R0)
         
         parametres de classe:
@@ -73,7 +73,7 @@ class Tuna:
         
         self.in_R0_FAD = 0 # tuna is at a distance < R0 from a FAD or not (0: no FAD, other: number of the FAD)
         
-        self.num_ass_FAD = np.zeros(self.lifetime) # a chaque tour, stock 0 (pas d'association) ou x = identifiant du DCP auquel le thon est associe
+        self.num_asso_FAD = np.zeros(self.lifetime) # a chaque tour, stock 0 (pas d'association) ou x = identifiant du DCP auquel le thon est associe
         self.last_FAD = 0 #numero du dernier DCP auquel le thon s'est associe
         
         self.p = 0 # numero du pas de temps où en est le thon
@@ -157,26 +157,27 @@ class Tuna:
         """
         crt_day = rd.choice(CRTs)
         
-        crt_steps = crt_day * 24 * 3600 / step_time
+        crt_steps = int(crt_day * 24 * 3600 / step_time)
         
         p = self.p
         
         # If there are enough steps to wait under the FAD
         if p+crt_steps < self.lifetime:
-            self.x[p+crt_steps] = x_fadReached
-            self.y[p+crt_steps] = y_fadReached
+            self.x[p:p+crt_steps+1] = x_fadReached
+            self.y[p:p+crt_steps+1] = y_fadReached
+            self.num_asso_FAD[p:p+crt_steps+1] = self.in_R0_FAD
             #pour que le thon reparte dans la meme direction que celle d'arrivee:
-            self.theta[p+crt_steps-1] = self.theta[p-1] 
+            self.theta[p-1:p+crt_steps] = self.theta[p-1] 
             
         # If there are not enough steps, stops
         else:
-            steps_left = self.lifetime-(p+1)
-            self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
-            self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
+            steps_left = self.lifetime-(p)
+            self.x[p:p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
+            self.y[p:p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
+            self.num_asso_FAD[p:p+steps_left] = self.in_R0_FAD
+            print("  Warning: Not enough steps to add CRT")
             
-            print("Warning: Not enough steps to add CRT")
-            
-        self.p += crt_steps    
+        self.p += crt_steps
         
         
         
@@ -220,12 +221,13 @@ class Tuna:
             self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
             self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
             
-            print("Warning: Not enough steps to reach last FAD")
+            print("  Warning: Not enough steps to reach last FAD")
      
         self.p += nstep_jump
         
-        if addCRTs == True and p+nstep_jump >= self.lifetime:
-            add_res_time(self, CRTs)
+        if addCRTs == True and p+nstep_jump < self.lifetime:
+            # print("  adding CRT")
+            Tuna.add_res_time(self, CRTs)
     
         
     def checkEnv(self, FADs):
@@ -239,7 +241,7 @@ class Tuna:
         Les trois indices renseignes sont utilises comme suit:
             - in_R0_FAD: permet de savoir si le thon detecte un DCP (distance < R0)
             
-            - num_ass_FAD: array avec a chaque pas de temps le numero du DCP
+            - num_asso_FAD: array avec a chaque pas de temps le numero du DCP
                 auquel le thon est associe (ou 0 si pas d'association)
                 il change quand le thon entre et sort du detection_radius du DCP
                 Permet ensuite de calculer les CAT
@@ -271,11 +273,11 @@ class Tuna:
             
         if len(associated_FAD) != 0: # si on est dans le rayon de detection (dr)
             if FADs.dr[dist_ft <= FADs.dr]!=0: # on verifie que le dr du DCP n'est pas nul. S'il est nul, c'est que le DCP n'est pas equipe
-                self.num_ass_FAD[p] = associated_FAD
+                self.num_asso_FAD[p] = associated_FAD
             # dans tous les cas, que le DCP soit equipe ou non, on ne veut pas que le thon y boucle, donc on enregistre le numero dans last_FAD
             self.last_FAD = associated_FAD
         else: # si on n'est pas dans le rayon de detection
-            self.num_ass_FAD[p] = 0
+            self.num_asso_FAD[p] = 0
         
         
     def checkLand(self, Island):
@@ -377,7 +379,7 @@ class Tuna:
             
         """
         
-        tuna_traj = np.c_[self.x, self.y, self.alpha, self.theta, self.num_steps, self.num_ass_FAD]
+        tuna_traj = np.c_[self.x, self.y, self.alpha, self.theta, self.num_steps, self.num_asso_FAD]
         
         np.save(str(path_output)+"/Path_tuna/tuna_n"+str(tuna_number)+".npy", tuna_traj)
         if file_format[0]=="csv":
