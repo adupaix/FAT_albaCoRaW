@@ -28,7 +28,7 @@ RESET = True
 # the first element is the output format of the tuna trajectories
 # the second is the format of the array containing CATs
 ### For both, output is ALWAYS saved in npy, and will ALSO be saved in csv if ouput_format == "csv"
-OUPUT_FORMAT = ["npy","csv"]
+OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD
 ADD_CRTS = False

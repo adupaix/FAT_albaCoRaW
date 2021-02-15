@@ -178,7 +178,7 @@ for folder in output_folders:
     
 ## Choose output format
 # the first element is the output format of the tuna trajectories
-# the second is the format of the array containing CATs
+# the second is the format of the arrays containing CATs or CATs and CRTs
 ### For both, output is ALWAYS saved in npy, and will ALSO be saved in csv if ouput_format == "csv"
 output_format = ["npy","csv"]
 
@@ -194,9 +194,9 @@ if checkMap == True:
 #~~ RUN THE SIMULATION ~~
 # Print information
 if environment == "square":
-    print(environment+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c))
+    print(environment+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
 else:
-    print(environment+' '+str(studyYear)+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c))
+    print(environment+' '+str(studyYear)+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
     
 
 #> Tuna movement
