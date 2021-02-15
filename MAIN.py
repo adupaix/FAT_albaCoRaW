@@ -186,7 +186,7 @@ for folder in output_folders:
 # the first element is the output format of the tuna trajectories
 # the second is the format of the array containing CATs
 ### For both, output is ALWAYS saved in npy, and will ALSO be saved in csv if ouput_format == "csv"
-output_format = ["npy","csv"]
+output_format = OUTPUT_FORMAT
 
 
 #%%####################################
