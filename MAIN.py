@@ -235,4 +235,17 @@ exec(open(str(path_script)+"/MODELOUTPUT_CATs.py").read())
 
 print("\nCATs saved in:\n    "+str(path_output)+"/CATs/CATs_array."+output_format[1])
 
+#~~ SAVE SUMMARY ~~
+
+L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
+     "\n--------------",
+     "\n",
+     "\nNumber of simulated tunas : "+str(Nreplica),
+     "\nEnvironment type : "+str(environment)
+     ]
+summary = open(str(path_output)+"/Summary.txt", "w")
+summary.writelines(L)
+summary.close()
+
+
 
