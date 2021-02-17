@@ -8,8 +8,5 @@ If you want to launch the model directly without using config files, use MAIN_no
 
 ## Developments
 
-done:
-	adding CRTs when reaching a FAD
-
 future:
 	several tunas at the same time (change class Tuna to TunaS)
