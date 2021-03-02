@@ -15,10 +15,10 @@ import csv
 import os
 import numpy as np
 
-print("~~~ Converting files to csv ~~~\n")
+print("~~~ Converting npy files to csv ~~~\n")
 path = os.path.dirname(os.path.realpath(__file__))
 
-for file in os.listdir(path):
+for file in sorted(os.listdir(path)):
     if file.endswith(".npy"):
         fname = os.path.join(path, file)
         print("Current file: "+file)

@@ -13,7 +13,7 @@ import os
 print("~~~ Deleting all csv files ~~~\n")
 path = os.path.dirname(os.path.realpath(__file__))
 
-for fname in os.listdir(path):
+for fname in sorted(os.listdir(path)):
     if fname.endswith('.csv'):
         os.remove(path +'/'+ fname)
-        print(str(fname))
+        print("Current file: "+str(fname))
