@@ -8,7 +8,9 @@ Created on Mon Feb  8 12:53:13 2021
 Dictionnary which contains a list of, for each study:
         the name of the environment
         the year of the study
+	the name of the file containing the land coordinates
         a list with the coordinates, in degree, of the "center" of the study
+	the limits of the study area (interval around the center), out of which we consider that the tuna got out
 """
 
 study_dict = {10 : ["square","","",[0,0],[0,L]],
