@@ -43,6 +43,7 @@ Environments:
     - hawaii 2005 = 11 
     - Mauritius 2017 = 12 
     - Maldives = 13
+    - Drifting FADs 2020 = 14
 """
 #~ Study number
 STUDY = 10
