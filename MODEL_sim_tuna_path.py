@@ -23,9 +23,8 @@ for replica in range(Nreplica):
         diag_fad = FADs.id[FADs.x == FADs.y]
         fad_start = diag_fad[int(len(diag_fad)/2)]
     # Or FAD chosen randomly among FADs used for actual experimental release
-    else:
+    elif choose_fad_start == False:
         fad_start = rd.choice(FADs.id[FADs.of_release != 0])
-    
     
     tuna.x[0] = FADs.x[FADs.id == fad_start]
     tuna.y[0] = FADs.y[FADs.id == fad_start]

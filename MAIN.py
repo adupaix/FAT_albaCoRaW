@@ -126,6 +126,14 @@ else:
     
 #~~~ TUNA
 #---------
+## Choose FAD of release
+choose_fad_start = CHOOSE_RELEASE_FAD
+
+if choose_fad_start == True:
+    fad_start = None # get the FAD number here so it can be save in the output folder name
+    while fad_start not in FADs.id[FADs.of_release != 0]:
+        fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
+
 ## Number of tunas to be simulated
 Nreplica=NREPLICA
 
@@ -172,9 +180,11 @@ CRTs = [9] # voir avec Manuela pour avoir les vraies valeurs (Tolotti et al. 202
 # Generate output folders
 if environment == "square":
     sim_name = environment+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
-else:
+elif choose_fad_start == False:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
-
+elif choose_fad_start == True:
+    sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)+"_FAD"+str(fad_start)
+    
 path_output = str(path_script)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
 for folder in output_folders:

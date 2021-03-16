@@ -60,7 +60,7 @@ class FAD_Array:
             self.has_buoy.append(float(d['buoy']))
             self.of_release.append(float(d['released']))
             self.id.append(float(d['NumFAD']))
-            if environment == "maldives":
+            if environment == "maldives" and studyYear == "":
                 self.lost.append(float(d['lost']))
                 self.deployed.append(d['Deployed'])
         

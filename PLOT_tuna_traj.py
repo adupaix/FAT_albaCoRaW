@@ -10,7 +10,7 @@ Ne fonctionne pas seul
 Fonctionne après avoir fait tourné le MAIN, avec les parametres d'interet
 """
 
-r=8
+r=0
 
 tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
 
