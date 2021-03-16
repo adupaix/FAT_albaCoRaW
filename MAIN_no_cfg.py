@@ -53,6 +53,7 @@ Environments:
     - hawaii 2005 = 11 
     - Mauritius 2017 = 12 
     - Maldives = 13
+    - Maldives 2018 = 15
 """
 
 #~~~ ENVIRONMENT
@@ -126,6 +127,14 @@ else:
     
 #~~~ TUNA
 #---------
+## Choose FAD of release
+choose_fad_start = False
+
+if choose_fad_start == True:
+    fad_start = None # get the FAD number here so it can be save in the output folder name
+    while fad_start not in FADs.id[FADs.of_release != 0]:
+        fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
+
 ## Number of tunas to be simulated
 Nreplica=100
 

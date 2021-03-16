@@ -43,6 +43,7 @@ Environments:
     - hawaii 2005 = 11 
     - Mauritius 2017 = 12 
     - Maldives = 13
+    - Maldives 2018 = 15
 """
 #~ Study number
 STUDY = 10
@@ -64,6 +65,9 @@ PATH_DURATION = 120 # in days
 
 #~ Time step
 STEP_TIME = 100 # in seconds
+
+#~ Wether to choose the FAD of release or not
+CHOOSE_RELEASE_FAD = True
 
 #%%####################################
 #~~~ Individual tuna characteristics ~~
