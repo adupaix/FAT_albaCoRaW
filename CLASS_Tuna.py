@@ -90,7 +90,7 @@ class Tuna:
         if Tuna.m == 0:
             return Npas-1
         else:
-            k=0
+            k=1
             r_mortality = rd.random()
             while r_mortality > Tuna.step_m and k<=Npas-1:
                 k += 1
