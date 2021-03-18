@@ -16,7 +16,7 @@ PATH = '/home/adupaix/Documents/CRW/CRW_model' # enter the path of the directory
 
 #~ Plots
 CHECK_MAP = False
-PLOT_TUNAPATH = False
+PLOT_TUNAPATH = False # deprecated, better to leave False. Instead, use PLOT_tuna_traj.py after the simulation has run
 PLOT_ZOOM = False
 
 #~ Wether to recalculate existing tuna trajectories

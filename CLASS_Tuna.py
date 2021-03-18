@@ -172,8 +172,8 @@ class Tuna:
         # If there are not enough steps, stops
         else:
             steps_left = self.lifetime-(p)
-            self.x[p:p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
-            self.y[p:p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
+            self.x[p:p + steps_left] = x_fadReached
+            self.y[p:p + steps_left] = y_fadReached
             self.num_asso_FAD[p:p+steps_left] = self.in_R0_FAD
             print("  Warning: Not enough steps to add CRT")
             
