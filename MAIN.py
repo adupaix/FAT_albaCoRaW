@@ -172,7 +172,7 @@ RESET = RESET
 
 ## Add CRT when tuna associates with a FAD
 addCRTs = ADD_CRTS
-CRTs = [9] # voir avec Manuela pour avoir les vraies valeurs (Tolotti et al. 2020)
+CRTs = CRT_VALUES # voir avec Manuela pour avoir les vraies valeurs (Tolotti et al. 2020)
 
 #~~~ OUTPUTS
 # ----------
@@ -184,7 +184,10 @@ elif choose_fad_start == False:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
 elif choose_fad_start == True:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)+"_FAD"+str(fad_start)
-    
+
+if addCRTs == True:
+    sim_name = sim_name+"_withCRT"
+
 path_output = str(path_script)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
 for folder in output_folders:

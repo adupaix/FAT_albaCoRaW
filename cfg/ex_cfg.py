@@ -32,6 +32,7 @@ OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD
 ADD_CRTS = False
+CRT_VALUES = [9] # voir avec Manuela pour mettre les vraies valeurs
 
 #%%####################################
 #~~~ Environement parameters ~~
