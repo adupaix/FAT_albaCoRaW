@@ -130,7 +130,7 @@ else:
 ## Choose FAD of release
 choose_fad_start = False
 
-if choose_fad_start == True:
+if choose_fad_start == True and environment != "square":
     fad_start = None # get the FAD number here so it can be save in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:
         fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
