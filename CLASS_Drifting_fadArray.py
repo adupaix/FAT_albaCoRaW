@@ -150,7 +150,7 @@ class FAD_Array:
         
         self.nFAD = len(self.id) # number of FADs in the array
         
-    
+        print("Updatind FADs position. p="+str(self.p))
     
     def change_dr(self, new_dr):
         """

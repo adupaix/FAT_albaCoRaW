@@ -40,6 +40,8 @@ for replica in range(Nreplica):
     tuna.y[1] = tuna.y[0] + math.sin(tuna.theta[0])*Tuna.l
     tuna.p += 1
     
+    if environment == "drifting":
+        FADs.update_position(path_machine, tuna.p)
     
     cpb_array = np.array([0]) #-> Check if replica go out of the L limit
     
@@ -81,7 +83,8 @@ for replica in range(Nreplica):
             
             tuna.CRWMove()
         
-        
+        if environment == "drifting":
+            FADs.update_position(path_machine, tuna.p)
  
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
