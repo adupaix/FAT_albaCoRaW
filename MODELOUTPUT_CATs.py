@@ -20,7 +20,7 @@ Modified on Feb 10 2021, by adupaix
 #   entre les DCP rencontres par le replicat. C'est un peu plus long, mais dans l'environnement theorique on
 #   peut se retrouver avec 250 000 DCP, ce qui fait 62*10**9 elements dans la matrice. Donc ca serait
 #   plus rapide avec quelques Tb de RAM, mais je ne les ai malheureusement pas...
-if environment != "square":
+if environment != "square" and environment != "drifting":
     distFAD_mat = FADs.distance_matrix()
     FADs_ids = FADs.id
 
@@ -54,6 +54,11 @@ for r in range(Nreplica):
         distFAD_mat = FADs.distance_matrix(array_FADs)
         
         FADs_ids = array_FADs
+        
+    elif environment == "drifting":
+        # get the list of the encountered FADs
+        array_FADs = np.unique(tunaPath_array[:,-1])
+        array_FADs = array_FADs[array_FADs != 0]
     
     ## si le thon n'est pas associe au dernier pas de temps
     # c'est que le dernier temps complet dans la trajectoire est un CRT
@@ -76,7 +81,12 @@ for r in range(Nreplica):
         fad2 = tunaPath_array[t2,5]
         
         cat = ((t2-t1)*step_time)/(24*3600) #calcul le CAT (en jour)
-        dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
+        
+        if environment != "drifting":
+            dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
+        else:
+            dist = FADs.distance(fad1, fad2, t1, t2, path = path_machine)
+            
         cart_array[nCAT,:] = np.array([r+1, t1, t2, fad1, fad2, cat, float(dist),1]) # stock: id thon, tps depart, tps arrivee, dcp depart, dcp arrivee, cat, dist entre dcp, bollen "is a CAT" (1)
         nCAT += 1
         if i != len(end_asso)-1:

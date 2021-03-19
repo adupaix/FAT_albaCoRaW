@@ -79,6 +79,8 @@ exec(open(str(path_machine)+"/study_dict.py").read())
 ## Charge the environment class
 if environment == "square":
     exec(open(str(path_script)+"/CLASS_Square_fadArray.py").read())
+elif environment == "drifting":
+    exec(open(str(path_script)+"/CLASS_Drifting_fadArray.py").read())
 else:
     exec(open(str(path_script)+"/CLASS_Real_fadArray.py").read())
     exec(open(str(path_script)+"/CLASS_Land.py").read())
@@ -112,6 +114,8 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 ## Create the environement
 if environment == "square":
     FADs = FAD_Array(L = L, distFAD = distFAD, detection_radius = dr)
+if environment == "drifting":
+    FADs = FAD_Array(path = path_machine, detection_radius = dr)
 elif environment == "maldives":
     FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
     Island = list()
@@ -172,6 +176,8 @@ CRTs = [9] # voir avec Manuela pour avoir les vraies valeurs (Tolotti et al. 202
 # Generate output folders
 if environment == "square":
     sim_name = environment+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
+elif environment == "drifting":
+    sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
 else:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
 
@@ -199,6 +205,8 @@ if checkMap == True:
 # Print information
 if environment == "square":
     print(environment+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
+elif environment == "drifting":
+    print(environment+' '+str(studyYear)+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
 else:
     print(environment+' '+str(studyYear)+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
     

@@ -22,6 +22,8 @@ for replica in range(Nreplica):
     if environment == "square":
         diag_fad = FADs.id[FADs.x == FADs.y]
         fad_start = diag_fad[int(len(diag_fad)/2)]
+    elif environment == "drifting":
+        fad_start = rd.choice(FADs.id)
     # Or FAD chosen randomly among FADs used for actual experimental release
     else:
         fad_start = rd.choice(FADs.id[FADs.of_release != 0])
@@ -71,7 +73,7 @@ for replica in range(Nreplica):
         ## CRW -> All the case where the tuna have a random search behaviour (research behaviour at night and away from FADs)
         else:
             
-            if environment != "square" and environment !="maldives":
+            if environment != "square" and environment !="maldives" and environment !="drifting":
                 tuna.checkLand(Island)
             elif environment == "maldives":
                 for i in range(len(Island)):

@@ -15,7 +15,7 @@ class FAD_Array:
         - des coordonnées (deux array, un avec x l'autre avec y')
         - la presence ou non d'une bouee
         
-        A CHANGER
+        !!! If any csv file containing the FAD positions is opened, won't initialize !!!
         """
  
     
@@ -167,18 +167,21 @@ class FAD_Array:
             print("Warning: Wrong type or length of the given new_dr. Detection radius was not changed !")
     
         
-    def distance_matrix(self, array_FADs, timestep_FADs):
+    def distance(self, fad1, fad2, t1, t2, path):
         """
-        Calcule la matrice de distance entre un set
-        de DCP, fournis dans array_FADs (contient l'identifiant des DCP)
-                                         
-        BESOIN DE FOURNIR AUSSI LES timesteps OU LES DCP ONT ETE VISITES
+        Calcule la distance entre deux DCP
+        Rencontres aux timesteps t1 et t2
         """
+        
+        convKmDeg = 111
         
         x = list()
         y = list()
         
         int_file = list()
+        
+        timestep_FADs = [t1, t2]
+        array_FADs = [fad1, fad2]
         
         for i in range(len(timestep_FADs)):
             # get the name of the file containing the data for the timestep p
@@ -190,47 +193,19 @@ class FAD_Array:
         
         array_toread = np.c_[int_file, array_FADs, timestep_FADs]
         
-        for int_file_i in np.unique(int_file):
-            array_toread_i = array_toread[array_toread[:,0] == int_file_i, :]
-                    
-            xp = list()
-            yp = list()
-            idp = list()
-            tsp = list()
-            # read csv file
-            with open(str(path)+"/drifting_fadArray/"+int_file_i) as fr:
-                for d in csv.DictReader(fr):
-                    tsp.append(float(d['timestep']))
-                    xp.append(float(d['longitude']))
-                    yp.append(float(d['latitude']))
-                    idp.append(float(d['FAD_id']))
-                    
-            tsp = np.array(tsp)
-            xp = np.array(xp)
-            yp = np.array(yp)
-            idp = np.array(idp)
-        
-        id_unique_part1 = np.char.add(tsp.astype(np.int).astype(np.str), np.repeat('_', len(tsp)))
-        #rajouter idp
-        
-            xp = xp[np.logical_and(np.in1d(tsp, array_toread_i[:,2].astype(np.float)),
-                                   np.in1d(idp, array_toread_i[:,1].astype(np.float)))]
-            yp = yp[np.logical_and(tsp == timestep_FADs[i], idp == array_FADs[i])]
-            
-            x.append(float(xp))
-            x.append(float(yp))
-                    
-        # get the positions of the FADs which are in array_FADs
-        x = self.x[np.where([fad in array_FADs for fad in self.id])[0]]
-        y = self.y[np.where([fad in array_FADs for fad in self.id])[0]]
-        
-        x_line = np.repeat(x, len(x)).reshape(len(x),len(x))
-        x_col = x_line.transpose()
-        
-        y_line = np.repeat(y, len(y)).reshape(len(y),len(y))
-        y_col = y_line.transpose()
-        
-        return np.sqrt((y_line - y_col)**2 + (x_line - x_col)**2)
+        for i in range(len(int_file)):
+            array_toread_i = array_toread[i, :]
+            with open(str(path)+"/drifting_fadArray/"+str(array_toread_i[0])) as fr:
+                reader = csv.reader(fr)
+                next(reader)
+                row = next(reader)
+                while float(row[-1]) != float(array_toread_i[1]) or row[-2] != array_toread_i[2]:
+                    row = next(reader)
+            x.append(row[0])
+            y.append(row[1])
+                
+        return math.sqrt((float(y[0]) - float(y[1]))**2 + (float(x[0]) - float(x[1]))**2) * convKmDeg
+
 
         
     def __repr__(self):
