@@ -42,40 +42,46 @@ class FAD_Array:
             
         convKmDeg = 111
         
-        # read the first file with FAD positions
-        self.files = list()
-        for file in os.listdir(str(path)+"/drifting_fadArray"):
-            if file.startswith("0to"):
-                init_file = file
-            if "to" in file:
-                self.files.append(file)
+        # # read the first file with FAD positions
+        # self.files = list()
+        # for file in os.listdir(str(path)+"/drifting_fadArray"):
+        #     if file.startswith("0to"):
+        #         init_file = file
+        #     if "to" in file:
+        #         self.files.append(file)
                 
-        # initialize variables
-        timesteps = list()
-        self.x_deg = list()
-        self.y_deg = list()
-        self.id = list()
+        # # initialize variables
+        # timesteps = list()
+        # self.x_deg = list()
+        # self.y_deg = list()
+        # self.id = list()
         
-        # read csv file
-        with open(str(path)+"/drifting_fadArray/"+init_file) as fr:
-            for d in csv.DictReader(fr):
-                timesteps.append(float(d['timestep']))
-                self.x_deg.append(float(d['longitude']))
-                self.y_deg.append(float(d['latitude']))
-                self.id.append(float(d['FAD_id']))
+        # # read csv file
+        # with open(str(path)+"/drifting_fadArray/"+init_file) as fr:
+        #     for d in csv.DictReader(fr):
+        #         timesteps.append(float(d['timestep']))
+        #         self.x_deg.append(float(d['longitude']))
+        #         self.y_deg.append(float(d['latitude']))
+        #         self.id.append(float(d['FAD_id']))
         
-        # change variables to arrays
-        timesteps = np.array(timesteps)
-        self.x_deg = np.array(self.x_deg)
-        self.y_deg = np.array(self.y_deg)
-        self.id = np.array(self.id)
+        # # change variables to arrays
+        # timesteps = np.array(timesteps)
+        # self.x_deg = np.array(self.x_deg)
+        # self.y_deg = np.array(self.y_deg)
+        # self.id = np.array(self.id)
         
-        # keep only the initial positions
-        self.x_deg = self.x_deg[timesteps == 0]
-        self.y_deg = self.y_deg[timesteps == 0]
-        self.id = self.id[timesteps == 0]
+        # # keep only the initial positions
+        # self.x_deg = self.x_deg[timesteps == 0]
+        # self.y_deg = self.y_deg[timesteps == 0]
+        # self.id = self.id[timesteps == 0]
         
-               
+        print("Reading FADs x values\n")
+        x_deg_array = pd.read_csv(str(path)+"/drifting_fadArray/FADs.x.csv", na_values = "NA").to_numpy()
+        print("Reading FADs y values\n")
+        y_deg_array = pd.read_csv(str(path)+"/drifting_fadArray/FADs.y.csv", na_values = "NA").to_numpy()
+        print("Reading FADs id values\n")
+        self.id_array = pd.read_csv(str(path)+"/drifting_fadArray/FADs.id.csv").to_numpy()
+        
         # change positions in degree to positions in km from center
         self.x = (self.x_deg - np.repeat(study_center[0], len(self.x_deg))) * convKmDeg
         self.y = (self.y_deg - np.repeat(study_center[1], len(self.y_deg))) * convKmDeg

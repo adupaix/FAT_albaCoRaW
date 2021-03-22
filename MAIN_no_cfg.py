@@ -27,6 +27,7 @@ from shapely.geometry.polygon import LinearRing
 from descartes import PolygonPatch
 import time
 import csv as csv
+import pandas as pd # only for drifting_fadArray
 
 
 #~ Path
