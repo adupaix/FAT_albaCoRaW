@@ -169,7 +169,7 @@ RESET = True
 
 ## Add CRT when tuna associates with a FAD
 addCRTs = False
-CRTs = CRT_VALUES # voir avec Manuela pour mettre les vraies valeurs
+CRTs = [9] # voir avec Manuela pour mettre les vraies valeurs
 
 #~~~ OUTPUTS
 # ----------
