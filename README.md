@@ -10,5 +10,3 @@ If you want to launch the model directly without using config files, use MAIN_no
 
 future:
 	several tunas at the same time (change class Tuna to TunaS)
-
-zeofgiqh
