@@ -45,6 +45,7 @@ Environments:
     - Mauritius 2017 = 12 
     - Maldives = 13
     - Maldives 2018 = 15
+    - Maldives 2018 without Huvadhoo atoll = 16
 """
 #~ Study number
 STUDY = 10

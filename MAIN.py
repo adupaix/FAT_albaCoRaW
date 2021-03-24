@@ -185,6 +185,8 @@ elif choose_fad_start == False:
 elif choose_fad_start == True:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)+"_FAD"+str(fad_start)
 
+sim_name = sim_name+add_to_name
+
 if addCRTs == True:
     sim_name = sim_name+"_withCRT"
 
