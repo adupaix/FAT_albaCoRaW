@@ -36,6 +36,7 @@ for replica in range(Nreplica):
     tuna.x[1] = tuna.x[0] + math.cos(tuna.theta[0])*Tuna.l
     tuna.y[1] = tuna.y[0] + math.sin(tuna.theta[0])*Tuna.l
     tuna.p += 1
+    tuna.p_since_asso += 1
     
     
     cpb_array = np.array([0]) #-> Check if replica go out of the L limit
@@ -60,12 +61,21 @@ for replica in range(Nreplica):
         
         #~~~~
         ## BCRW -> All the cases when a tuna orients itself towards a FAD (only during daytime)
+        # p_since_asso : number of steps since the last association, check if superior to one day
         if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD:
             
-            x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
-            y_fadReached = FADs.y[FADs.id == tuna.in_R0_FAD]
+            # if the CAT is superior to one day or if it is a CAT diff
+            if tuna.p_since_asso > H24 or (tuna.p_since_asso <= H24 and tuna.in_R0_FAD!=tuna.last_FAD_no_reinit):
+                x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
+                y_fadReached = FADs.y[FADs.id == tuna.in_R0_FAD]
             
-            tuna.OMove(x_fadReached, y_fadReached, CRTs)
+                tuna.OMove(x_fadReached, y_fadReached, CRTs)
+            
+            # if it's a CAT return of less than 24h, we go back in time !
+            elif tuna.p_since_asso <= H24 and tuna.in_R0_FAD==tuna.last_FAD_no_reinit:
+                
+                tuna.in_the_time_machine()
+                
         #~~~~
         ## CRW -> All the case where the tuna have a random search behaviour (research behaviour at night and away from FADs)
         else:
@@ -76,7 +86,12 @@ for replica in range(Nreplica):
                 for i in range(len(Island)):
                     tuna.checkLand(Island[i])
             
-            tuna.CRWMove()
+            # si repart d'un DCP, Random Walk simple
+            if tuna.p_since_asso == 0:
+                tuna.RWMove()
+            # sinon, Correlated Random Walk
+            else:
+                tuna.CRWMove()
         
         
  

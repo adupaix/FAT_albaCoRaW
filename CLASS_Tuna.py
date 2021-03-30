@@ -75,12 +75,16 @@ class Tuna:
         
         self.num_asso_FAD = np.zeros(self.lifetime) # a chaque tour, stock 0 (pas d'association) ou x = identifiant du DCP auquel le thon est associe
         self.last_FAD = 0 #numero du dernier DCP auquel le thon s'est associe
+        self.last_FAD_no_reinit = 0 #numero du dernier DCP auquel le thon s'est associe, mais qui ne se remet pas a 0 pas quand on sort du R0 du DCP
         
         self.p = 0 # numero du pas de temps où en est le thon
         self.num_steps = np.array(range(self.lifetime)) # numero des pas de temps stockes (parallele aux autres donnees) Sert pour le plot
         
         self.crw = crw #si le thon (hors association) se déplace en marche aléatoire correlée. False quand on veut explorer la condition
         # extreme c = 1 (le thon se déplace en ligne droite)
+        
+        self.p_since_asso = 0 #compteur pour connaitre le nombre de pas depuis la derniere association.
+        # permet de revenir en arriere en cas de CAT de moins de 24h
         
     
     def lifetime(Npas):
@@ -145,6 +149,23 @@ class Tuna:
         self.y[p+1] = self.y[p] + math.sin(self.theta[p])*Tuna.l
         
         self.p += 1
+        self.p_since_asso += 1
+        
+        
+    def RWMove(self):
+        """ On change la position du thon dans le cas
+        d'un Simple Random Walk
+        i.e. si le thon REPART d'un DCP"""
+        
+        p = self.p
+        
+        self.theta[p] = rd.uniform(-math.pi, math.pi)
+        
+        self.x[p+1] = self.x[p] + math.cos(self.theta[p])*Tuna.l
+        self.y[p+1] = self.y[p] + math.sin(self.theta[p])*Tuna.l
+        
+        self.p += 1
+        self.p_since_asso += 1
     
         
     def add_res_time(self, CRTs):
@@ -225,10 +246,31 @@ class Tuna:
      
         self.p += nstep_jump
         
+        self.p_since_asso = 0
+        
         if addCRTs == True and p+nstep_jump < self.lifetime:
             # print("  adding CRT")
             Tuna.add_res_time(self, CRTs)
-    
+            
+        
+    def in_the_time_machine(self):
+        '''
+        Revient en arriere dans le temps, dans le cas
+        d'un  CAT return < 24h
+        
+        Tire aleatoirement un nouveau set d'alpha (entre l'association et le debut du retour)
+        car ils sont tous determines a l'initialisation du thon
+        '''
+        
+        print("  Time machine: p: "+str(self.p)+" ; back "+str(self.p_since_asso)+" steps")
+        
+        self.p -= self.p_since_asso
+        
+        self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / Tuna.sigma, (math.pi) / Tuna.sigma, loc=0, scale=Tuna.sigma, size = self.p_since_asso+1)
+        
+        self.p_since_asso = 0
+        
+        
         
     def checkEnv(self, FADs):
         '''
@@ -276,6 +318,7 @@ class Tuna:
                 self.num_asso_FAD[p] = associated_FAD
             # dans tous les cas, que le DCP soit equipe ou non, on ne veut pas que le thon y boucle, donc on enregistre le numero dans last_FAD
             self.last_FAD = associated_FAD
+            self.last_FAD_no_reinit = associated_FAD
         else: # si on n'est pas dans le rayon de detection
             self.num_asso_FAD[p] = 0
         
