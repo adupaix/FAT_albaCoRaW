@@ -172,6 +172,7 @@ RESET = RESET
 
 ## Add CRT when tuna associates with a FAD
 addCRTs = ADD_CRTS
+CRTs = [0]
 if addCRTs == True and environment != "square":
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
