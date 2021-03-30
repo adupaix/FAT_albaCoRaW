@@ -169,7 +169,13 @@ RESET = True
 
 ## Add CRT when tuna associates with a FAD
 addCRTs = False
-CRTs = [9] # voir avec Manuela pour mettre les vraies valeurs
+if addCRTs == True and environment != "square":
+    crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
+    with open(crt_file) as f:
+        lines = f.readlines()
+    CRTs = [float(line.split()[0]) for line in lines]
+elif environment == "square":
+    addCRTs = False
 
 #~~~ OUTPUTS
 # ----------
