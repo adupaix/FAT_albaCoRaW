@@ -41,7 +41,9 @@ os.chdir(path_script)
 # os.getcwd()
 
 #~ Set seed
-rd.seed(10)
+Seed = 10
+rd.seed(Seed)
+np.random.seed(Seed)
 
 
 #%%####################################
