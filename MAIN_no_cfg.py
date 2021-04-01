@@ -41,7 +41,11 @@ os.chdir(path_script)
 # os.getcwd()
 
 #~ Set seed
-Seed = 10
+REPRODUCTIBLE = True
+if REPRODUCTIBLE == True:
+    Seed = 10
+else:
+    Seed = rd.randint(1, 1000)
 rd.seed(Seed)
 np.random.seed(Seed)
 
@@ -262,7 +266,8 @@ L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.loc
      "\n--------------",
      "\n",
      "\nNumber of simulated tunas : "+str(Nreplica),
-     "\nEnvironment type : "+str(environment)
+     "\nEnvironment type : "+str(environment),
+     "\nSeed :"+str(Seed)
      ]
 summary = open(str(path_output)+"/Summary.txt", "w")
 summary.writelines(L)

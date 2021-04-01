@@ -24,6 +24,9 @@ RESET = True
 # If RESET == True, calculate tuna trajectories in any case.
 # if RESET == False, calculate new tuna trajectories only if less replica are saved (in "path_output/Path_tuna") than asked (in Nreplica)
 
+#~ Choose a random seed (False) or set the seed to that the simulation is reproductible
+REPRODUCTIBLE = True
+
 ## Choose output format
 # the first element is the output format of the tuna trajectories
 # the second is the format of the array containing CATs
