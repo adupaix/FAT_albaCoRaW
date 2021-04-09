@@ -46,6 +46,7 @@ for replica in range(Nreplica):
     while tuna.p < tuna.lifetime-1:
         
         # check if the tuna is at more than R0 from a FAD, or at less than R0, or at less than the FAD detection radius
+        ## the time machine in now called inside checkEnv
         tuna.checkEnv(FADs)
                 
         ## Periodic condition on board + Add the last fad when tuna go out of its zo
@@ -65,16 +66,16 @@ for replica in range(Nreplica):
         if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD:
             
             # if the CAT is superior to one day or if it is a CAT diff
-            if tuna.p_since_asso > H24 or (tuna.p_since_asso <= H24 and tuna.in_R0_FAD!=tuna.last_FAD_no_reinit):
-                x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
-                y_fadReached = FADs.y[FADs.id == tuna.in_R0_FAD]
+            # if tuna.p_since_asso > H24 or (tuna.p_since_asso <= H24 and tuna.in_R0_FAD!=tuna.last_FAD_no_reinit):
+            x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
+            y_fadReached = FADs.y[FADs.id == tuna.in_R0_FAD]
             
-                tuna.OMove(x_fadReached, y_fadReached, CRTs)
+            tuna.OMove(x_fadReached, y_fadReached, CRTs)
             
             # if it's a CAT return of less than 24h, we go back in time !
-            elif tuna.p_since_asso <= H24 and tuna.in_R0_FAD==tuna.last_FAD_no_reinit:
+            # elif tuna.p_since_asso <= H24 and tuna.in_R0_FAD==tuna.last_FAD_no_reinit:
                 
-                tuna.in_the_time_machine()
+                # tuna.in_the_time_machine()
                 
         #~~~~
         ## CRW -> All the case where the tuna have a random search behaviour (research behaviour at night and away from FADs)

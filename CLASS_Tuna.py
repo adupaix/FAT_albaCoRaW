@@ -199,6 +199,7 @@ class Tuna:
             print("  Warning: Not enough steps to add CRT")
             
         self.p += crt_steps
+        self.p_since_asso += crt_steps
         
         
         
@@ -246,7 +247,7 @@ class Tuna:
      
         self.p += nstep_jump
         
-        self.p_since_asso = 0
+        self.p_since_asso += nstep_jump
         
         if addCRTs == True and p+nstep_jump < self.lifetime:
             # print("  adding CRT")
@@ -265,6 +266,8 @@ class Tuna:
         print("  Time machine: p: "+str(self.p)+" ; back "+str(self.p_since_asso)+" steps")
         
         self.p -= self.p_since_asso
+        
+        self.last_FAD = self.last_FAD_no_reinit
         
         self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / Tuna.sigma, (math.pi) / Tuna.sigma, loc=0, scale=Tuna.sigma, size = self.p_since_asso+1)
         
@@ -314,11 +317,18 @@ class Tuna:
             
             
         if len(associated_FAD) != 0: # si on est dans le rayon de detection (dr)
-            if FADs.dr[dist_ft <= FADs.dr]!=0: # on verifie que le dr du DCP n'est pas nul. S'il est nul, c'est que le DCP n'est pas equipe
-                self.num_asso_FAD[p] = associated_FAD
+        #si c'est le meme DCP que la fois d'avant et qu'on l'a visite il y a moins de 24h
+            if associated_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD == 0:
+                #on revient en arriere
+                Tuna.in_the_time_machine(self)
+            else:
+                if FADs.dr[dist_ft <= FADs.dr]!=0: # on verifie que le dr du DCP n'est pas nul. S'il est nul, c'est que le DCP n'est pas equipe
+                    self.num_asso_FAD[p] = associated_FAD
             # dans tous les cas, que le DCP soit equipe ou non, on ne veut pas que le thon y boucle, donc on enregistre le numero dans last_FAD
-            self.last_FAD = associated_FAD
-            self.last_FAD_no_reinit = associated_FAD
+            # et il est associe au DCP, donc on remet p_since_asso a 0
+                self.last_FAD = associated_FAD
+                self.last_FAD_no_reinit = associated_FAD
+                self.p_since_asso = 0
         else: # si on n'est pas dans le rayon de detection
             self.num_asso_FAD[p] = 0
         
