@@ -63,7 +63,7 @@ for replica in range(Nreplica):
         #~~~~
         ## BCRW -> All the cases when a tuna orients itself towards a FAD (only during daytime)
         # p_since_asso : number of steps since the last association, check if superior to one day
-        if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD:
+        if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD_reinit_R0:
             
             # if the CAT is superior to one day or if it is a CAT diff
             # if tuna.p_since_asso > H24 or (tuna.p_since_asso <= H24 and tuna.in_R0_FAD!=tuna.last_FAD_no_reinit):

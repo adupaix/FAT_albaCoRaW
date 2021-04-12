@@ -16,7 +16,7 @@ class Tuna:
         - ses angles alpha et theta
         - in_R0_FAD: boleen pour savoir si le thon est a moins de R0 d'un DCP
         - num_asso_FAD: suivi des associations (pour chaque pas de temps, 0 si pas detecte par un DCP, num du DCP sinon)
-        - last_FAD_reinit_Ro: numero du DCP qui vient d'etre visite, pour ne pas revenir en arriere (reinitialise quand sort du rayon R0)
+        - last_FAD_reinit_R0: numero du DCP qui vient d'etre visite, pour ne pas revenir en arriere (reinitialise quand sort du rayon R0)
         
         parametres de classe:
         - vitesse (v)
@@ -74,7 +74,7 @@ class Tuna:
         self.in_R0_FAD = 0 # tuna is at a distance < R0 from a FAD or not (0: no FAD, other: number of the FAD)
         
         self.num_asso_FAD = np.zeros(self.lifetime) # a chaque tour, stock 0 (pas d'association) ou x = identifiant du DCP auquel le thon est associe
-        self.last_FAD_reinit_Ro = 0 #numero du dernier DCP auquel le thon s'est associe, se remet a 0 quand on sort du R0
+        self.last_FAD_reinit_R0 = 0 #numero du dernier DCP auquel le thon s'est associe, se remet a 0 quand on sort du R0
         self.last_FAD_reinit_dr = 0 #numero du dernier DCP auquel le thon s'est associe, se remet a 0 quand on sort du rayon de detection
         self.last_FAD_no_reinit = 0 #numero du dernier DCP auquel le thon s'est associe, mais qui ne se remet pas a 0 pas quand on sort du R0 du DCP
         
@@ -275,7 +275,7 @@ class Tuna:
         
         self.p -= self.p_since_asso
         
-        self.last_FAD_reinit_Ro = self.last_FAD_no_reinit
+        self.last_FAD_reinit_R0 = self.last_FAD_no_reinit
         self.last_FAD_reinit_dr = self.last_FAD_no_reinit
         
         self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / Tuna.sigma, (math.pi) / Tuna.sigma, loc=0, scale=Tuna.sigma, size = self.p_since_asso+1)
@@ -300,7 +300,7 @@ class Tuna:
                 il change quand le thon entre et sort du detection_radius du DCP
                 Permet ensuite de calculer les CAT
             
-            - last_FAD_reinit_Ro: numero du dernier DCP rencontre. Permet que le thon ne revienne
+            - last_FAD_reinit_R0: numero du dernier DCP rencontre. Permet que le thon ne revienne
                 pas en arriere systematiquement quand il vient de s'associer avec un DCP
                 prend le numero du DCP quand rentre dans son detection_radius, reprend la 
                 valeur 0 quand il ressort du R0
@@ -316,9 +316,9 @@ class Tuna:
         # idem qu'au dessus, mais avec le rayon detection_radius, du DCP
         associated_FAD = FADs.id[dist_ft <= FADs.dr]
         
-        if len(detected_FAD) == 0: #s'il n y a pas de DCP detecte par le thon, on met 0 dans in_R0_FAD et on reinitialise last_FAD_reinit_Ro
+        if len(detected_FAD) == 0: #s'il n y a pas de DCP detecte par le thon, on met 0 dans in_R0_FAD et on reinitialise last_FAD_reinit_R0
             self.in_R0_FAD = 0
-            self.last_FAD_reinit_Ro = 0
+            self.last_FAD_reinit_R0 = 0
         elif len(detected_FAD) == 1: #s'il y a un seul DCP detecte, on met son numero dans in_R0_FAD
             self.in_R0_FAD = detected_FAD
         else: #s'il y a plusieurs DCP detectes, on en choisi un au hasard
@@ -335,7 +335,7 @@ class Tuna:
                     self.num_asso_FAD[p] = associated_FAD #et on enregistre la detection du thon
             # dans tous les cas, que le DCP soit equipe ou non, on veut le meme comportement du thon, donc on enregistre le numero dans les last_FAD
             # et il est associe au DCP, donc on remet p_since_asso a 0
-                self.last_FAD_reinit_Ro = associated_FAD
+                self.last_FAD_reinit_R0 = associated_FAD
                 self.last_FAD_reinit_dr = associated_FAD
                 self.last_FAD_no_reinit = associated_FAD
                 self.p_since_asso = 0
