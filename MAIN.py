@@ -182,8 +182,8 @@ if addCRTs == True and environment != "square":
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
-    # enleve (dr/Tuna.l)*24*3600/step_time) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
-    CRTs = [(float(line.split()[0]) - (dr/Tuna.l)*24*3600/step_time) for line in lines]
+    # enleve (dr/Tuna.l)*step_time/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
+    CRTs = [(float(line.split()[0])) for line in lines]
 elif environment == "square":
     addCRTs = False
 

@@ -89,7 +89,7 @@ for replica in range(Nreplica):
             
             # si repart d'un DCP, Random Walk simple
             if tuna.p_since_asso == 0:
-                tuna.RWMove()
+                tuna.RWMove(FADs)
             # sinon, Correlated Random Walk
             else:
                 tuna.CRWMove()
