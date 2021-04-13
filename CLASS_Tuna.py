@@ -412,16 +412,6 @@ class Tuna:
             if zeta<max(proba_alpha[:,2]): self.alpha[p] = proba_alpha[np.where(proba_alpha[:,3]==1),0][0]
             else: self.alpha[p] = proba_alpha[np.where(proba_alpha[:,3]==0),0][0]
             
-            
-    
-    def __del__(self):
-        """Methode pour supprimer le thon
-        On met a jour le compteur de classe
-        Et on sauvegarde dans un fichier toutes
-        les informations sur la trajectoire du thon
-        """
-        Tuna.nb_tunas -= 1
-        
       
     def __repr__(self):
         """Methode pour afficher l objet
@@ -435,12 +425,7 @@ class Tuna:
                                    (self.lifetime*step_time)/(24*3600),
                                    self.p,
                                    self.x[self.p],
-                                   self.y[self.p])
-    
-    def init_n():
-        """ Reinitialise le nombre de thons crees"""
-        Tuna.nb_tunas = 0
-    
+                                   self.y[self.p])   
     
     def save(self, path_output, file_format, tuna_number):
         """Fonction sauvegardant la trajectoire du thon
