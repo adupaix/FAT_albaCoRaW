@@ -67,10 +67,7 @@ for replica in range(Nreplica):
             
             # if the CAT is superior to one day or if it is a CAT diff
             # if tuna.p_since_asso > H24 or (tuna.p_since_asso <= H24 and tuna.in_R0_FAD!=tuna.last_FAD_no_reinit):
-            x_fadReached = FADs.x[FADs.id == tuna.in_R0_FAD]
-            y_fadReached = FADs.y[FADs.id == tuna.in_R0_FAD]
-            
-            tuna.OMove(x_fadReached, y_fadReached, CRTs)
+            tuna.OMove(FADs, CRTs)
             
             # if it's a CAT return of less than 24h, we go back in time !
             # elif tuna.p_since_asso <= H24 and tuna.in_R0_FAD==tuna.last_FAD_no_reinit:

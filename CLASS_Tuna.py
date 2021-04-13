@@ -175,7 +175,7 @@ class Tuna:
         self.p_since_asso += 1
     
         
-    def add_res_time(self, CRTs):
+    def add_res_time(self, CRTs, x_fadReached, y_fadReached):
         """
         Dans le cas ou add_CRTs est vrai
         on prend un CRT au hasard dans la liste fournie
@@ -210,12 +210,15 @@ class Tuna:
         
         
         
-    def OMove(self, x_fadReached, y_fadReached, CRTs):
+    def OMove(self, FADs, CRTs):
         """ On change la position du thon dans le cas
         d'un Oriented Movment
         i.e. si le thon est a moins de R0 d'un DCP + c'est le jour """
         
         p = self.p
+        
+        x_fadReached = FADs.x[FADs.id == self.in_R0_FAD]
+        y_fadReached = FADs.y[FADs.id == self.in_R0_FAD]
         
         dist_tunaFAD = math.sqrt((y_fadReached-self.y[p])**2
                                  +(x_fadReached-self.x[p])**2)
@@ -257,8 +260,11 @@ class Tuna:
         self.p_since_asso += nstep_jump
         
         if addCRTs == True and p+nstep_jump < self.lifetime:
+            if self.in_R0_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0:
+                Tuna.in_the_time_machine(self)
             # print("  adding CRT")
-            Tuna.add_res_time(self, CRTs)
+            else:
+                Tuna.add_res_time(self, CRTs, x_fadReached, y_fadReached)
             
         
     def in_the_time_machine(self):
