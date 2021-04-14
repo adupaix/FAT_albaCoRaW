@@ -87,6 +87,9 @@ class Tuna:
         self.p_since_asso = 0 #compteur pour connaitre le nombre de pas depuis la derniere association.
         # permet de revenir en arriere en cas de CAT de moins de 24h
         
+        self.nb_visit = 0 #compteur du nombre de DCP visites par le thon. Permet d'arreter la trajectoire plus tot si on ne veut considérer
+        # que le premier CAT par exemple
+        
     
     def lifetime(Npas):
         """A l'initialisation du thon
@@ -339,6 +342,8 @@ class Tuna:
             else: #sinon:
                 if FADs.dr[dist_ft <= FADs.dr]!=0: # on verifie que le dr du DCP n'est pas nul (S'il est nul, c'est que le DCP n'est pas equipe)
                     self.num_asso_FAD[p] = associated_FAD #et on enregistre la detection du thon
+                    if not self.num_asso_FAD[p-1] == associated_FAD:
+                        self.nb_visit +=1
             # dans tous les cas, que le DCP soit equipe ou non, on veut le meme comportement du thon, donc on enregistre le numero dans les last_FAD
             # et il est associe au DCP, donc on remet p_since_asso a 0
                 self.last_FAD_reinit_R0 = associated_FAD

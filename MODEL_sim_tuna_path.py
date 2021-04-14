@@ -43,7 +43,7 @@ for replica in range(Nreplica):
     
     ## While p has not reached the lifetime, simulate tuna movement
     # tuna.p is incremented inside the OMove and CRWMove methods
-    while tuna.p < tuna.lifetime-1:
+    while tuna.p < tuna.lifetime-1 and tuna.nb_visit < nb_max_CAT+1:
         
         # check if the tuna is at more than R0 from a FAD, or at less than R0, or at less than the FAD detection radius
         ## the time machine in now called inside checkEnv

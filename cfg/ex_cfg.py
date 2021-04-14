@@ -36,6 +36,12 @@ OUTPUT_FORMAT = ["npy","csv"]
 #~ Add CRTs when reach a FAD
 ADD_CRTS = False
 
+#~ Consider the whole simulation time (LIMIT_CAT_NB = False) or only until a certain number of CATs (True)
+# if True choose the number of CATs (NB_MAX_CAT)
+# !! If LIMIT_CAT_NB is True, even if the NB_MAX_CAT is not reached, the simulation will not be longer than the PATH_DURATION
+LIMIT_CAT_NB = True
+NB_MAX_CAT = 1
+
 #%%####################################
 #~~~ Environement parameters ~~
 
@@ -54,7 +60,7 @@ Environments:
 STUDY = 10
 
 #~ Characteristics of the FAD array
-DIST_FAD = 100 #Distance between FADs, in km
+DIST_FAD = 20 #Distance between FADs, in km
 L = 5000 #Width of the environment, in km
 DR = 0.5 #Detection radius of FADs, in km
 
@@ -63,7 +69,7 @@ DR = 0.5 #Detection radius of FADs, in km
 #~~~ Simulation parameters ~~
 
 #~ Number of tunas to simulate
-NREPLICA = 300
+NREPLICA = 1000
 
 #~ Maximum duration of a tuna path
 PATH_DURATION = 120 # in days

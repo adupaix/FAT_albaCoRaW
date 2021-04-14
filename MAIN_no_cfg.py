@@ -173,6 +173,8 @@ plot_zoom = True
 # if RESET == False, calculate new tuna trajectories only if less replica are saved (in "path_output/Path_tuna") than asked (in Nreplica)
 RESET = True
 
+#~~~ SIMULATION
+#---------
 ## Add CRT when tuna associates with a FAD
 addCRTs = False
 CRTs = [0]
@@ -184,6 +186,13 @@ if addCRTs == True and environment != "square":
     CRTs = [(float(line.split()[0]) - (dr/Tuna.l)*24*3600/step_time) for line in lines]
 elif environment == "square":
     addCRTs = False
+    
+## Limit the simulation to a certain number of CATs
+limit_CAT_nb = False
+if limit_CAT_nb == True:
+    nb_max_CAT = 1
+else:
+    nb_max_CAT = math.inf  
 
 #~~~ OUTPUTS
 # ----------
@@ -200,6 +209,8 @@ sim_name = sim_name+add_to_name
 
 if addCRTs == True:
     sim_name = sim_name+"_withCRT"
+if limit_CAT_nb == True:
+    sim_name = sim_name+"_"+str(nb_max_CAT)+"CATonly"
 
 path_output = str(path_script)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
