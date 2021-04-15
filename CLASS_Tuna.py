@@ -40,7 +40,6 @@ class Tuna:
     
     m = 1 #mortality rate in %/day
     step_m = ((m / 100 ) * step_time)/(24*3600) #mortality rate per time step
-    # q = 0
     
     def __init__(self, Npas, verbose, CRW = True):
         """ On definit tous les attributs

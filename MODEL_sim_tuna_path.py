@@ -5,7 +5,7 @@ Created on Thu Jul 26 09:50:25 2018
 
 @author: geraldine
 
-Modified on Feb 05 2021, by adupaix
+Modified on Apr 15 2021, by adupaix
 """
 
 ###############################################################################
@@ -43,11 +43,12 @@ for replica in range(Nreplica):
     cpb_array = np.array([0]) #-> Check if replica go out of the L limit
     
     ## While p has not reached the lifetime, simulate tuna movement
+    # and while it has not reached the maximum number of associations wanted
     # tuna.p is incremented inside the OMove and CRWMove methods
     while tuna.p < tuna.lifetime-1 and tuna.nb_visit < nb_max_CAT+1:
         
         # check if the tuna is at more than R0 from a FAD, or at less than R0, or at less than the FAD detection radius
-        ## the time machine in now called inside checkEnv
+        # also check if it is not doing a CATreturn of less than 24h (time machine)
         tuna.checkEnv(FADs)
                 
         ## Periodic condition on board + Add the last fad when tuna go out of its zo
@@ -55,7 +56,7 @@ for replica in range(Nreplica):
             cpb_array = np.hstack((cpb_array, 1))
             break
         
-        ## For define the day/night behaviour change  
+        ## For define the day/night behaviour change
         if tuna.p%H24<H12: 
             DAY = 0
         else: 
@@ -63,32 +64,26 @@ for replica in range(Nreplica):
         
         #~~~~
         ## BCRW -> All the cases when a tuna orients itself towards a FAD (only during daytime)
-        # p_since_asso : number of steps since the last association, check if superior to one day
         if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD_reinit_R0:
             
-            # if the CAT is superior to one day or if it is a CAT diff
-            # if tuna.p_since_asso > H24 or (tuna.p_since_asso <= H24 and tuna.in_R0_FAD!=tuna.last_FAD_no_reinit):
             tuna.OMove(FADs, CRTs)
             
-            # if it's a CAT return of less than 24h, we go back in time !
-            # elif tuna.p_since_asso <= H24 and tuna.in_R0_FAD==tuna.last_FAD_no_reinit:
-                
-                # tuna.in_the_time_machine()
                 
         #~~~~
         ## CRW -> All the case where the tuna have a random search behaviour (research behaviour at night and away from FADs)
         else:
             
+            # if it's a simulation in a real environment, check if there is land around
             if environment != "square" and environment !="maldives":
                 tuna.checkLand(Island)
             elif environment == "maldives":
                 for i in range(len(Island)):
                     tuna.checkLand(Island[i])
             
-            # si repart d'un DCP, Random Walk simple
+            # if leaves a FAD, simple Random Walk
             if tuna.p_since_asso == 0:
                 tuna.RWMove(FADs)
-            # sinon, Correlated Random Walk
+            # else, Correlated Random Walk
             else:
                 tuna.CRWMove()
         
