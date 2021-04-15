@@ -12,6 +12,8 @@ Fonctionne après avoir fait tourné le MAIN, avec les parametres d'interet
 
 r=0
 
+plot_zoom = True
+
 tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
 
 fig=plt.figure(1) 

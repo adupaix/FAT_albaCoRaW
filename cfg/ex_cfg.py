@@ -16,8 +16,6 @@ PATH = '/home/adupaix/Documents/CRW/CRW_model' # enter the path of the directory
 
 #~ Plots
 CHECK_MAP = False
-PLOT_TUNAPATH = False # deprecated, better to leave False. Instead, use PLOT_tuna_traj.py after the simulation has run
-PLOT_ZOOM = False
 
 #~ Wether to recalculate existing tuna trajectories
 RESET = True
@@ -42,6 +40,9 @@ ADD_CRTS = False
 LIMIT_CAT_NB = True
 NB_MAX_CAT = 1
 
+#~ Wether to print verbose when the script is running
+VERBOSE = True
+
 #%%####################################
 #~~~ Environement parameters ~~
 
@@ -50,8 +51,7 @@ Environments:
     
     - square array = 10
     - hawaii 2005 = 11 
-    - Mauritius 2017 = 12 
-    - Maldives = 13
+    - Mauritius 2017 = 12
     - Maldives 2018 = 15
     - Maldives 2018 without Huvadhoo atoll = 16
     - Maldives 2009 = 17
@@ -60,7 +60,7 @@ Environments:
 STUDY = 10
 
 #~ Characteristics of the FAD array
-DIST_FAD = 20 #Distance between FADs, in km
+DIST_FAD = 25 #Distance between FADs, in km
 L = 5000 #Width of the environment, in km
 DR = 0.5 #Detection radius of FADs, in km
 
@@ -69,10 +69,10 @@ DR = 0.5 #Detection radius of FADs, in km
 #~~~ Simulation parameters ~~
 
 #~ Number of tunas to simulate
-NREPLICA = 1000
+NREPLICA = 10
 
 #~ Maximum duration of a tuna path
-PATH_DURATION = 120 # in days
+PATH_DURATION = 20 # in days
 
 #~ Time step
 STEP_TIME = 100 # in seconds

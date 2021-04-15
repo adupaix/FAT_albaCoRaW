@@ -48,6 +48,9 @@ else:
 rd.seed(Seed)
 np.random.seed(Seed)
 
+#~ Verbose
+verbose = VERBOSE
+
 
 #%%####################################
 #~~~~ CHARGE CLASSES ~~~~
@@ -56,8 +59,10 @@ Environments:
     
     - square array = 10
     - hawaii 2005 = 11 
-    - Mauritius 2017 = 12 
-    - Maldives = 13
+    - Mauritius 2017 = 12
+    - Maldives 2018 = 15
+    - Maldives 2018 without Huvadhoo atoll = 16
+    - Maldives 2009 = 17
 """
 
 #~~~ ENVIRONMENT
@@ -167,14 +172,6 @@ if C == 1:
 m = M  # mortality in %/day
 Tuna.change_m(m)
 
-##Plot
-plot_tunaPath = PLOT_TUNAPATH
-plot_zoom = PLOT_ZOOM
-
-# If RESET == True, calculate tuna trajectories in any case.
-# if RESET == False, calculate new tuna trajectories only if less replica are saved (in "path_output/Path_tuna") than asked (in Nreplica)
-RESET = RESET
-
 #~~~ SIMULATION
 #---------
 ## Add CRT when tuna associates with a FAD
@@ -258,21 +255,22 @@ if sum(files_exist)<Nreplica or RESET == True:
 
     times = [end[i] - begin[i] for i in range(len(end))]
     time_tot = sum(times)
+    
+    if verbose == True:
+        print("Time for simulating tuna trajectories: "+str(round(time_tot))+"s")
 
-    print("Time for simulating tuna trajectories: "+str(round(time_tot))+"s")
-
-else:
+elif verbose == True:
     print("\nUsing existing tuna trajectories")
 
-print("\nTuna trajectories saved in:\n    "+str(path_output)+"/Path_tuna/")
-#> Loss simulation
-# m = m_array[0]
-# exec(open(str(path_script)+"/MODEL_mortalityRateSimulation.py").read())
+if verbose == True:
+    print("\nTuna trajectories saved in:\n    "+str(path_output)+"/Path_tuna/")
+
 
 #~~ CALCULATE CAT ~~
 exec(open(str(path_script)+"/MODELOUTPUT_CATs.py").read())
 
-print("\nCATs saved in:\n    "+str(path_output)+"/CATs/CATs_array."+output_format[1])
+if verbose == True:
+    print("\nCATs saved in:\n    "+str(path_output)+"/CATs/CATs_array."+output_format[1])
 
 #~~ SAVE SUMMARY ~~
 

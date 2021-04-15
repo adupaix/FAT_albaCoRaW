@@ -42,7 +42,7 @@ class Tuna:
     step_m = ((m / 100 ) * step_time)/(24*3600) #mortality rate per time step
     # q = 0
     
-    def __init__(self, Npas, CRW = True):
+    def __init__(self, Npas, verbose, CRW = True):
         """ On definit tous les attributs
         
         Besoin de specifier Npas, pour limiter la duree de vie
@@ -89,6 +89,8 @@ class Tuna:
         
         self.nb_visit = 0 #compteur du nombre de DCP visites par le thon. Permet d'arreter la trajectoire plus tot si on ne veut considérer
         # que le premier CAT par exemple
+        
+        self.verbose = verbose #determine si on affiche des elements pendant la simulation
         
     
     def lifetime(Npas):
@@ -206,7 +208,8 @@ class Tuna:
             self.x[p:p + steps_left] = x_fadReached
             self.y[p:p + steps_left] = y_fadReached
             self.num_asso_FAD[p:p+steps_left] = self.in_R0_FAD
-            print("  Warning: Not enough steps to add CRT")
+            if self.verbose == True:
+                print("  Warning: Not enough steps to add CRT")
             
         self.p += crt_steps
         self.p_since_asso += crt_steps
@@ -255,8 +258,8 @@ class Tuna:
             steps_left = self.lifetime-(p+1)
             self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
             self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
-            
-            print("  Warning: Not enough steps to reach last FAD")
+            if self.verbose == True:
+                print("  Warning: Not enough steps to reach last FAD")
      
         self.p += nstep_jump
         
@@ -278,9 +281,9 @@ class Tuna:
         Tire aleatoirement un nouveau set d'alpha (entre l'association et le debut du retour)
         car ils sont tous determines a l'initialisation du thon
         '''
-        
-        print("  Time machine: p: "+str(self.p)+" ; back "+str(self.p_since_asso)+" steps")
-        print("    Last FAD: "+str(self.num_asso_FAD[self.p-self.p_since_asso])+" ; present FAD "+str(self.last_FAD_no_reinit))
+        if self.verbose == True:
+            print("  Time machine: p: "+str(self.p)+" ; back "+str(self.p_since_asso)+" steps")
+            print("    Last FAD: "+str(self.num_asso_FAD[self.p-self.p_since_asso])+" ; present FAD "+str(self.last_FAD_no_reinit))
         
         self.p -= self.p_since_asso
         
@@ -446,8 +449,8 @@ class Tuna:
         if file_format[0]=="csv":
             np.savetxt(str(path_output)+"/Path_tuna/tuna_n"+str(tuna_number)+"."+file_format[0], tuna_traj)
             
-            
-        return "- Tuna trajectory saved"
+        if self.verbose == True:   
+            print("- Tuna trajectory saved")
       
         
     
