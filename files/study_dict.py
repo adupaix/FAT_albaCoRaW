@@ -21,9 +21,9 @@ study_dict = {10 : ["square","","",[0,0],[0,L],""],
               16 : ["maldives",2018,["atoll1","atoll3", "atoll4"], [73.19073, 2.979273], [-L/2,L/2],"_no_huva"],
               17 : ["maldives",2009,["atoll1", "atoll2", "atoll3", "atoll4"], [73.21022, 3.063778], [-L/2,L/2],""]}
 
-environment = study_dict[study][0]
-studyYear = study_dict[study][1]
-land_files = study_dict[study][2]
-study_center = study_dict[study][3]
-lims = study_dict[study][4]
-add_to_name = study_dict[study][5]
+environment = study_dict[STUDY][0]
+studyYear = study_dict[STUDY][1]
+land_files = study_dict[STUDY][2]
+study_center = study_dict[STUDY][3]
+lims = study_dict[STUDY][4]
+add_to_name = study_dict[STUDY][5]

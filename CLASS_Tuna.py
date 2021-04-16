@@ -14,9 +14,15 @@ class Tuna:
         - sa duree de vie (lifetime)
         - sa position geographique (x et y)
         - ses angles alpha et theta
+        - son pas de temps actuel (p)
         - in_R0_FAD: boleen pour savoir si le thon est a moins de R0 d'un DCP
         - num_asso_FAD: suivi des associations (pour chaque pas de temps, 0 si pas detecte par un DCP, num du DCP sinon)
-        - last_FAD_reinit_R0: numero du DCP qui vient d'etre visite, pour ne pas revenir en arriere (reinitialise quand sort du rayon R0)
+        - last_FAD_*:   numero du DCP qui vient d'etre visite, pour ne pas revenir en arriere et pour detecter les CATret<24h
+                        3 paramètres réinitialisés à différents moments
+        - p_since_asso: nombre de pas de temps depuis la dernière association à un DCP, permet de revenir en arrière dans le temps
+        - nb_visit: nombre de DCP visités. Permet d'arreter la simulation si on ne veut qu'un seul CAT par exemple
+        - verbose: paramètre pour savoir si on affiche les messages
+        - crw: determine si le thon se déplace en CRW ou en ligne droite (quand c = 1)
         
         parametres de classe:
         - vitesse (v)
@@ -39,7 +45,11 @@ class Tuna:
     sigma = math.sqrt(-2*math.log(c))
     
     m = 1 #mortality rate in %/day
-    step_m = ((m / 100 ) * step_time)/(24*3600) #mortality rate per time step
+    step_m = ((m / 100 ) * STEP_TIME)/(24*3600) #mortality rate per time step
+    
+    
+    ### ~~~ INITIALISATION D'UN THON
+    ##------------------------------
     
     def __init__(self, Npas, verbose, CRW = True):
         """ On definit tous les attributs
@@ -50,7 +60,7 @@ class Tuna:
         
         Tuna.nb_tunas += 1
         
-        self.id = Tuna.nb_tunas 
+        self.id = Tuna.nb_tunas
         
         ## Parametres d'etat
         self.lifetime = Tuna.lifetime(Npas)
@@ -108,7 +118,10 @@ class Tuna:
             return(k)
     
     
-    #### METHODE SUR LES PARAMETRES DE CLASSE
+    
+    ### ~~~ METHODES SUR LES PARAMETRES DE CLASSE
+    ##-------------------------------------------
+    
     def change_c(new_c):
         """Fonction pour modifier le coeff
         de sinuosite c. Change en meme temps
@@ -126,14 +139,18 @@ class Tuna:
         le step_m
         """
         Tuna.m = new_m
-        Tuna.step_m = ((new_m / 100 ) * step_time)/(24*3600)
+        Tuna.step_m = ((new_m / 100 ) * STEP_TIME)/(24*3600)
     
     
-    ### METHODES DE MOUVEMENT DES THONS
+    ### ~~~ METHODES DE MOUVEMENT DES THONS
+    ##-------------------------------------
+    
     def CRWMove(self):
-        """ On change la position du thon dans le cas
+        """
+        On change la position du thon dans le cas
         d'un Correlated Random Walk
-        i.e. si le thon ne va pas vers un DCP"""
+        i.e. si le thon ne va pas vers un DCP
+        """
         
         p = self.p
         
@@ -147,8 +164,7 @@ class Tuna:
             self.theta[p] = self.theta[p] - (2*math.pi)
         elif self.theta[p] < (-math.pi):
             self.theta[p] = self.theta[p] + (2*math.pi)
-        
-        
+                
         
         self.x[p+1] = self.x[p] + math.cos(self.theta[p])*Tuna.l
         self.y[p+1] = self.y[p] + math.sin(self.theta[p])*Tuna.l
@@ -158,17 +174,22 @@ class Tuna:
         
         
     def RWMove(self, FADs):
-        """ On change la position du thon dans le cas
-        d'un Simple Random Walk
+        """
+        On change la position du thon dans le cas
+        d'un Random Walk simple
         i.e. si le thon REPART d'un DCP
         on choisi un angle aleatoire,
-        et on replace le thon sur le cercle de rayon dr"""
+        et soit :
+            - on replace le thon sur le cercle de rayon dr 
+                (dans le cas où on ajoute des CRTs et que le DCP est équipé)
+            - le thon se déplace de Tuna.l (quand on n'ajoute pas de CRT)
+        """
         
         p = self.p
         
         self.theta[p] = rd.uniform(-math.pi, math.pi)
         
-        if addCRTs == True:
+        if ADD_CRTS == True:
             self.x[p+1] = self.x[p] + math.cos(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , Tuna.l)
             self.y[p+1] = self.y[p] + math.sin(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , Tuna.l)
         else:
@@ -189,7 +210,7 @@ class Tuna:
         """
         crt_day = rd.choice(CRTs)
         
-        crt_steps = int(crt_day * 24 * 3600 / step_time)
+        crt_steps = int(crt_day * 24 * 3600 / STEP_TIME)
         
         p = self.p
         
@@ -216,9 +237,11 @@ class Tuna:
         
         
     def OMove(self, FADs, CRTs):
-        """ On change la position du thon dans le cas
+        """
+        On change la position du thon dans le cas
         d'un Oriented Movment
-        i.e. si le thon est a moins de R0 d'un DCP + c'est le jour """
+        i.e. si le thon est a moins de R0 d'un DCP + c'est le jour
+        """
         
         p = self.p
         
@@ -264,14 +287,17 @@ class Tuna:
         
         self.p_since_asso += nstep_jump
         
-        if addCRTs == True and p+nstep_jump < self.lifetime:
+        if ADD_CRTS == True and p+nstep_jump < self.lifetime:
             if self.in_R0_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0:
                 Tuna.in_the_time_machine(self)
             # print("  adding CRT")
             else:
                 Tuna.add_res_time(self, CRTs, x_fadReached, y_fadReached)
             
-        
+    
+    ### ~~~ METHODES DE VERIFICATION DE L'ENVIRONNEMENT DU THON
+    ##---------------------------------------------------------
+    
     def in_the_time_machine(self):
         '''
         Revient en arriere dans le temps, dans le cas
@@ -297,13 +323,15 @@ class Tuna:
         
     def checkEnv(self, FADs):
         '''
-        FADs: environnement en objet flottant de classe Square_fadArray
+        FADs: environnement en objet flottant de classe FAD_Array
         
         Utilise la position du thon pour déterminer si:
             - le thon est associe a un DCP
             - le thon est dans le R0 d'un DCP
+            - le thon revient à un DCP visité il y a moins de 24h (CATret<24h)
+                dans ce cas là, revient en arriere dans le temps
         
-        Les trois indices renseignes sont utilises comme suit:
+        Les indices renseignes sont utilises comme suit:
             - in_R0_FAD: permet de savoir si le thon detecte un DCP (distance < R0)
             
             - num_asso_FAD: array avec a chaque pas de temps le numero du DCP
@@ -315,6 +343,9 @@ class Tuna:
                 pas en arriere systematiquement quand il vient de s'associer avec un DCP
                 prend le numero du DCP quand rentre dans son detection_radius, reprend la 
                 valeur 0 quand il ressort du R0
+            -last_FAD_reinit_dr: comme last_FAD_reinit_R0, mais reinitialisé si le thon est hors
+                du dr
+            -last_FAD_no_reinit: idem ci-dessus, mais jamais reinitialisé
                 
                 ATTENTION NE FONCTIONNE QUE SI distance entre DCP > R0
         '''
@@ -360,7 +391,7 @@ class Tuna:
         
     def checkLand(self, Island):
         """
-        Methode utilisee dans les simulations dans des
+        Methode utilisee dans les simulations dans les
         environnement reels, pour recalculer alpha de maniere a
         ce que le thon n'aille pas sur terre
         """
@@ -419,6 +450,9 @@ class Tuna:
             if zeta<max(proba_alpha[:,2]): self.alpha[p] = proba_alpha[np.where(proba_alpha[:,3]==1),0][0]
             else: self.alpha[p] = proba_alpha[np.where(proba_alpha[:,3]==0),0][0]
             
+            
+    ### ~~~ METHODES POUR REPRESENTER ET SAUVEGARDER LE THON
+    ##------------------------------------------------------
       
     def __repr__(self):
         """Methode pour afficher l objet
@@ -429,7 +463,7 @@ class Tuna:
                                    Tuna.R0,
                                    Tuna.c,
                                    self.id,
-                                   (self.lifetime*step_time)/(24*3600),
+                                   (self.lifetime*STEP_TIME)/(24*3600),
                                    self.p,
                                    self.x[self.p],
                                    self.y[self.p])   

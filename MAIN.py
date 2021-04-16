@@ -48,9 +48,6 @@ else:
 rd.seed(Seed)
 np.random.seed(Seed)
 
-#~ Verbose
-verbose = VERBOSE
-
 
 #%%####################################
 #~~~~ CHARGE CLASSES ~~~~
@@ -67,13 +64,6 @@ Environments:
 
 #~~~ ENVIRONMENT
 #----------------
-## Choose environment characteristics
-study = STUDY
-
-
-distFAD = DIST_FAD #Distance between FADs, in km
-L = L #Width of the environment, in km
-dr = DR #Detection radius of FADs, in km
 
 # get the following variables:
     # environment
@@ -93,20 +83,13 @@ else:
     exec(open(str(path_script)+"/CLASS_Real_fadArray.py").read())
     exec(open(str(path_script)+"/CLASS_Land.py").read())
 
-## Wether to check environment with plot
-checkMap = CHECK_MAP
-
-
 #~~~ TUNA
 #---------
-## Simulation duration
-path_duration = PATH_DURATION # in days
-step_time= STEP_TIME # second ~ 1.66 min
-
-Npas = int(abs((path_duration*24*3600)/step_time)) # total number of timesteps
+## Simulation duration in timesteps
+Npas = int(abs((PATH_DURATION*24*3600)/STEP_TIME)) # total number of timesteps
 
 ## charge the tuna class
-# WARNING: step_time is needed to initialize the Tuna class
+# WARNING: STEP_TIME is needed to initialize the Tuna class
 exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 
 
@@ -121,7 +104,7 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 
 ## Create the environement
 if environment == "square":
-    FADs = FAD_Array(L = L, distFAD = distFAD, detection_radius = dr)
+    FADs = FAD_Array(L = L, distFAD = DIST_FAD, detection_radius = DR)
 elif environment == "maldives":
     FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
     Island = list()
@@ -137,15 +120,10 @@ else:
 #~~~ TUNA
 #---------
 ## Choose FAD of release
-choose_fad_start = CHOOSE_RELEASE_FAD
-
-if choose_fad_start == True and environment != "square":
-    fad_start = None # get the FAD number here so it can be save in the output folder name
+if CHOOSE_FAD_START == True and environment != "square":
+    fad_start = None # get the FAD number here so it can be saved in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:
         fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
-
-## Number of tunas to be simulated
-Nreplica=NREPLICA
 
 ## Orientation radius
 Tuna.R0 = R0
@@ -153,45 +131,41 @@ Tuna.R0 = R0
 ## Speed
 Tuna.v = V
 #~~ Distance covered by a tuna at each time step
-Tuna.l = (Tuna.v*step_time)/1000
+Tuna.l = (Tuna.v*STEP_TIME)/1000
 
 ## Modulo for change of behavior each 12 hours
-H12 = round((0.5*24*3600)/step_time)
-H24 = round((1*24*3600)/step_time)
+H12 = round((0.5*24*3600)/STEP_TIME)
+H24 = round((1*24*3600)/STEP_TIME)
 
 ### Rmq: methods are used to change c and m, to change sigma and the mortality rate per time step at the same time
 ## Sinuosity
-c = C # sinuosity coefficient
-Tuna.change_c(c)
+Tuna.change_c(C)
 
 crw = True
 if C == 1:
     crw = False
 
-## Mortality rate
-m = M  # mortality in %/day
-Tuna.change_m(m)
+## Mortality rate in %/day
+Tuna.change_m(M)
 
 #~~~ SIMULATION
 #---------
 ## Add CRT when tuna associates with a FAD
-addCRTs = ADD_CRTS
 CRTs = [0]
-if addCRTs == True and environment != "square":
+if ADD_CRTS == True and environment != "square":
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
-    # enleve (dr/Tuna.l)*step_time/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
+    # enleve (dr/Tuna.l)*STEP_TIME/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
     CRTs = [(float(line.split()[0])) for line in lines]
 elif environment == "square":
-    addCRTs = False
+    ADD_CRTS = False
     
 ## Limit the simulation to a certain number of CATs
-limit_CAT_nb = LIMIT_CAT_NB
-if limit_CAT_nb == True:
-    nb_max_CAT = NB_MAX_CAT
-else:
-    nb_max_CAT = math.inf        
+# if does not limit, limit to infinity
+# else, does not change NB_MAX_CAT
+if LIMIT_CAT_NB == False:
+    NB_MAX_CAT = math.inf
 
 #~~~ OUTPUTS
 # ----------
@@ -199,17 +173,17 @@ else:
 # Generate output folders
 if environment == "square":
     sim_name = environment+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
-elif choose_fad_start == False:
+elif CHOOSE_FAD_START == False:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
-elif choose_fad_start == True:
+elif CHOOSE_FAD_START == True:
     sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)+"_FAD"+str(fad_start)
 
 sim_name = sim_name+add_to_name
 
-if addCRTs == True:
+if ADD_CRTS == True:
     sim_name = sim_name+"_withCRT"
-if limit_CAT_nb == True:
-    sim_name = sim_name+"_"+str(nb_max_CAT)+"CATonly"
+if LIMIT_CAT_NB == True:
+    sim_name = sim_name+"_"+str(NB_MAX_CAT)+"CATonly"
 
 path_output = str(path_script)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
@@ -227,27 +201,27 @@ output_format = OUTPUT_FORMAT
 #~~~~~ SIMULATION ~~~~
 
 #~~ RUN THE ENVIRONMENT ~~
-if checkMap == True:
+if CHECK_MAP == True:
     exec(open(path_script+"/PLOT_checkenv.py").read())  
 
 
 #~~ RUN THE SIMULATION ~~
 # Print information
 if environment == "square":
-    print(environment+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
+    print(environment+' | n tunas='+str(NREPLICA)+' | v='+str(Tuna.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(ADD_CRTS))
 else:
-    print(environment+' '+str(studyYear)+' | n tunas='+str(Nreplica)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(addCRTs))
+    print(environment+' '+str(studyYear)+' | n tunas='+str(NREPLICA)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(ADD_CRTS))
     
 
 #> Tuna movement
 # a. check if the trajectories were already simulated
 files_exist = list()
-for i in range(Nreplica):
+for i in range(NREPLICA):
     files_exist.append(os.path.isfile(str(path_output)+"/Path_tuna/tuna_n"+str(i+1)+"."+output_format[0]))
 
-# b. simulate new trajectories if there are less trajectories saved than Nreplica
+# b. simulate new trajectories if there are less trajectories saved than NREPLICA
 #    or if RESET has been set to True
-if sum(files_exist)<Nreplica or RESET == True:
+if sum(files_exist)<NREPLICA or RESET == True:
     begin=list()
     end = list()
 
@@ -256,20 +230,20 @@ if sum(files_exist)<Nreplica or RESET == True:
     times = [end[i] - begin[i] for i in range(len(end))]
     time_tot = sum(times)
     
-    if verbose == True:
+    if VERBOSE == True:
         print("Time for simulating tuna trajectories: "+str(round(time_tot))+"s")
 
-elif verbose == True:
+elif VERBOSE == True:
     print("\nUsing existing tuna trajectories")
 
-if verbose == True:
+if VERBOSE == True:
     print("\nTuna trajectories saved in:\n    "+str(path_output)+"/Path_tuna/")
 
 
 #~~ CALCULATE CAT ~~
 exec(open(str(path_script)+"/MODELOUTPUT_CATs.py").read())
 
-if verbose == True:
+if VERBOSE == True:
     print("\nCATs saved in:\n    "+str(path_output)+"/CATs/CATs_array."+output_format[1])
 
 #~~ SAVE SUMMARY ~~
@@ -277,7 +251,7 @@ if verbose == True:
 L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
      "\n--------------",
      "\n",
-     "\nNumber of simulated tunas : "+str(Nreplica),
+     "\nNumber of simulated tunas : "+str(NREPLICA),
      "\nEnvironment type : "+str(environment),
      "\nSeed :"+str(Seed)
      ]

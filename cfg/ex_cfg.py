@@ -32,7 +32,7 @@ REPRODUCTIBLE = True
 OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD
-ADD_CRTS = False
+ADD_CRTS = True
 
 #~ Consider the whole simulation time (LIMIT_CAT_NB = False) or only until a certain number of CATs (True)
 # if True choose the number of CATs (NB_MAX_CAT)
@@ -78,7 +78,7 @@ PATH_DURATION = 20 # in days
 STEP_TIME = 100 # in seconds
 
 #~ Wether to choose the FAD of release or not
-CHOOSE_RELEASE_FAD = True
+CHOOSE_FAD_START = True
 
 #%%####################################
 #~~~ Individual tuna characteristics ~~

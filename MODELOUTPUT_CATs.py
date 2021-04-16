@@ -25,9 +25,9 @@ if environment != "square":
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~ 2. CALCULATE CAT AND CRT
-cart_array = np.zeros([Nreplica*1000, 8]) # array a remplir
+cart_array = np.zeros([NREPLICA*1000, 8]) # array a remplir
 nCAT = 0
-for r in range(Nreplica):
+for r in range(NREPLICA):
     tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
     # tunaPath_r_cat = tunaPath_array[tunaPath_array[:,5]!=0,:] # garde uniquement les lignes ou le thon est associe
     
@@ -73,14 +73,14 @@ for r in range(Nreplica):
         # DCP d'arrivee
         fad2 = tunaPath_array[t2,5]
         
-        cat = ((t2-t1)*step_time)/(24*3600) #calcul le CAT (en jour)
+        cat = ((t2-t1)*STEP_TIME)/(24*3600) #calcul le CAT (en jour)
         dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
         cart_array[nCAT,:] = np.array([r+1, t1, t2, fad1, fad2, cat, float(dist),1]) # stock: id thon, tps depart, tps arrivee, dcp depart, dcp arrivee, cat, dist entre dcp, bollen "is a CAT" (1)
         nCAT += 1
         if i != len(end_asso)-1:
             # temps de fin du CRT i
             t3 = end_asso[i+1]
-            crt = ((t3-t2)*step_time)/(24*3600) # recalcul le CRT (en jour)
+            crt = ((t3-t2)*STEP_TIME)/(24*3600) # recalcul le CRT (en jour)
             cart_array[nCAT,:] = np.array([r+1, t2, t3, fad2, fad2, crt, 0,0]) # stock: id thon, tps depart, tps arrivee, dcp, dcp, crt, dist (0 c'est un CRT), bolleen "is a CAT" (0)
             nCAT += 1       
         

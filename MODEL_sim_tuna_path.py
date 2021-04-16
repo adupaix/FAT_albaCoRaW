@@ -11,20 +11,20 @@ Modified on Apr 15 2021, by adupaix
 ###############################################################################
 #~~~~ Start the simulation ~~~~
 
-for replica in range(Nreplica):
-    if verbose==True:
+for replica in range(NREPLICA):
+    if VERBOSE==True:
         print("\nTuna n"+str(replica))
     begin_r = time.time()
     begin.append(time.time())
     
-    tuna = Tuna(Npas, verbose = verbose, CRW = crw)
+    tuna = Tuna(Npas, verbose = VERBOSE, CRW = crw)
 
     ## First position -> fad in the middle of the array
     if environment == "square":
         diag_fad = FADs.id[FADs.x == FADs.y]
         fad_start = diag_fad[int(len(diag_fad)/2)]
     # Or FAD chosen randomly among FADs used for actual experimental release
-    elif choose_fad_start == False:
+    elif CHOOSE_FAD_START == False:
         fad_start = rd.choice(FADs.id[FADs.of_release != 0])
     
     tuna.x[0] = FADs.x[FADs.id == fad_start]
@@ -45,7 +45,7 @@ for replica in range(Nreplica):
     ## While p has not reached the lifetime, simulate tuna movement
     # and while it has not reached the maximum number of associations wanted
     # tuna.p is incremented inside the OMove and CRWMove methods
-    while tuna.p < tuna.lifetime-1 and tuna.nb_visit < nb_max_CAT+1:
+    while tuna.p < tuna.lifetime-1 and tuna.nb_visit < NB_MAX_CAT+1:
         
         # check if the tuna is at more than R0 from a FAD, or at less than R0, or at less than the FAD detection radius
         # also check if it is not doing a CATreturn of less than 24h (time machine)
@@ -96,7 +96,7 @@ for replica in range(Nreplica):
         
     
     end_r = time.time()
-    if verbose == True:
+    if VERBOSE == True:
         print("- t="+str(round(end_r-begin_r,2)))
     end.append(time.time())
 
