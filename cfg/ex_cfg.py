@@ -49,15 +49,15 @@ VERBOSE = True
 """
 Environments:
     
-    - square array = 10
-    - hawaii 2005 = 11 
-    - Mauritius 2017 = 12
-    - Maldives 2018 = 15
-    - Maldives 2018 without Huvadhoo atoll = 16
-    - Maldives 2009 = 17
+    - square array = 1
+    - Hawaii 2005 = 2
+    - Mauritius 2017 = 3
+    - Maldives 2018 = 4
+    - Maldives 2018 without Huvadhoo atoll = 5
+    - Maldives 2009 = 6
 """
 #~ Study number
-STUDY = 10
+STUDY = 1
 
 #~ Characteristics of the FAD array
 DIST_FAD = 25 #Distance between FADs, in km
