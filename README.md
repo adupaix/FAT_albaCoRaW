@@ -8,8 +8,7 @@ To plot tuna trajectories: run simulation, when it is done running, run PLOT_tun
 
 ## Developments
 
-future:
-
+* add condition at the edge of square FAD array simulations
 * several tunas at the same time (change class TUNA to TUNAS)
 
-* add condition at the edge of square FAD array simualtions
+
