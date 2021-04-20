@@ -152,13 +152,13 @@ Tuna.change_m(M)
 #---------
 ## Add CRT when tuna associates with a FAD
 CRTs = [0]
-if ADD_CRTS == True and environment != "square":
+if ADD_CRTS == True and environment != "square" and environment != "maldives":
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
     # enleve (dr/Tuna.l)*STEP_TIME/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
     CRTs = [(float(line.split()[0])) for line in lines]
-elif environment == "square":
+elif environment == "square" or environment == "maldives":
     ADD_CRTS = False
     
 ## Limit the simulation to a certain number of CATs
