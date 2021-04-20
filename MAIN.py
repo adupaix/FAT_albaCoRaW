@@ -89,7 +89,7 @@ else:
 Npas = int(abs((PATH_DURATION*24*3600)/STEP_TIME)) # total number of timesteps
 
 ## charge the tuna class
-# WARNING: STEP_TIME is needed to initialize the Tuna class
+# WARNING: STEP_TIME is needed to initialize the TUNA class
 exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 
 
@@ -126,12 +126,12 @@ if CHOOSE_FAD_START == True and environment != "square":
         fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
 
 ## Orientation radius
-Tuna.R0 = R0
+TUNA.R0 = R0
 
 ## Speed
-Tuna.v = V
+TUNA.v = V
 #~~ Distance covered by a tuna at each time step
-Tuna.l = (Tuna.v*STEP_TIME)/1000
+TUNA.l = (TUNA.v*STEP_TIME)/1000
 
 ## Modulo for change of behavior each 12 hours
 H12 = round((0.5*24*3600)/STEP_TIME)
@@ -139,14 +139,14 @@ H24 = round((1*24*3600)/STEP_TIME)
 
 ### Rmq: methods are used to change c and m, to change sigma and the mortality rate per time step at the same time
 ## Sinuosity
-Tuna.change_c(C)
+TUNA.change_c(C)
 
 crw = True
 if C == 1:
     crw = False
 
 ## Mortality rate in %/day
-Tuna.change_m(M)
+TUNA.change_m(M)
 
 #~~~ SIMULATION
 #---------
@@ -156,7 +156,7 @@ if ADD_CRTS == True and environment != "square" and environment != "maldives":
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
-    # enleve (dr/Tuna.l)*STEP_TIME/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
+    # enleve (dr/TUNA.l)*STEP_TIME/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
     CRTs = [(float(line.split()[0])) for line in lines]
 elif environment == "square" or environment == "maldives":
     ADD_CRTS = False
@@ -172,11 +172,11 @@ if LIMIT_CAT_NB == False:
 
 # Generate output folders
 if environment == "square":
-    sim_name = environment+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
+    sim_name = environment+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
 elif CHOOSE_FAD_START == False:
-    sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)
+    sim_name = environment+str(studyYear)+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
 elif CHOOSE_FAD_START == True:
-    sim_name = environment+str(studyYear)+"_v"+str(Tuna.v)+"_m"+str(Tuna.m)+"_Ro"+str(Tuna.R0)+"_c"+str(Tuna.c)+"_FAD"+str(fad_start)
+    sim_name = environment+str(studyYear)+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)+"_FAD"+str(fad_start)
 
 sim_name = sim_name+add_to_name
 
@@ -208,9 +208,9 @@ if CHECK_MAP == True:
 #~~ RUN THE SIMULATION ~~
 # Print information
 if environment == "square":
-    print(environment+' | n tunas='+str(NREPLICA)+' | v='+str(Tuna.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(ADD_CRTS))
+    print(environment+' | n tunas='+str(NREPLICA)+' | v='+str(TUNA.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(TUNA.R0)+' km | sigma='+str(round(TUNA.sigma,3))+' -> c='+str(TUNA.c)+' | Add CRTs = '+str(ADD_CRTS))
 else:
-    print(environment+' '+str(studyYear)+' | n tunas='+str(NREPLICA)+' | v='+str(Tuna.v)+' m/s | Ro='+str(Tuna.R0)+' km | sigma='+str(round(Tuna.sigma,3))+' -> c='+str(Tuna.c)+' | Add CRTs = '+str(ADD_CRTS))
+    print(environment+' '+str(studyYear)+' | n tunas='+str(NREPLICA)+' | v='+str(TUNA.v)+' m/s | Ro='+str(TUNA.R0)+' km | sigma='+str(round(TUNA.sigma,3))+' -> c='+str(TUNA.c)+' | Add CRTs = '+str(ADD_CRTS))
     
 
 #> Tuna movement

@@ -2,13 +2,13 @@
 """
 Created on Thu Feb  4 15:39:26 2021
 
-Definition de la classe Tuna
+Definition de la classe TUNA
 
 @author: adupaix
 """
 
 
-class Tuna:
+class TUNA:
     """ Classe definissant un thon par :
         - son numero d'id (id)
         - sa duree de vie (lifetime)
@@ -58,12 +58,12 @@ class Tuna:
         
         """
         
-        Tuna.nb_tunas += 1
+        TUNA.nb_tunas += 1
         
-        self.id = Tuna.nb_tunas
+        self.id = TUNA.nb_tunas
         
         ## Parametres d'etat
-        self.lifetime = Tuna.lifetime(Npas)
+        self.lifetime = TUNA.lifetime(Npas)
         self.x = np.zeros(self.lifetime)
         self.y = np.zeros(self.lifetime)
         
@@ -71,11 +71,11 @@ class Tuna:
         # moyenne: 0, sd: sigma, tronquee a -pi et pi
         # cf. https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html
         if CRW == True:
-            self.alpha = truncnorm.rvs((-math.pi) / Tuna.sigma, (math.pi) / Tuna.sigma, loc=0, scale=Tuna.sigma, size = self.lifetime)
+            self.alpha = truncnorm.rvs((-math.pi) / TUNA.sigma, (math.pi) / TUNA.sigma, loc=0, scale=TUNA.sigma, size = self.lifetime)
         else:
             self.alpha = np.zeros(self.lifetime)
-            Tuna.c = 1
-            Tuna.sigma = 0
+            TUNA.c = 1
+            TUNA.sigma = 0
             
         self.theta = np.zeros(self.lifetime)
         # self.t = 0 #timestamp in s (initial time = 0)
@@ -106,12 +106,12 @@ class Tuna:
         """A l'initialisation du thon
         on calcul sa duree de vie"""
         
-        if Tuna.m == 0:
+        if TUNA.m == 0:
             return Npas-1
         else:
             k=1
             r_mortality = rd.random()
-            while r_mortality > Tuna.step_m and k<=Npas-1:
+            while r_mortality > TUNA.step_m and k<=Npas-1:
                 k += 1
                 r_mortality = rd.random()
             
@@ -127,19 +127,19 @@ class Tuna:
         de sinuosite c. Change en meme temps
         le sigma
         """
-        Tuna.c = new_c
+        TUNA.c = new_c
         if new_c != 1:
-            Tuna.sigma = math.sqrt(-2*math.log(new_c))
+            TUNA.sigma = math.sqrt(-2*math.log(new_c))
         else:
-            Tuna.sigma = 0
+            TUNA.sigma = 0
                 
     def change_m(new_m):
         """Methode pour modifier le taux
         de mortalite m. Change en meme temps
         le step_m
         """
-        Tuna.m = new_m
-        Tuna.step_m = ((new_m / 100 ) * STEP_TIME)/(24*3600)
+        TUNA.m = new_m
+        TUNA.step_m = ((new_m / 100 ) * STEP_TIME)/(24*3600)
     
     
     ### ~~~ METHODES DE MOUVEMENT DES THONS
@@ -166,8 +166,8 @@ class Tuna:
             self.theta[p] = self.theta[p] + (2*math.pi)
                 
         
-        self.x[p+1] = self.x[p] + math.cos(self.theta[p])*Tuna.l
-        self.y[p+1] = self.y[p] + math.sin(self.theta[p])*Tuna.l
+        self.x[p+1] = self.x[p] + math.cos(self.theta[p])*TUNA.l
+        self.y[p+1] = self.y[p] + math.sin(self.theta[p])*TUNA.l
         
         self.p += 1
         self.p_since_asso += 1
@@ -182,7 +182,7 @@ class Tuna:
         et soit :
             - on replace le thon sur le cercle de rayon dr 
                 (dans le cas où on ajoute des CRTs et que le DCP est équipé)
-            - le thon se déplace de Tuna.l (quand on n'ajoute pas de CRT)
+            - le thon se déplace de TUNA.l (quand on n'ajoute pas de CRT)
         """
         
         p = self.p
@@ -190,11 +190,11 @@ class Tuna:
         self.theta[p] = rd.uniform(-math.pi, math.pi)
         
         if ADD_CRTS == True:
-            self.x[p+1] = self.x[p] + math.cos(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , Tuna.l)
-            self.y[p+1] = self.y[p] + math.sin(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , Tuna.l)
+            self.x[p+1] = self.x[p] + math.cos(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , TUNA.l)
+            self.y[p+1] = self.y[p] + math.sin(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , TUNA.l)
         else:
-            self.x[p+1] = self.x[p] + math.cos(self.theta[p]) * Tuna.l
-            self.y[p+1] = self.y[p] + math.sin(self.theta[p]) * Tuna.l
+            self.x[p+1] = self.x[p] + math.cos(self.theta[p]) * TUNA.l
+            self.y[p+1] = self.y[p] + math.sin(self.theta[p]) * TUNA.l
             
         self.p += 1
         self.p_since_asso += 1
@@ -252,7 +252,7 @@ class Tuna:
                                  +(x_fadReached-self.x[p])**2)
         
             ## Go in straigth line towards the next position
-        nstep_jump = round(dist_tunaFAD/Tuna.l)
+        nstep_jump = round(dist_tunaFAD/TUNA.l)
                 
             ## The new theta angle is directly determined by the positions                  
         self.theta[p] = math.asin((y_fadReached - self.y[p])/dist_tunaFAD)
@@ -278,8 +278,8 @@ class Tuna:
         # If there are not enough steps, stops before the FAD
         else:
             steps_left = self.lifetime-(p+1)
-            self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*Tuna.l*(steps_left)
-            self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*Tuna.l*(steps_left)
+            self.x[p + steps_left] = self.x[p] + math.cos(self.theta[p])*TUNA.l*(steps_left)
+            self.y[p + steps_left] = self.y[p] + math.sin(self.theta[p])*TUNA.l*(steps_left)
             if self.verbose == True:
                 print("  Warning: Not enough steps to reach last FAD")
      
@@ -289,10 +289,10 @@ class Tuna:
         
         if ADD_CRTS == True and p+nstep_jump < self.lifetime:
             if self.in_R0_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0:
-                Tuna.in_the_time_machine(self)
+                TUNA.in_the_time_machine(self)
             # print("  adding CRT")
             else:
-                Tuna.add_res_time(self, CRTs, x_fadReached, y_fadReached)
+                TUNA.add_res_time(self, CRTs, x_fadReached, y_fadReached)
             
     
     ### ~~~ METHODES DE VERIFICATION DE L'ENVIRONNEMENT DU THON
@@ -315,7 +315,7 @@ class Tuna:
         self.last_FAD_reinit_R0 = self.last_FAD_no_reinit
         self.last_FAD_reinit_dr = self.last_FAD_no_reinit
         
-        self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / Tuna.sigma, (math.pi) / Tuna.sigma, loc=0, scale=Tuna.sigma, size = self.p_since_asso+1)
+        self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / TUNA.sigma, (math.pi) / TUNA.sigma, loc=0, scale=TUNA.sigma, size = self.p_since_asso+1)
         
         self.p_since_asso = 0
         
@@ -354,7 +354,7 @@ class Tuna:
         #calcul la distance entre le thon et les DCP (test en delimitant un carre autour du thon: plus long)
         dist_ft = np.sqrt((FADs.x[:]-self.x[p])**2 + (FADs.y[:]-self.y[p])**2)
         # enregistre l'identifiant du DCP detecte. Si pas de DCP dans un rayon de moins de R0, detected_Fad est vide
-        detected_FAD = FADs.id[dist_ft <= Tuna.R0]
+        detected_FAD = FADs.id[dist_ft <= TUNA.R0]
         # idem qu'au dessus, mais avec le rayon detection_radius, du DCP
         associated_FAD = FADs.id[dist_ft <= FADs.dr]
         
@@ -371,7 +371,7 @@ class Tuna:
             if associated_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0:
                 #on verifie si c'est le meme DCP que la fois d'avant et qu'on l'a visite il y a moins de 24h
                 #si c'est le cas, on revient en arriere
-                Tuna.in_the_time_machine(self)
+                TUNA.in_the_time_machine(self)
             else: #sinon:
                 if FADs.dr[dist_ft <= FADs.dr]!=0: # on verifie que le dr du DCP n'est pas nul (S'il est nul, c'est que le DCP n'est pas equipe)
                     self.num_asso_FAD[p] = associated_FAD #et on enregistre la detection du thon
@@ -398,7 +398,7 @@ class Tuna:
         
         p = self.p
         
-        can_reach_land = Point(np.r_[self.x[p],self.y[p]]).buffer(Tuna.l).intersects(Island.line)
+        can_reach_land = Point(np.r_[self.x[p],self.y[p]]).buffer(TUNA.l).intersects(Island.line)
         
         if can_reach_land:
             
@@ -407,8 +407,8 @@ class Tuna:
             numsegments = 1000
             ## The coordinates of the arc
             theta = np.radians(np.linspace(start_angle, end_angle, numsegments))
-            x = self.x[p] + Tuna.l * np.cos(theta)
-            y = self.y[p] + Tuna.l * np.sin(theta)
+            x = self.x[p] + TUNA.l * np.cos(theta)
+            y = self.y[p] + TUNA.l * np.sin(theta)
             arc = geom.LineString(np.c_[x, y])
             
             # get the two intersects with the land
@@ -416,17 +416,17 @@ class Tuna:
             pos2 = list(arc.intersection(Island.line)[1].coords)[0]
             
             # get the alpha angles corresponding to these 2 intersects
-            theta2_pos1 = math.asin((pos1[1]-self.y[p])/Tuna.l)  
+            theta2_pos1 = math.asin((pos1[1]-self.y[p])/TUNA.l)  
                     ##If go back to the principale coordinate of the plan
-            if pos1[0]<self.x[p]: theta2_pos1 = -math.pi - math.asin((pos1[1]-self.y[p])/Tuna.l)
+            if pos1[0]<self.x[p]: theta2_pos1 = -math.pi - math.asin((pos1[1]-self.y[p])/TUNA.l)
             alpha_pos1 = theta2_pos1 - self.theta[p-1]
                     #If over trigonometric circle
             if alpha_pos1>math.pi: alpha_pos1 = alpha_pos1 - (2*math.pi)
             if alpha_pos1<-math.pi: alpha_pos1 = alpha_pos1 + (2*math.pi)
                         #-> POSITION 2                        
-            theta2_pos2 = math.asin((pos2[1]-self.y[p])/Tuna.l) 
+            theta2_pos2 = math.asin((pos2[1]-self.y[p])/TUNA.l) 
                     ##If go back to the principal coordinate of the plan
-            if pos2[0]<self.x[p]: theta2_pos1 = -math.pi - math.asin((pos1[1]-self.y[p])/Tuna.l)
+            if pos2[0]<self.x[p]: theta2_pos1 = -math.pi - math.asin((pos1[1]-self.y[p])/TUNA.l)
             alpha_pos2 = theta2_pos2 - self.theta[p-1]
                     #If over trogonometric circle
             if alpha_pos2>math.pi: alpha_pos2 = alpha_pos2 - (2*math.pi)
@@ -457,11 +457,11 @@ class Tuna:
     def __repr__(self):
         """Methode pour afficher l objet
         """
-        return "Individual of Tuna class\n Correlated Random Walk: {}\n v: {} m/s\n m: {} %/day\n R0: {} km\n c: {}\n\n id:{}\n Lifetime: {} days\n Step: {}\n Position: [{},{}]".format(self.crw,
-                                   Tuna.v,
-                                   Tuna.m,
-                                   Tuna.R0,
-                                   Tuna.c,
+        return "Individual of TUNA class\n Correlated Random Walk: {}\n v: {} m/s\n m: {} %/day\n R0: {} km\n c: {}\n\n id:{}\n Lifetime: {} days\n Step: {}\n Position: [{},{}]".format(self.crw,
+                                   TUNA.v,
+                                   TUNA.m,
+                                   TUNA.R0,
+                                   TUNA.c,
                                    self.id,
                                    (self.lifetime*STEP_TIME)/(24*3600),
                                    self.p,

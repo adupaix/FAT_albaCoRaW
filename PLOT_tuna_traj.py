@@ -24,7 +24,7 @@ plt.xlabel('x (km)')
 plt.title(str(environment)+' '+str(studyYear)+' | $N_{FAD}$='+str(FADs.nFAD))
 plt.axis('equal')
 for i in range(0, int(FADs.nFAD)):
-    fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), Tuna.R0, color='green', fill=False)
+    fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), TUNA.R0, color='green', fill=False)
     ax.add_patch(fad_circle_oz)
         #> Plot FAD
 plt.plot(FADs.x[FADs.has_buoy], FADs.y[FADs.has_buoy], 'k+', label='Equiped FAD')

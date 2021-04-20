@@ -17,7 +17,7 @@ for replica in range(NREPLICA):
     begin_r = time.time()
     begin.append(time.time())
     
-    tuna = Tuna(Npas, verbose = VERBOSE, CRW = crw)
+    tuna = TUNA(Npas, verbose = VERBOSE, CRW = crw)
 
     ## First position -> fad in the middle of the array
     if environment == "square":
@@ -34,8 +34,8 @@ for replica in range(NREPLICA):
     ##Start the tuna path (first step, from p=0 to p=1)
     tuna.alpha[0] = tuna.theta[0] = rd.uniform(0, 2*math.pi)
     
-    tuna.x[1] = tuna.x[0] + math.cos(tuna.theta[0])*Tuna.l
-    tuna.y[1] = tuna.y[0] + math.sin(tuna.theta[0])*Tuna.l
+    tuna.x[1] = tuna.x[0] + math.cos(tuna.theta[0])*TUNA.l
+    tuna.y[1] = tuna.y[0] + math.sin(tuna.theta[0])*TUNA.l
     tuna.p += 1
     tuna.p_since_asso += 1
     
