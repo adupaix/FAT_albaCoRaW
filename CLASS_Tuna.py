@@ -364,7 +364,7 @@ class TUNA:
         elif len(detected_FAD) == 1: #s'il y a un seul DCP detecte, on met son numero dans in_R0_FAD
             self.in_R0_FAD = detected_FAD
         else: #s'il y a plusieurs DCP detectes, on en choisi un au hasard
-            self.in_R0_FAD = np.random.choice(detected_FAD)
+            self.in_R0_FAD = np.random.choice(detected_FAD[detected_FAD != self.last_FAD_reinit_R0])
             
             
         if len(associated_FAD) != 0: # si on est dans le rayon de detection (dr)
