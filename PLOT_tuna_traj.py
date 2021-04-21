@@ -53,9 +53,9 @@ elif environment == "maldives":
                  "-", color = "black")
             
 if plot_zoom==True and environment=="square":
-    dist_one_day = (tuna.v*3600*24)/1000 #distance parcourue en 1 jour
-    interval = dist_one_day*path_duration/15 #distance parcourue sur l'ensemble du trajet / 15
-    plt.xlim(1580, 1600)
-    plt.ylim(2780, 2820)
-    # plt.xlim(tuna.x[0]-interval, tuna.x[0]+interval)
-    # plt.ylim(tuna.y[0]-interval, tuna.y[0]+interval)
+    dist_one_day = (TUNA.v*3600*24)/1000 #distance parcourue en 1 jour
+    interval = dist_one_day*PATH_DURATION/15 #distance parcourue sur l'ensemble du trajet / 15
+    # plt.xlim(1580, 1600)
+    # plt.ylim(2780, 2820)
+    plt.xlim(tuna.x[0]-interval, tuna.x[0]+interval)
+    plt.ylim(tuna.y[0]-interval, tuna.y[0]+interval)
