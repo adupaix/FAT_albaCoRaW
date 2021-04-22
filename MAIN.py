@@ -41,12 +41,11 @@ os.chdir(path_script)
 # os.getcwd()
 
 #~ Set seed
-if REPRODUCTIBLE == True:
-    Seed = 10
-else:
-    Seed = rd.randint(1, 1000)
-rd.seed(Seed)
-np.random.seed(Seed)
+if REPRODUCTIBLE == False:
+    while SEED == 10:
+        SEED = rd.randint(1, 1000)
+rd.seed(SEED)
+np.random.seed(SEED)
 
 
 #%%####################################

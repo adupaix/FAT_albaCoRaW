@@ -23,7 +23,9 @@ RESET = True
 # if RESET == False, calculate new tuna trajectories only if less replica are saved (in "path_output/Path_tuna") than asked (in Nreplica)
 
 #~ Choose a random seed (False) or set the seed to that the simulation is reproductible
+# !! if the SEED is set at another value than 10, the REPRODUCTIBLE argument is overriden and the seed will be set to the given value
 REPRODUCTIBLE = True
+SEED = 10
 
 ## Choose output format
 # the first element is the output format of the tuna trajectories
