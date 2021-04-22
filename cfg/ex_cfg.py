@@ -55,12 +55,13 @@ Environments:
     - Maldives 2018 = 4
     - Maldives 2018 without Huvadhoo atoll = 5
     - Maldives 2009 = 6
+    - random array = 7
 """
 #~ Study number
 STUDY = 1
 
 #~ Characteristics of the FAD array
-DIST_FAD = 25 #Distance between FADs, in km
+DIST_FAD = 100 #Distance between FADs, in km
 L = 5000 #Width of the environment, in km
 DR = 0.5 #Detection radius of FADs, in km
 

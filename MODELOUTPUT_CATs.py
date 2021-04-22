@@ -18,7 +18,7 @@ Created on Fri Aug 14 09:21:51 2020
 #   entre les DCP rencontres par le replicat. C'est un peu plus long, mais dans l'environnement theorique on
 #   peut se retrouver avec 250 000 DCP, ce qui fait 62*10**9 elements dans la matrice. Donc ca serait
 #   plus rapide avec quelques Tb de RAM, mais je ne les ai malheureusement pas...
-if environment != "square":
+if environment != "square" and environment != "random":
     distFAD_mat = FADs.distance_matrix()
     FADs_ids = FADs.id
 
@@ -43,7 +43,7 @@ for r in range(NREPLICA):
     end_asso = np.setdiff1d(asso, lag_asso)
     end_asso = end_asso[end_asso != tunaPath_array.shape[0]-1]
     
-    if environment == "square":
+    if environment == "square" or environment == "random":
         # get the list of the encountered FADs
         array_FADs = np.unique(tunaPath_array[:,-1])
         array_FADs = array_FADs[array_FADs != 0]

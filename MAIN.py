@@ -54,12 +54,13 @@ np.random.seed(Seed)
 """
 Environments:
     
-    - square array = 10
-    - hawaii 2005 = 11 
-    - Mauritius 2017 = 12
-    - Maldives 2018 = 15
-    - Maldives 2018 without Huvadhoo atoll = 16
-    - Maldives 2009 = 17
+    - square array = 1
+    - Hawaii 2005 = 2
+    - Mauritius 2017 = 3
+    - Maldives 2018 = 4
+    - Maldives 2018 without Huvadhoo atoll = 5
+    - Maldives 2009 = 6
+    - random array = 7
 """
 
 #~~~ ENVIRONMENT
@@ -79,6 +80,8 @@ exec(open(str(path_machine)+"/study_dict.py").read())
 ## Charge the environment class
 if environment == "square":
     exec(open(str(path_script)+"/CLASS_Square_fadArray.py").read())
+elif environment == "random":
+    exec(open(str(path_script)+"/CLASS_Random_fadArray.py").read())
 else:
     exec(open(str(path_script)+"/CLASS_Real_fadArray.py").read())
     exec(open(str(path_script)+"/CLASS_Land.py").read())
@@ -103,7 +106,7 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 #----------------
 
 ## Create the environement
-if environment == "square":
+if environment == "square" or environment == "random":
     FADs = FAD_Array(L = L, distFAD = DIST_FAD, detection_radius = DR)
 elif environment == "maldives":
     FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
@@ -120,10 +123,18 @@ else:
 #~~~ TUNA
 #---------
 ## Choose FAD of release
-if CHOOSE_FAD_START == True and environment != "square":
+## First position -> fad in the middle of the array in case of square array
+if environment == "square":
+    diag_fad = FADs.id[FADs.x == FADs.y]
+    fad_start = diag_fad[int(len(diag_fad)/2)]
+# if random array, choose the closest FAD to the center of the study area
+elif environment == "random":
+    fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
+elif CHOOSE_FAD_START == True:
     fad_start = None # get the FAD number here so it can be saved in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:
         fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
+
 
 ## Orientation radius
 TUNA.R0 = R0
@@ -152,13 +163,13 @@ TUNA.change_m(M)
 #---------
 ## Add CRT when tuna associates with a FAD
 CRTs = [0]
-if ADD_CRTS == True and environment != "square" and environment != "maldives":
+if ADD_CRTS == True and environment != "square" and environment != "maldives" and environment != "random":
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
     # enleve (dr/TUNA.l)*STEP_TIME/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
     CRTs = [(float(line.split()[0])) for line in lines]
-elif environment == "square" or environment == "maldives":
+else:
     ADD_CRTS = False
     
 ## Limit the simulation to a certain number of CATs
@@ -171,7 +182,7 @@ if LIMIT_CAT_NB == False:
 # ----------
 
 # Generate output folders
-if environment == "square":
+if environment == "square" or environment == "random":
     sim_name = environment+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
 elif CHOOSE_FAD_START == False:
     sim_name = environment+str(studyYear)+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
@@ -207,7 +218,7 @@ if CHECK_MAP == True:
 
 #~~ RUN THE SIMULATION ~~
 # Print information
-if environment == "square":
+if environment == "square" or environment == "random":
     print(environment+' | n tunas='+str(NREPLICA)+' | v='+str(TUNA.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(TUNA.R0)+' km | sigma='+str(round(TUNA.sigma,3))+' -> c='+str(TUNA.c)+' | Add CRTs = '+str(ADD_CRTS))
 else:
     print(environment+' '+str(studyYear)+' | n tunas='+str(NREPLICA)+' | v='+str(TUNA.v)+' m/s | Ro='+str(TUNA.R0)+' km | sigma='+str(round(TUNA.sigma,3))+' -> c='+str(TUNA.c)+' | Add CRTs = '+str(ADD_CRTS))

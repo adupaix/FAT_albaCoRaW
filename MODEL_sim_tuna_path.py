@@ -19,12 +19,9 @@ for replica in range(NREPLICA):
     
     tuna = TUNA(Npas, verbose = VERBOSE, CRW = crw)
 
-    ## First position -> fad in the middle of the array
-    if environment == "square":
-        diag_fad = FADs.id[FADs.x == FADs.y]
-        fad_start = diag_fad[int(len(diag_fad)/2)]
-    # Or FAD chosen randomly among FADs used for actual experimental release
-    elif CHOOSE_FAD_START == False:
+    ## First position
+    # If real array and choose_fad_start is False, FAD chosen randomly among FADs used for actual experimental release
+    if CHOOSE_FAD_START == False and environment != "square" and environment != "random":
         fad_start = rd.choice(FADs.id[FADs.of_release != 0])
     
     tuna.x[0] = FADs.x[FADs.id == fad_start]
@@ -74,7 +71,7 @@ for replica in range(NREPLICA):
         else:
             
             # if it's a simulation in a real environment, check if there is land around
-            if environment != "square" and environment !="maldives":
+            if environment != "square" and environment !="maldives" and environment != "random":
                 tuna.checkLand(Island)
             elif environment == "maldives":
                 for i in range(len(Island)):
