@@ -40,7 +40,7 @@ for step in np.arange(0, max(tunaPath_array[:,4]), H12):
         #> Plot limit of the env
         # plt.plot(np.array([0,0,L,L,0]), np.array([0,L,L,0,0]), 'k-')
         #> Zoom
-if environment!="square" and environment != "maldives":
+if environment!="square" and environment != "maldives" and environment != "random":
     for i in range(len(Island.x)):
         plt.plot(Island.x[i:i+2],
                  Island.y[i:i+2],
@@ -52,7 +52,7 @@ elif environment == "maldives":
                  Island[j].y[i:i+2],
                  "-", color = "black")
             
-if plot_zoom==True and environment=="square":
+if plot_zoom==True and (environment=="square" or environment=="random"):
     dist_one_day = (TUNA.v*3600*24)/1000 #distance parcourue en 1 jour
     interval = dist_one_day*PATH_DURATION/15 #distance parcourue sur l'ensemble du trajet / 15
     # plt.xlim(1580, 1600)

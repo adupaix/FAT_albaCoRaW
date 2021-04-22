@@ -25,7 +25,7 @@ plt.xlabel('x')
 plt.title(plot_title)
 plt.axis('equal')
 for i in range(0, int(FADs.nFAD)):
-    fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), Tuna.R0, color='green', fill=False)
+    fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), TUNA.R0, color='green', fill=False)
     ax.add_patch(fad_circle_oz)
 for i in range(0, int(FADs.nFAD)):
     fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), FADs.dr[i], color='red', fill=False)
