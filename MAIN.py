@@ -252,7 +252,7 @@ L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.loc
      "\n",
      "\nNumber of simulated tunas : "+str(NREPLICA),
      "\nEnvironment type : "+str(environment),
-     "\nSeed :"+str(Seed)
+     "\nSeed :"+str(SEED)
      ]
 summary = open(str(path_output)+"/Summary.txt", "w")
 summary.writelines(L)
