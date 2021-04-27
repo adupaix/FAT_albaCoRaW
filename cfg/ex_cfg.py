@@ -34,16 +34,22 @@ SEED = 10
 OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD
-ADD_CRTS = True
+ADD_CRTS = False
 
 #~ Consider the whole simulation time (LIMIT_CAT_NB = False) or only until a certain number of CATs (True)
 # if True choose the number of CATs (NB_MAX_CAT)
 # !! If LIMIT_CAT_NB is True, even if the NB_MAX_CAT is not reached, the simulation will not be longer than the PATH_DURATION
-LIMIT_CAT_NB = True
+LIMIT_CAT_NB = False
 NB_MAX_CAT = 1
 
 #~ Wether to print verbose when the script is running
 VERBOSE = True
+
+#~ Wether to go back in time or not when the tuna does a CATreturn < 24h
+TIME_MACHINE = True
+
+#~ When a tuna leaves a FAD, does a simple Random Walk (True) or a Correlated Random Walk (False)
+SRW_WHEN_DEPART = False
 
 #%%####################################
 #~~~ Environement parameters ~~
@@ -59,7 +65,7 @@ Environments:
     - Maldives 2009 = 6
 """
 #~ Study number
-STUDY = 1
+STUDY = 2
 
 #~ Characteristics of the FAD array
 DIST_FAD = 25 #Distance between FADs, in km
@@ -80,7 +86,7 @@ PATH_DURATION = 20 # in days
 STEP_TIME = 100 # in seconds
 
 #~ Wether to choose the FAD of release or not
-CHOOSE_FAD_START = True
+CHOOSE_FAD_START = False
 
 #%%####################################
 #~~~ Individual tuna characteristics ~~

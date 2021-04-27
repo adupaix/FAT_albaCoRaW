@@ -17,7 +17,7 @@ for replica in range(NREPLICA):
     begin_r = time.time()
     begin.append(time.time())
     
-    tuna = TUNA(Npas, verbose = VERBOSE, CRW = crw)
+    tuna = TUNA(Npas, verbose = VERBOSE, time_machine = TIME_MACHINE, CRW = crw)
 
     ## First position -> fad in the middle of the array
     if environment == "square":
@@ -70,7 +70,7 @@ for replica in range(NREPLICA):
             
                 
         #~~~~
-        ## CRW -> All the case where the tuna have a random search behaviour (research behaviour at night and away from FADs)
+        ## CRW -> All the cases where the tuna have a random search behaviour (research behaviour at night and away from FADs)
         else:
             
             # if it's a simulation in a real environment, check if there is land around
@@ -81,7 +81,7 @@ for replica in range(NREPLICA):
                     tuna.checkLand(Island[i])
             
             # if leaves a FAD, simple Random Walk
-            if tuna.p_since_asso == 0:
+            if tuna.p_since_asso == 0 and SRW_WHEN_DEPART == True:
                 tuna.RWMove(FADs)
             # else, Correlated Random Walk
             else:

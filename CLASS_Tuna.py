@@ -51,7 +51,7 @@ class TUNA:
     ### ~~~ INITIALISATION D'UN THON
     ##------------------------------
     
-    def __init__(self, Npas, verbose, CRW = True):
+    def __init__(self, Npas, verbose, time_machine, CRW = True):
         """ On definit tous les attributs
         
         Besoin de specifier Npas, pour limiter la duree de vie
@@ -100,6 +100,8 @@ class TUNA:
         # que le premier CAT par exemple
         
         self.verbose = verbose #determine si on affiche des elements pendant la simulation
+        
+        self.time_machine = time_machine #determine si le thon revient en arriere dans le temps quand il fait un CATret<24h
         
     
     def lifetime(Npas):
@@ -288,7 +290,7 @@ class TUNA:
         self.p_since_asso += nstep_jump
         
         if ADD_CRTS == True and p+nstep_jump < self.lifetime:
-            if self.in_R0_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0:
+            if self.in_R0_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0 and self.time_machine == True:
                 TUNA.in_the_time_machine(self)
             # print("  adding CRT")
             else:
@@ -368,7 +370,7 @@ class TUNA:
             
             
         if len(associated_FAD) != 0: # si on est dans le rayon de detection (dr)
-            if associated_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0:
+            if associated_FAD == self.last_FAD_no_reinit and self.p_since_asso < H24 and self.last_FAD_reinit_dr == 0 and self.time_machine == True:
                 #on verifie si c'est le meme DCP que la fois d'avant et qu'on l'a visite il y a moins de 24h
                 #si c'est le cas, on revient en arriere
                 TUNA.in_the_time_machine(self)
@@ -457,7 +459,7 @@ class TUNA:
     def __repr__(self):
         """Methode pour afficher l objet
         """
-        return "Individual of TUNA class\n Correlated Random Walk: {}\n v: {} m/s\n m: {} %/day\n R0: {} km\n c: {}\n\n id:{}\n Lifetime: {} days\n Step: {}\n Position: [{},{}]".format(self.crw,
+        return "Individual of TUNA class\n\n Correlated Random Walk: {}\n v: {} m/s\n m: {} %/day\n R0: {} km\n c: {}\n\n id:{}\n Lifetime: {} days\n Step: {}\n Position: [{},{}]\n\n Talkative: {}\n Time traveler: {}".format(self.crw,
                                    TUNA.v,
                                    TUNA.m,
                                    TUNA.R0,
@@ -466,7 +468,9 @@ class TUNA:
                                    (self.lifetime*STEP_TIME)/(24*3600),
                                    self.p,
                                    self.x[self.p],
-                                   self.y[self.p])   
+                                   self.y[self.p],
+                                   self.verbose,
+                                   self.time_machine)   
     
     def save(self, path_output, file_format, tuna_number):
         """Fonction sauvegardant la trajectoire du thon
