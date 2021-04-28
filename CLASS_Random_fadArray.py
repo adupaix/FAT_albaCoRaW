@@ -45,7 +45,7 @@ class FAD_Array:
         self.x = np.random.rand(self.nFAD)*L #longitude
         self.y = np.random.rand(self.nFAD)*L #latitude
             
-        self.id = np.arange(1,fadRow**2+1) #id number
+        self.id = np.arange(1,self.nFAD+1) #id number
             
         self.has_buoy = np.r_[np.repeat(True, round((fadRow**2)*frac_with_buoy)),
                               np.repeat(False, round((fadRow**2)*(1-frac_with_buoy)))] #wether FADs are equipped or not
@@ -100,4 +100,13 @@ class FAD_Array:
                                    self.nFAD,
                                    self.distFAD,
                                    self.frac)
+    
+    def save(self):
+        """
+        Methode pour sauvegarder les coordonnees
+        du FAD array
+        """
+        FADs_coords = np.c_[self.id, self.x, self.y, self.dr]
         
+        np.save(str(path_output)+"/FAD_array/FADs_coords.npy", FADs_coords)
+        np.savetxt(str(path_output)+"/FAD_array/FADs_coords.csv", FADs_coords)
