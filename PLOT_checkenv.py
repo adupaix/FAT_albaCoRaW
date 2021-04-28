@@ -13,6 +13,8 @@ Modified on Fri Feb 05 2021, by adupaix
 
 if environment == "square":
     plot_title = str(environment)+' '+str(studyYear)+' | inter-FAD distances= '+str(FADs.distFAD)+' km | $N_{FAD}$='+str(FADs.nFAD)
+elif environment == "random":
+    plot_title = str(environment)+' '+str(studyYear)+' | mean inter-FAD distances= '+str(FADs.distFAD)+' km | $N_{FAD}$='+str(FADs.nFAD)
 else:
     plot_title = str(environment)+' '+str(studyYear)+' | $N_{FAD}$='+str(FADs.nFAD)
     
@@ -32,6 +34,9 @@ for i in range(0, int(FADs.nFAD)):
     ax.add_patch(fad_circle_oz)
 #~ Plot FAD
 plt.plot(FADs.x[FADs.has_buoy], FADs.y[FADs.has_buoy], 'k+', label='Equiped FAD')
+
+if environment == "random":
+    plt.savefig(path_output+"/FAD_array/env_plot.png")
     
 #%%############################################################################
 
