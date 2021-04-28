@@ -184,7 +184,7 @@ if LIMIT_CAT_NB == False:
 if environment == "square" or environment == "random":
     sim_name = environment+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
     if environment == "random":
-        sim_name = sim_name+"_seed"+str(Seed)
+        sim_name = sim_name+"_seed"+str(SEED)
 elif CHOOSE_FAD_START == False:
     sim_name = environment+str(studyYear)+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
 elif CHOOSE_FAD_START == True:
