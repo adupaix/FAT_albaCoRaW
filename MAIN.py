@@ -56,10 +56,11 @@ Environments:
     - square array = 1
     - Hawaii 2005 = 2
     - Mauritius 2017 = 3
-    - Maldives 2018 = 4
-    - Maldives 2018 without Huvadhoo atoll = 5
-    - Maldives 2009 = 6
-    - random array = 7
+    - Maldives 2017 = 4
+    - Maldives 2018 = 5
+    - Maldives 2018 without Huvadhoo atoll = 6
+    - Maldives 2009 = 7
+    - random array = 8
 """
 
 #~~~ ENVIRONMENT
