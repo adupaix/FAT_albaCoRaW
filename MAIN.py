@@ -55,12 +55,13 @@ Environments:
     
     - square array = 1
     - Hawaii 2005 = 2
-    - Mauritius 2017 = 3
-    - Maldives 2017 = 4
-    - Maldives 2018 = 5
-    - Maldives 2018 without Huvadhoo atoll = 6
-    - Maldives 2009 = 7
-    - random array = 8
+    - Hawaii 2005 without land = 3
+    - Mauritius 2017 = 4
+    - Maldives 2017 = 5
+    - Maldives 2018 = 6
+    - Maldives 2018 without Huvadhoo atoll = 7
+    - Maldives 2009 = 8
+    - random array = 9
 """
 
 #~~~ ENVIRONMENT
@@ -114,10 +115,12 @@ elif environment == "maldives":
     for i in range(len(land_files)):
         Island.append( Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files[i]) )
     sigma_island = 2 # sigma used to get the alpha when go close to land
-else:
+elif len(land_files) > 0:
     FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
     Island = Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files)
     sigma_island = 2 # sigma used to get the alpha when go close to land
+else:
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
     
     
 #~~~ TUNA

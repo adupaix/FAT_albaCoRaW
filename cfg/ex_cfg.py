@@ -15,7 +15,7 @@ Config file to launch the model
 PATH = '/home/adupaix/Documents/CRW/CRW_model' # enter the path of the directory where the script are saved
 
 #~ Plots
-CHECK_MAP = False
+CHECK_MAP = True
 
 #~ Wether to recalculate existing tuna trajectories
 RESET = True
@@ -59,15 +59,16 @@ Environments:
     
     - square array = 1
     - Hawaii 2005 = 2
-    - Mauritius 2017 = 3
-    - Maldives 2017 = 4
-    - Maldives 2018 = 5
-    - Maldives 2018 without Huvadhoo atoll = 6
-    - Maldives 2009 = 7
-    - random array = 8
+    - Hawaii 2005 without land = 3
+    - Mauritius 2017 = 4
+    - Maldives 2017 = 5
+    - Maldives 2018 = 6
+    - Maldives 2018 without Huvadhoo atoll = 7
+    - Maldives 2009 = 8
+    - random array = 9
 """
 #~ Study number
-STUDY = 2
+STUDY = 3
 
 #~ Characteristics of the FAD array
 DIST_FAD = 100 #Distance between FADs, in km

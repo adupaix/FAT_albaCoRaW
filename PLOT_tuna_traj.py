@@ -40,7 +40,7 @@ for step in np.arange(0, max(tunaPath_array[:,4]), H12):
         #> Plot limit of the env
         # plt.plot(np.array([0,0,L,L,0]), np.array([0,L,L,0,0]), 'k-')
         #> Zoom
-if environment!="square" and environment != "maldives" and environment != "random":
+if environment!="square" and environment != "maldives" and environment != "random" and len(land_files) > 0:
     for i in range(len(Island.x)):
         plt.plot(Island.x[i:i+2],
                  Island.y[i:i+2],

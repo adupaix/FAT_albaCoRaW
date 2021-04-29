@@ -71,7 +71,7 @@ for replica in range(NREPLICA):
         else:
             
             # if it's a simulation in a real environment, check if there is land around
-            if environment != "square" and environment !="maldives" and environment != "random":
+            if environment != "square" and environment !="maldives" and environment != "random" and len(land_files) > 0:
                 tuna.checkLand(Island)
             elif environment == "maldives":
                 for i in range(len(Island)):
