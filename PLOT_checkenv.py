@@ -35,6 +35,18 @@ for i in range(0, int(FADs.nFAD)):
 #~ Plot FAD
 plt.plot(FADs.x[FADs.has_buoy], FADs.y[FADs.has_buoy], 'k+', label='Equiped FAD')
 
+if environment!="square" and environment != "maldives" and environment != "random" and len(land_files) > 0:
+    for i in range(len(Island.x)):
+        plt.plot(Island.x[i:i+2],
+                 Island.y[i:i+2],
+                 "-", color = "black")
+elif environment == "maldives":
+    for j in range(len(Island)):
+        for i in range(len(Island[j].x)):
+            plt.plot(Island[j].x[i:i+2],
+                 Island[j].y[i:i+2],
+                 "-", color = "black")
+
 if environment == "random":
     plt.savefig(path_output+"/FAD_array/env_plot.png")
     
