@@ -46,7 +46,7 @@ NB_MAX_CAT = 1
 VERBOSE = True
 
 #~ Wether to go back in time or not when the tuna does a CATreturn < 24h
-TIME_MACHINE = True
+TIME_MACHINE = False #NE PAS MODIFIER SUR CETTE VERSION DU MODELE (LONG...) 
 
 #~ When a tuna leaves a FAD, does a simple Random Walk (True) or a Correlated Random Walk (False)
 SRW_WHEN_DEPART = False

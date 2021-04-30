@@ -25,7 +25,7 @@ if environment != "square" and environment != "random":
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~ 2. CALCULATE CAT AND CRT
-cart_array = np.zeros([NREPLICA*1000, 8]) # array a remplir
+cart_array = np.zeros([NREPLICA*10000, 8]) # array a remplir
 nCAT = 0
 for r in range(NREPLICA):
     tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))

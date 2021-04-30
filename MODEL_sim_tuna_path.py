@@ -56,6 +56,7 @@ for replica in range(NREPLICA):
         ## For define the day/night behaviour change
         if tuna.p%H24<H12: 
             DAY = 0
+            tuna.last_FAD_reinit_R0 = 0
         else: 
             DAY = 1
         
