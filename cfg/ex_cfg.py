@@ -43,7 +43,7 @@ LIMIT_CAT_NB = False
 NB_MAX_CAT = 1
 
 #~ Wether to print verbose when the script is running
-VERBOSE = True
+VERBOSE = False
 
 #~ Wether to go back in time or not when the tuna does a CATreturn < 24h
 TIME_MACHINE = False #NE PAS MODIFIER SUR CETTE VERSION DU MODELE (LONG...) 
