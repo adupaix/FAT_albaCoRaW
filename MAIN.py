@@ -110,17 +110,17 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 if environment == "square" or environment == "random":
     FADs = FAD_Array(L = L, distFAD = DIST_FAD, detection_radius = DR)
 elif environment == "maldives":
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     Island = list()
     for i in range(len(land_files)):
         Island.append( Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files[i]) )
     sigma_island = 2 # sigma used to get the alpha when go close to land
 elif len(land_files) > 0:
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     Island = Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files)
     sigma_island = 2 # sigma used to get the alpha when go close to land
 else:
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     
     
 #~~~ TUNA
