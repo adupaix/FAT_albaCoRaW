@@ -79,7 +79,7 @@ for replica in range(NREPLICA):
                     tuna.checkLand(Island[i])
             
             # if leaves a FAD, simple Random Walk
-            if tuna.p_since_asso == 0 and SRW_WHEN_DEPART == True:
+            if tuna.p_since_asso==0 and tuna.x[tuna.p] == FADs.x[FADs.id == tuna.in_R0_FAD] and tuna.y[tuna.p] == FADs.y[FADs.id == tuna.in_R0_FAD] and SRW_WHEN_DEPART == True:
                 tuna.RWMove(FADs)
             # else, Correlated Random Walk
             else:
