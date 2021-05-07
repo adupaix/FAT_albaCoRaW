@@ -26,6 +26,9 @@ plt.axis('equal')
 for i in range(0, int(FADs.nFAD)):
     fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), TUNA.R0, color='green', fill=False)
     ax.add_patch(fad_circle_oz)
+for i in range(0, int(FADs.nFAD)):
+    fad_circle_oz=plt.Circle((FADs.x[i], FADs.y[i]), FADs.dr[i], color='red', fill=False)
+    ax.add_patch(fad_circle_oz)
         #> Plot FAD
 plt.plot(FADs.x[FADs.has_buoy], FADs.y[FADs.has_buoy], 'k+', label='Equiped FAD')
         #> Plot tuna path
@@ -55,7 +58,10 @@ elif environment == "maldives":
 if plot_zoom==True and (environment=="square" or environment=="random"):
     dist_one_day = (TUNA.v*3600*24)/1000 #distance parcourue en 1 jour
     interval = dist_one_day*PATH_DURATION/15 #distance parcourue sur l'ensemble du trajet / 15
-    # plt.xlim(1580, 1600)
-    # plt.ylim(2780, 2820)
+    # plt.xlim(-10, 20)
+    # plt.ylim(20, 50)
     plt.xlim(tuna.x[0]-interval, tuna.x[0]+interval)
     plt.ylim(tuna.y[0]-interval, tuna.y[0]+interval)
+elif plot_zoom==True:
+    plt.xlim(-10, 20)
+    plt.ylim(20, 50)
