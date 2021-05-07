@@ -102,7 +102,7 @@ class TUNA:
         self.verbose = verbose #determine si on affiche des elements pendant la simulation
         
         self.time_machine = time_machine #determine si le thon revient en arriere dans le temps quand il fait un CATret<24h
-        
+
     
     def lifetime(Npas):
         """A l'initialisation du thon
@@ -191,7 +191,7 @@ class TUNA:
         
         self.theta[p] = rd.uniform(-math.pi, math.pi)
         
-        if ADD_CRTS == True:
+        if ADD_CRTS == True and LEAVE_AT_DR == True:
             self.x[p+1] = self.x[p] + math.cos(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , TUNA.l)
             self.y[p+1] = self.y[p] + math.sin(self.theta[p]) * max(FADs.dr[np.where(FADs.id == self.num_asso_FAD[p])] , TUNA.l)
         else:

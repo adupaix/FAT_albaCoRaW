@@ -15,7 +15,7 @@ Config file to launch the model
 PATH = '/home/adupaix/Documents/CRW/CRW_model' # enter the path of the directory where the script are saved
 
 #~ Plots
-CHECK_MAP = True
+CHECK_MAP = False
 
 #~ Wether to recalculate existing tuna trajectories
 RESET = True
@@ -27,14 +27,16 @@ RESET = True
 REPRODUCTIBLE = True
 SEED = 10
 
-## Choose output format
+#~ Choose output format
 # the first element is the output format of the tuna trajectories
 # the second is the format of the array containing CATs
 ### For both, output is ALWAYS saved in npy, and will ALSO be saved in csv if ouput_format == "csv"
 OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD
-ADD_CRTS = False
+# if LEAVE_AT_DR is True, after a CRT, the tuna starts its path again at a point on the detection radius (to better approximate CRT field values)
+ADD_CRTS = True
+LEAVE_AT_DR = False
 
 #~ Consider the whole simulation time (LIMIT_CAT_NB = False) or only until a certain number of CATs (True)
 # if True choose the number of CATs (NB_MAX_CAT)
@@ -43,13 +45,13 @@ LIMIT_CAT_NB = False
 NB_MAX_CAT = 1
 
 #~ Wether to print verbose when the script is running
-VERBOSE = False
+VERBOSE = True
 
 #~ Wether to go back in time or not when the tuna does a CATreturn < 24h
 TIME_MACHINE = False #NE PAS MODIFIER SUR CETTE VERSION DU MODELE (LONG...) 
 
 #~ When a tuna leaves a FAD, does a simple Random Walk (True) or a Correlated Random Walk (False)
-SRW_WHEN_DEPART = False
+SRW_WHEN_DEPART = True
 
 #%%####################################
 #~~~ Environement parameters ~~
