@@ -56,13 +56,12 @@ for replica in range(NREPLICA):
         ## For define the day/night behaviour change
         if tuna.p%H24<H12: 
             DAY = 0
-            tuna.last_FAD_reinit_R0 = 0
         else: 
             DAY = 1
         
         #~~~~
         ## BCRW -> All the cases when a tuna orients itself towards a FAD (only during daytime)
-        if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD_reinit_R0:
+        if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD_reinit_24h:
             
             tuna.OMove(FADs, CRTs)
             

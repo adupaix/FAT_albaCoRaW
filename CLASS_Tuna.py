@@ -83,7 +83,7 @@ class TUNA:
         self.in_R0_FAD = 0 # tuna is at a distance < R0 from a FAD or not (0: no FAD, other: number of the FAD)
         
         self.num_asso_FAD = np.zeros(self.lifetime) # a chaque tour, stock 0 (pas d'association) ou x = identifiant du DCP auquel le thon est associe
-        self.last_FAD_reinit_R0 = 0 #numero du dernier DCP auquel le thon s'est associe, se remet a 0 quand on sort du R0
+        self.last_FAD_reinit_24h = 0 #numero du dernier DCP auquel le thon s'est associe, se remet a 0 apres 24h
         self.last_FAD_reinit_dr = 0 #numero du dernier DCP auquel le thon s'est associe, se remet a 0 quand on sort du rayon de detection
         self.last_FAD_no_reinit = 0 #numero du dernier DCP auquel le thon s'est associe, mais qui ne se remet pas a 0 pas quand on sort du R0 du DCP
         
@@ -314,8 +314,8 @@ class TUNA:
         
         self.p -= self.p_since_asso
         
-        self.last_FAD_reinit_R0 = self.last_FAD_no_reinit
         self.last_FAD_reinit_dr = self.last_FAD_no_reinit
+        self.last_FAD_reinit_24h = self.last_FAD_no_reinit
         
         self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / TUNA.sigma, (math.pi) / TUNA.sigma, loc=0, scale=TUNA.sigma, size = self.p_since_asso+1)
         
@@ -341,17 +341,20 @@ class TUNA:
                 il change quand le thon entre et sort du detection_radius du DCP
                 Permet ensuite de calculer les CAT
             
-            - last_FAD_reinit_R0: numero du dernier DCP rencontre. Permet que le thon ne revienne
+            - last_FAD_reinit_24h: numero du dernier DCP rencontre. Permet que le thon ne revienne
                 pas en arriere systematiquement quand il vient de s'associer avec un DCP
                 prend le numero du DCP quand rentre dans son detection_radius, reprend la 
-                valeur 0 quand il ressort du R0
-            -last_FAD_reinit_dr: comme last_FAD_reinit_R0, mais reinitialisé si le thon est hors
+                valeur 0 quand il s'est ecoule 24h
+            -last_FAD_reinit_dr: comme last_FAD_reinit_24h, mais reinitialisé si le thon est hors
                 du dr
             -last_FAD_no_reinit: idem ci-dessus, mais jamais reinitialisé
                 
-                ATTENTION NE FONCTIONNE QUE SI distance entre DCP > R0
         '''
         p = self.p
+        
+        # si le thon s'est associe a un DCP il y a plus de 24h, on reinitialise last_FAD_reinit_24h
+        if self.p_since_asso >= H24:
+            self.last_FAD_reinit_24h = 0
         
         #calcul la distance entre le thon et les DCP (test en delimitant un carre autour du thon: plus long)
         dist_ft = np.sqrt((FADs.x[:]-self.x[p])**2 + (FADs.y[:]-self.y[p])**2)
@@ -360,13 +363,12 @@ class TUNA:
         # idem qu'au dessus, mais avec le rayon detection_radius, du DCP
         associated_FAD = FADs.id[dist_ft <= FADs.dr]
         
-        if len(detected_FAD) == 0: #s'il n y a pas de DCP detecte par le thon, on met 0 dans in_R0_FAD et on reinitialise last_FAD_reinit_R0
+        if len(detected_FAD) == 0: #s'il n y a pas de DCP detecte par le thon, on met 0 dans in_R0_FAD
             self.in_R0_FAD = 0
-            self.last_FAD_reinit_R0 = 0
         elif len(detected_FAD) == 1: #s'il y a un seul DCP detecte, on met son numero dans in_R0_FAD
             self.in_R0_FAD = detected_FAD
-        else: #s'il y a plusieurs DCP detectes, on en choisi un au hasard
-            self.in_R0_FAD = np.random.choice(detected_FAD[detected_FAD != self.last_FAD_reinit_R0])
+        else: #s'il y a plusieurs DCP detectes, on en choisi un au hasard (en retirant celui de la derniere association)
+            self.in_R0_FAD = np.random.choice(detected_FAD[detected_FAD != self.last_FAD_no_reinit])
             
             
         if len(associated_FAD) != 0: # si on est dans le rayon de detection (dr)
@@ -381,7 +383,7 @@ class TUNA:
                         self.nb_visit +=1
             # dans tous les cas, que le DCP soit equipe ou non, on veut le meme comportement du thon, donc on enregistre le numero dans les last_FAD
             # et il est associe au DCP, donc on remet p_since_asso a 0
-                self.last_FAD_reinit_R0 = associated_FAD
+                self.last_FAD_reinit_24h = associated_FAD
                 self.last_FAD_reinit_dr = associated_FAD
                 self.last_FAD_no_reinit = associated_FAD
                 self.p_since_asso = 0
