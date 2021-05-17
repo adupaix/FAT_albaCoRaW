@@ -484,6 +484,10 @@ class TUNA:
         
         tuna_traj = np.c_[self.x, self.y, self.alpha, self.theta, self.num_steps, self.num_asso_FAD]
         
+        if LIMIT_CAT_NB == True:
+            traj_end = np.max(np.where(self.num_asso_FAD != 0))
+            tuna_traj = tuna_traj[0:(traj_end+1), :]
+        
         np.save(str(path_output)+"/Path_tuna/tuna_n"+str(tuna_number)+".npy", tuna_traj)
         if file_format[0]=="csv":
             np.savetxt(str(path_output)+"/Path_tuna/tuna_n"+str(tuna_number)+"."+file_format[0], tuna_traj)
