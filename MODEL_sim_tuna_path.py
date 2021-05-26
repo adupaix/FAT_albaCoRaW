@@ -49,9 +49,19 @@ for replica in range(NREPLICA):
         tuna.checkEnv(FADs)
                 
         ## Periodic condition on board + Add the last fad when tuna go out of its zo
-        if tuna.x[tuna.p]>lims[1] or tuna.y[tuna.p]>lims[1] or tuna.x[tuna.p]<lims[0] or tuna.y[tuna.p]<lims[0]:
-            cpb_array = np.hstack((cpb_array, 1))
-            break
+        if environment == "square":
+            if tuna.x[tuna.p]>lims[1]:
+                tuna.x[tuna.p] = tuna.x[tuna.p] - L
+            elif tuna.y[tuna.p]>lims[1]:
+                tuna.y[tuna.p] = tuna.y[tuna.p] - L
+            elif tuna.x[tuna.p]<lims[0]:
+                tuna.x[tuna.p] = tuna.x[tuna.p] + L
+            elif tuna.y[tuna.p]<lims[0]:
+                tuna.y[tuna.p] = tuna.y[tuna.p] + L
+        # elif tuna.x[tuna.p]>lims[1] or tuna.y[tuna.p]>lims[1] or tuna.x[tuna.p]<lims[0] or tuna.y[tuna.p]<lims[0]:
+            # cpb_array = np.hstack((cpb_array, 1))
+            # break
+
         
         ## For define the day/night behaviour change
         if tuna.p%H24<H12: 
