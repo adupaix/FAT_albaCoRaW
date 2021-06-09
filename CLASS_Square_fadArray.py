@@ -98,4 +98,14 @@ class FAD_Array:
                                    self.nFAD,
                                    self.distFAD,
                                    self.frac)
+    
+    def save(self):
+        """
+        Methode pour sauvegarder les coordonnees
+        du FAD array
+        """
+        FADs_coords = np.c_[self.id, self.x, self.y, self.dr]
+        
+        np.save(str(path_output)+"/FAD_array/FADs_coords.npy", FADs_coords)
+        np.savetxt(str(path_output)+"/FAD_array/FADs_coords.csv", FADs_coords)
         
