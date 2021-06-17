@@ -74,7 +74,7 @@ STUDY = 3
 
 #~ Characteristics of the FAD array
 DIST_FAD = 100 #Distance between FADs, in km
-L = 5000 #Width of the environment, in km
+L = 10*DIST_FAD #Width of the environment, in km.
 DR = 0.5 #Detection radius of FADs, in km
 
 

@@ -47,6 +47,11 @@ if REPRODUCTIBLE == False:
 rd.seed(SEED)
 np.random.seed(SEED)
 
+#~ Check the grid size
+if environment == "random" or environment == "square":
+    if L % DIST_FAD != 0:
+        L = round(L/DIST_FAD)*DIST_FAD
+
 
 #%%####################################
 #~~~~ CHARGE CLASSES ~~~~
@@ -100,8 +105,6 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 
 #%%####################################
 #~~~~~ MODEL PARAMETERS ~~~~
-
-# model = 22 #day/night model (DN) NE SERT PLUS, A REMETTRE
 
 #~~~ ENVIRONMENT
 #----------------
