@@ -48,16 +48,20 @@ for replica in range(NREPLICA):
         # also check if it is not doing a CATreturn of less than 24h (time machine)
         tuna.checkEnv(FADs)
                 
-        ## Periodic condition on board + Add the last fad when tuna go out of its zo
-        if environment == "square":
+        ## Periodic condition on board
+        if environment == "square" or environment == "random":
             if tuna.x[tuna.p]>lims[1]:
                 tuna.x[tuna.p] = tuna.x[tuna.p] - L
+                tuna.edge[tuna.p] = 3
             elif tuna.y[tuna.p]>lims[1]:
                 tuna.y[tuna.p] = tuna.y[tuna.p] - L
+                tuna.edge[tuna.p] = 2
             elif tuna.x[tuna.p]<lims[0]:
                 tuna.x[tuna.p] = tuna.x[tuna.p] + L
+                tuna.edge[tuna.p] = 1
             elif tuna.y[tuna.p]<lims[0]:
                 tuna.y[tuna.p] = tuna.y[tuna.p] + L
+                tuna.edge[tuna.p] = 4
         # elif tuna.x[tuna.p]>lims[1] or tuna.y[tuna.p]>lims[1] or tuna.x[tuna.p]<lims[0] or tuna.y[tuna.p]<lims[0]:
             # cpb_array = np.hstack((cpb_array, 1))
             # break
