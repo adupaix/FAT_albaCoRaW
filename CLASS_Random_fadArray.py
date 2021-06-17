@@ -3,39 +3,40 @@
 """
 Created on Thu Feb  4 15:39:26 2021
 
-Definition de la classe utilisee pour creer l'environnement de DCP theorique
+Definition of the class used to create arrays of randomly distributed FADs
 
 @author: adupaix
 """
 
 class FAD_Array:
-    """Classe qui contient un ensemble
-    de DCP, tous caractérisés par :
-        - un identifiant (un array, avec des numeros de 1 a Nfad)
-        - des coordonnées (deux array, un avec x l'autre avec y')
-        - la presence ou non d'une bouee
-        """
+    """
+    Class with contains an array of FADs, each FAD characterized by :
+        - an id (1D array, with numbers from 1 to Nfad)
+        - coordinates (two 1D arrays, one with x one with y)
+        - presence of not of an acoustic receiver
+    """
  
     
     def __init__(self, L, distFAD, frac_with_buoy = 1, detection_radius = 0.5):
         """
-        Prend comme input:
-            - la largeur du carre a generer (L, en km)
-            - la distance moyenne entre DCP (distFAD, en km), utilisee pour determiner la densite
-            - la fraction de DCP equipes, par defaut = 1
+        Takes as inputs:
+            - the size of the array to generate (L, in km)
+            - the mean distance between FADs (distFAD, in km), used to determine the FAD density
+            - the fraction of equipped FADs, default = 1
                 
-            Et genere un ensemble de DCP contenant:
-                - 2 array avec 1 colonne contenant les coordonnes de tous les DCP (x et y)
-                - un array avec 1 colonne contenant l'identifiant des DCP (id)
-                - un array contenant un boleen par DCP, disant s'il a une bouee qui lui est associee (has_buoy)
-                    si frac_with_buoy != 1, les DCP sont aleatoirement equipes (de maniere a respecter la fraction)
-                - dr: un array contenant le rayon de detection par DCP (0 si pas de bouee, un nombre en km si le DCP est equipe)
-                - nFAD: le nombre de DCP dans l'environnement
+            And generates a FAD array containing:
+                - two 1D arrays with FAD coordinates (x et y)
+                - one 1D array with FAD identification numbers (id)
+                - one 1D array with boleens, to know if the FAD is equipped with a receiver (has_buoy)
+                    if frac_with_buoy!=1, FADs are randomly equipped (to respect the given fraction)
+                - dr: 1D array containing the detection radius for each FAD (0 if no receiver, radius in km if the FAD is equipped)
+                - nFAD: number of FADs in the array
+                - frac: fraction of equipped FADs
                 
-                Stock aussi les arguments fournis pour creer l'environnement
-                - distFAD: la distance entre DCP
-                - L: la largeur du carre
-                - frac: la fraction de DCP equipes
+            Also stores the inputs given to create the array
+                - distFAD: mean inter-FAD distance
+                - L: size of the array
+                - frac: fraction of equipped FADs
                 
         """
         
@@ -62,10 +63,10 @@ class FAD_Array:
     
     def change_dr(self, new_dr):
         """
-        Methode pour changer le rayon de detection (dr) des DCPs
-        Prend comme argument soit un float unique (a), soit un array de dimension (1,nFAD) (b)
-        (a): toutes les bouees equipees prennent comme valeur de dr la valeur fournie
-        (b): le DCP i prend la valeur i du vecteur fourni
+        Method to change the detection radius (dr)
+        Takes as input either a unique float (a), either a 1D array of length nFAD (b)
+        (a): all the equipped receivers' dr take the given value
+        (b): FAD i takes the value i of the given array
         """
         if type(new_dr) is float:
             self.dr = self.has_buoy * new_dr
@@ -77,8 +78,9 @@ class FAD_Array:
         
     def distance_matrix(self, array_FADs):
         """
-        Calcule la matrice de distance entre un set
-        de DCP, fournis dans array_FADs (contient l'identifiant des DCP)
+        Calculate the distance matrix between
+        a set of FADs in the array
+        given in array_FADs (containing the FADs id)
         """
         # get the positions of the FADs which are in array_FADs
         x = self.x[np.where([fad in array_FADs for fad in self.id])[0]]
@@ -94,7 +96,8 @@ class FAD_Array:
 
         
     def __repr__(self):
-        """Methode pour afficher l objet
+        """
+        Method to represent the object
         """
         return "Random FAD Array\n\n Array width: {} km\n Number of FADs: {}\n Mean distance between FADs: {} km\n Fraction of equipped FADs: {}".format(self.L,
                                    self.nFAD,
@@ -103,8 +106,7 @@ class FAD_Array:
     
     def save(self):
         """
-        Methode pour sauvegarder les coordonnees
-        du FAD array
+        Method to save the FAD array coordinates
         """
         FADs_coords = np.c_[self.id, self.x, self.y, self.dr]
         

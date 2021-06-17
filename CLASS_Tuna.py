@@ -2,35 +2,35 @@
 """
 Created on Thu Feb  4 15:39:26 2021
 
-Definition de la classe TUNA
+Definition of the TUNA class
 
-@author: adupaix
+@author: Amael Dupaix
 """
 
 
 class TUNA:
-    """ Classe definissant un thon par :
-        - son numero d'id (id)
-        - sa duree de vie (lifetime)
-        - sa position geographique (x et y)
-        - ses angles alpha et theta
-        - son pas de temps actuel (p)
-        - in_R0_FAD: boleen pour savoir si le thon est a moins de R0 d'un DCP
-        - num_asso_FAD: suivi des associations (pour chaque pas de temps, 0 si pas detecte par un DCP, num du DCP sinon)
-        - last_FAD_*:   numero du DCP qui vient d'etre visite, pour ne pas revenir en arriere et pour detecter les CATret<24h
-                        3 paramètres réinitialisés à différents moments
-        - p_since_asso: nombre de pas de temps depuis la dernière association à un DCP, permet de revenir en arrière dans le temps
-        - nb_visit: nombre de DCP visités. Permet d'arreter la simulation si on ne veut qu'un seul CAT par exemple
-        - verbose: paramètre pour savoir si on affiche les messages
-        - crw: determine si le thon se déplace en CRW ou en ligne droite (quand c = 1)
+    """ Definition of a tuna by :
+        - its id (id)
+        - its lifetime (lifetime)
+        - its geographical position (x et y)
+        - its angles alpha and theta
+        - its current timestep (p)
+        - in_R0_FAD: boleen to know if the tuna is at less than R0 from a FAD
+        - num_asso_FAD: save the associations with FADs (for each timestep, 0 if not detected by any FAD, else id of the FAD)
+        - last_FAD_*:   number of the FAD which was visited before, to prevent the tuna from coming back to it and to detect CATret<24h
+                        3 different parameters reinitialised at different times
+        - p_since_asso: number of timesteps since the last association, allows to go back in time
+        - nb_visit: number of visited FADs. Allows to stop the simulation if we're only interested by a given number of CATs
+        - verbose: parameter to know if messages are printed
+        - crw: determine if the tuna moves in CRW or in straight lines (when c = 1)
         
-        parametres de classe:
-        - vitesse (v)
-        - taux de mortalite (m)
-        - rayon d'orientation (R0)
-        - coefficient de sinuosite (c)
+        Class parameters:
+        - speed (v)
+        - mortality (m)
+        - orientation radius (R0)
+        - sinuosity coefficient (c)
         
-        + methodes associees
+        + associated methods
         
         """
     
@@ -52,9 +52,9 @@ class TUNA:
     ##------------------------------
     
     def __init__(self, Npas, verbose, time_machine, CRW = True):
-        """ On definit tous les attributs
+        """ Definition of all the attributs
         
-        Besoin de specifier Npas, pour limiter la duree de vie
+        Need to specify Npas (number of steps), to limit the lifetime
         
         """
         
@@ -105,8 +105,10 @@ class TUNA:
 
     
     def lifetime(Npas):
-        """A l'initialisation du thon
-        on calcul sa duree de vie"""
+        """
+        Calculation of the tuna lifetime
+        when it's initialized
+        """
         
         if TUNA.m == 0:
             return Npas-1
@@ -125,9 +127,9 @@ class TUNA:
     ##-------------------------------------------
     
     def change_c(new_c):
-        """Fonction pour modifier le coeff
-        de sinuosite c. Change en meme temps
-        le sigma
+        """
+        Method to modify the sinuosity coefficient c.
+        Changes sigma at the same time
         """
         TUNA.c = new_c
         if new_c != 1:
@@ -136,9 +138,9 @@ class TUNA:
             TUNA.sigma = 0
                 
     def change_m(new_m):
-        """Methode pour modifier le taux
-        de mortalite m. Change en meme temps
-        le step_m
+        """
+        Method to modify the mortality m.
+        Changes step_m at the same time
         """
         TUNA.m = new_m
         TUNA.step_m = ((new_m / 100 ) * STEP_TIME)/(24*3600)
@@ -149,9 +151,9 @@ class TUNA:
     
     def CRWMove(self):
         """
-        On change la position du thon dans le cas
-        d'un Correlated Random Walk
-        i.e. si le thon ne va pas vers un DCP
+        Change the tuna position when in
+        Correlated Random Walk
+        i.e. if the tuna is not going towards a FAD
         """
         
         p = self.p
@@ -177,14 +179,14 @@ class TUNA:
         
     def RWMove(self, FADs):
         """
-        On change la position du thon dans le cas
-        d'un Random Walk simple
-        i.e. si le thon REPART d'un DCP
-        on choisi un angle aleatoire,
-        et soit :
-            - on replace le thon sur le cercle de rayon dr 
-                (dans le cas où on ajoute des CRTs et que le DCP est équipé)
-            - le thon se déplace de TUNA.l (quand on n'ajoute pas de CRT)
+        Change the tuna position when in
+        Simple Random Walk
+        i.e. if the tuna is leaving a FAD
+        choose a random angle
+        and either:
+            - the tuna is placed on the circle of radius dr
+                (when CRTs are added and the FAD is equipped)
+            - the tuna moves of TUNA.l (when no CRTs are added)
         """
         
         p = self.p
@@ -204,11 +206,11 @@ class TUNA:
         
     def add_res_time(self, CRTs, x_fadReached, y_fadReached):
         """
-        Dans le cas ou add_CRTs est vrai
-        on prend un CRT au hasard dans la liste fournie
-        et le thon attend ce temps sous le DCP
+        When add_CRTs is True
+        pick a CRT randomly in the given list
+        and the tuna waits under the FAD for this given time
         
-        Les CRT fournis doivent être en jour
+        CRTs have to be given in days
         """
         crt_day = rd.choice(CRTs)
         
@@ -240,9 +242,9 @@ class TUNA:
         
     def OMove(self, FADs, CRTs):
         """
-        On change la position du thon dans le cas
-        d'un Oriented Movment
-        i.e. si le thon est a moins de R0 d'un DCP + c'est le jour
+        Change the tuna position when in
+        Oriented Move
+        i.e. when the tuna is at less than R0 from a FAd and it's daytime
         """
         
         p = self.p
@@ -302,11 +304,10 @@ class TUNA:
     
     def in_the_time_machine(self):
         '''
-        Revient en arriere dans le temps, dans le cas
-        d'un  CAT return < 24h
+        Go back in time in case of a CAT return < 24h
         
-        Tire aleatoirement un nouveau set d'alpha (entre l'association et le debut du retour)
-        car ils sont tous determines a l'initialisation du thon
+        Pick randomly a new set of alpha angles (between the association and the beginning of the return)
+        because all angles are pick at tuna initialization
         '''
         if self.verbose == True:
             print("  Time machine: p: "+str(self.p)+" ; back "+str(self.p_since_asso)+" steps")
@@ -325,29 +326,28 @@ class TUNA:
         
     def checkEnv(self, FADs):
         '''
-        FADs: environnement en objet flottant de classe FAD_Array
+        FADs: array of floating objects of class FAD_Array
         
-        Utilise la position du thon pour déterminer si:
-            - le thon est associe a un DCP
-            - le thon est dans le R0 d'un DCP
-            - le thon revient à un DCP visité il y a moins de 24h (CATret<24h)
-                dans ce cas là, revient en arriere dans le temps
+        Uses the tuna position to determine if:
+            - the tuna is associated to a FAD
+            - the tuna is at less than R0 from a FAD
+            - the tuna comes back to a FAD less than 24h after visiting it (CATret<24h)
+                in that case, goes back in time
         
-        Les indices renseignes sont utilises comme suit:
-            - in_R0_FAD: permet de savoir si le thon detecte un DCP (distance < R0)
+        Variables are used as follow:
+            - in_R0_FAD: allows to know if the tuna detects a FAD (distance < R0)
             
-            - num_asso_FAD: array avec a chaque pas de temps le numero du DCP
-                auquel le thon est associe (ou 0 si pas d'association)
-                il change quand le thon entre et sort du detection_radius du DCP
-                Permet ensuite de calculer les CAT
+            - num_asso_FAD: array with, for each timestep, the id number of the FAD
+                to which the tuna is associated (or 0 if no association)
+                it changes when the tuna enters and goes out of a FAD's detection_radius
+                Allows the calculation of CATs afterwards
             
-            - last_FAD_reinit_24h: numero du dernier DCP rencontre. Permet que le thon ne revienne
-                pas en arriere systematiquement quand il vient de s'associer avec un DCP
-                prend le numero du DCP quand rentre dans son detection_radius, reprend la 
-                valeur 0 quand il s'est ecoule 24h
-            -last_FAD_reinit_dr: comme last_FAD_reinit_24h, mais reinitialisé si le thon est hors
-                du dr
-            -last_FAD_no_reinit: idem ci-dessus, mais jamais reinitialisé
+            - last_FAD_reinit_24h: last encountered FAD id. Allow to prevent the tuna from coming back
+                to a FAD when it just associated with it
+                stores the FAd id when the tuna enters in its detection_radius,
+                stores 0 24h after the association
+            -last_FAD_reinit_dr: as last_FAD_reinit_24h, but reinitialized if the tuna leaves the dr
+            -last_FAD_no_reinit: idem, but never reinitialized
                 
         '''
         p = self.p
@@ -395,9 +395,8 @@ class TUNA:
         
     def checkLand(self, Island):
         """
-        Methode utilisee dans les simulations dans les
-        environnement reels, pour recalculer alpha de maniere a
-        ce que le thon n'aille pas sur terre
+        Method used in the real environments simulations
+        recalculates an alpha angle to prevent the tuna from going in land
         """
         
         p = self.p
@@ -459,7 +458,8 @@ class TUNA:
     ##------------------------------------------------------
       
     def __repr__(self):
-        """Methode pour afficher l objet
+        """
+        Method to represent the object
         """
         return "Individual of TUNA class\n\n Correlated Random Walk: {}\n v: {} m/s\n m: {} %/day\n R0: {} km\n c: {}\n\n id:{}\n Lifetime: {} days\n Step: {}\n Position: [{},{}]\n\n Talkative: {}\n Time traveler: {}".format(self.crw,
                                    TUNA.v,
@@ -475,10 +475,11 @@ class TUNA:
                                    self.time_machine)   
     
     def save(self, path_output, file_format, tuna_number):
-        """Fonction sauvegardant la trajectoire du thon
-        Arguments:
-            - path_output: dossier dans lequel sera enregistre le fichier
-            - file_format: format utilise pour enregistrer (soit csv soit npy)
+        """
+        Method to save the tuna trajectory
+        Inputs:
+            - path_output: folder where the file will be saved
+            - file_format: format used to save (either 'csv' or 'npy')
             
         """
         

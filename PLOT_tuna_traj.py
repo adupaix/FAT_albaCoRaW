@@ -5,14 +5,12 @@ Created on Mon Feb  8 15:46:03 2021
 
 @author: adupaix
 
-Permet de tracer les trajectoires des thons.
-Ne fonctionne pas seul
-Fonctionne après avoir fait tourné le MAIN, avec les parametres d'interet
+Allows to plot tuna trajectories
+Does NOT work on its own
+Works after running the simulation, with the parameters of interest
 """
 
 r=0
-
-plot_zoom = True
 
 tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
 
