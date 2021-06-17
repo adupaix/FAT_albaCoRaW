@@ -102,7 +102,8 @@ class TUNA:
         self.verbose = verbose #determine si on affiche des elements pendant la simulation
         
         self.time_machine = time_machine #determine si le thon revient en arriere dans le temps quand il fait un CATret<24h
-
+        
+        self.edge = np.zeros(self.lifetime) #pour condition au bord, determine si le thons sort de la zone d'etude
     
     def lifetime(Npas):
         """A l'initialisation du thon
@@ -482,7 +483,7 @@ class TUNA:
             
         """
         
-        tuna_traj = np.c_[self.x, self.y, self.alpha, self.theta, self.num_steps, self.num_asso_FAD]
+        tuna_traj = np.c_[self.x, self.y, self.alpha, self.theta, self.num_steps, self.num_asso_FAD, self.edge]
         
         if LIMIT_CAT_NB == True:
             traj_end = np.max(np.where(self.num_asso_FAD != 0))
@@ -494,7 +495,24 @@ class TUNA:
             
         if self.verbose == True:   
             print("- Tuna trajectory saved")
-      
+            
+            
+    def load(self, path_output, r):
+        """
+        Read an array containing the tuna trajectory
+        and fill the tuna data with it
+        """
+        tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
         
-    
+        self.id = r+1
+        
+        self.x = tunaPath_array[:,0]
+        self.y = tunaPath_array[:,1]
+        self.alpha = tunaPath_array[:,2]
+        self.theta = tunaPath_array[:,3]
+        self.num_steps = tunaPath_array[:,4]
+        self.num_asso_FAD = tunaPath_array[:,5]
+        self.edge = tunaPath_array[:,6]
+        
+        
     
