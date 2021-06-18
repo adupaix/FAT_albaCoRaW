@@ -132,8 +132,8 @@ if environment == "square":
     diag_fad = FADs.id[FADs.x == FADs.y]
     fad_start = diag_fad[int(len(diag_fad)/2)]
 # if random array, choose the closest FAD to the center of the study area
-elif environment == "random":
-    fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
+# elif environment == "random":
+#     fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
 elif CHOOSE_FAD_START == True:
     fad_start = None # get the FAD number here so it can be saved in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:

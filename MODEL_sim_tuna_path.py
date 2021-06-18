@@ -23,6 +23,9 @@ for replica in range(NREPLICA):
     # If real array and choose_fad_start is False, FAD chosen randomly among FADs used for actual experimental release
     if CHOOSE_FAD_START == False and environment != "square" and environment != "random":
         fad_start = rd.choice(FADs.id[FADs.of_release != 0])
+    # If random array, choose a FAD randomly in the array
+    elif environment == "random":
+        fad_start = rd.choice(FADs.id)
     
     tuna.x[0] = FADs.x[FADs.id == fad_start]
     tuna.y[0] = FADs.y[FADs.id == fad_start]
