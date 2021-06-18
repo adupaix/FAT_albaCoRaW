@@ -12,6 +12,8 @@ Dictionnary which contains a list of, for each study:
         a list with the coordinates, in degree, of the "center" of the study
         the interval around the center of the study
         a possible str to add to the name of the simulation
+        
+Also load a reference dictionnary for the condition at the edge
 """
 
 study_dict = {1 : ["square","","",[0,0],[0,L],""],
@@ -30,3 +32,6 @@ land_files = study_dict[STUDY][2]
 study_center = study_dict[STUDY][3]
 lims = study_dict[STUDY][4]
 add_to_name = study_dict[STUDY][5]
+
+# reference to know which number in edge corresponds to which transformation of the FADs coordinates
+edge_dict = {1:[-L,0],2:[0,L],3:[L,0],4:[0,-L]}
