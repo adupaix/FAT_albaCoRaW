@@ -10,11 +10,15 @@ Ne fonctionne pas seul
 Fonctionne après avoir fait tourné le MAIN, avec les parametres d'interet
 """
 
-r=0
+r=1
 
-plot_zoom = True
+plot_zoom = False
 
-tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
+tuna.load(path_output, r)
+tuna.correct_edge(edge_dict)
+
+if environment == "random" or environment == "square":
+    FADs.correct_edge(tuna)
 
 fig=plt.figure(1) 
 fig, ax = plt.subplots(figsize=(10, 10)) #figsize=(longueur, hauteur)
@@ -32,12 +36,12 @@ for i in range(0, int(FADs.nFAD)):
         #> Plot FAD
 plt.plot(FADs.x[FADs.has_buoy], FADs.y[FADs.has_buoy], 'k+', label='Equiped FAD')
         #> Plot tuna path
-for step in np.arange(0, max(tunaPath_array[:,4]), H12):
+for step in np.arange(0, max(tuna.num_steps), H12):
     if step%H24<H12: col="blue"
     else: col = 'red'
     if step==0: step=1
-    plt.plot(tunaPath_array[(tunaPath_array[:,4]>=step)&(tunaPath_array[:,4]<=(step+H12))&(tunaPath_array[:,0]!=0),0], 
-             tunaPath_array[(tunaPath_array[:,4]>=step)&(tunaPath_array[:,4]<=(step+H12))&(tunaPath_array[:,0]!=0),1], 
+    plt.plot(tuna.x[(tuna.num_steps>=step)&(tuna.num_steps<=(step+H12))&(tuna.x!=0)], 
+             tuna.y[(tuna.num_steps>=step)&(tuna.num_steps<=(step+H12))&(tuna.x!=0)], 
              "-", color=col, alpha=0.6)
             #plt.plot(tunaPath_r[0:(p-1), 0], tunaPath_r[0:(p-1), 1], 'k--', alpha=0.4, label='tuna path')
         #> Plot limit of the env
