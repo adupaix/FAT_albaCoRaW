@@ -506,7 +506,7 @@ class TUNA:
         tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
         
         self.id = r+1
-        
+                
         self.x = tunaPath_array[:,0]
         self.y = tunaPath_array[:,1]
         self.alpha = tunaPath_array[:,2]
@@ -514,6 +514,8 @@ class TUNA:
         self.num_steps = tunaPath_array[:,4]
         self.num_asso_FAD = tunaPath_array[:,5]
         self.edge = tunaPath_array[:,6]
+        
+        self.p = int(np.max(self.num_steps))
         
         
     def correct_edge(self, edge_dict):
