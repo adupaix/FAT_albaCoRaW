@@ -364,6 +364,11 @@ class TUNA:
         # idem qu'au dessus, mais avec le rayon detection_radius, du DCP
         associated_FAD = FADs.id[dist_ft <= FADs.dr]
         
+        # if the tuna is in the dr of several FADs, we just save the closest one
+        # hypothesis: Several close-by FADs will act as one FAD (no acoustic interaction)
+        if len(associated_FAD) > 1:
+            associated_FAD = associated_FAD[np.where(dist_ft[associated_FAD-1] == dist_ft[associated_FAD-1].min())]
+        
         if len(detected_FAD) == 0: #s'il n y a pas de DCP detecte par le thon, on met 0 dans in_R0_FAD
             self.in_R0_FAD = 0
         elif len(detected_FAD) == 1: #s'il y a un seul DCP detecte, on met son numero dans in_R0_FAD
@@ -378,7 +383,7 @@ class TUNA:
                 #si c'est le cas, on revient en arriere
                 TUNA.in_the_time_machine(self)
             else: #sinon:
-                if FADs.dr[dist_ft <= FADs.dr]!=0: # on verifie que le dr du DCP n'est pas nul (S'il est nul, c'est que le DCP n'est pas equipe)
+                if FADs.dr[associated_FAD-1]!=0: # on verifie que le dr du DCP n'est pas nul (S'il est nul, c'est que le DCP n'est pas equipe)
                     self.num_asso_FAD[p] = associated_FAD #et on enregistre la detection du thon
                     if not self.num_asso_FAD[p-1] == associated_FAD:
                         self.nb_visit +=1
