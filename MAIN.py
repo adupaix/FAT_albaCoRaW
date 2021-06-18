@@ -47,11 +47,6 @@ if REPRODUCTIBLE == False:
 rd.seed(SEED)
 np.random.seed(SEED)
 
-#~ Check the grid size
-if environment == "random" or environment == "square":
-    if L % DIST_FAD != 0:
-        L = round(L/DIST_FAD)*DIST_FAD
-
 
 #%%####################################
 #~~~~ CHARGE CLASSES ~~~~
@@ -81,7 +76,10 @@ Environments:
 # WARNING: L is needed to charge the study dictionnary
 exec(open(str(path_machine)+"/study_dict.py").read())
 
-
+#~ Check the grid size
+if environment == "random" or environment == "square":
+    if L % DIST_FAD != 0:
+        L = round(L/DIST_FAD)*DIST_FAD
 
 ## Charge the environment class
 if environment == "square":
@@ -274,7 +272,7 @@ if VERBOSE == True:
 
 #~~ SAVE SUMMARY ~~
 
-L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
+lines = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
      "\n--------------",
      "\n",
      "\nNumber of simulated tunas : "+str(NREPLICA),
@@ -282,7 +280,7 @@ L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.loc
      "\nSeed :"+str(SEED)
      ]
 summary = open(str(path_output)+"/Summary.txt", "w")
-summary.writelines(L)
+summary.writelines(lines)
 summary.close()
 
 
