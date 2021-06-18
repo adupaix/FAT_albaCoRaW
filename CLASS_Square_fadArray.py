@@ -73,22 +73,64 @@ class FAD_Array:
             print("Warning: Wrong type or length of the given new_dr. Detection radius was not changed !")
     
         
-    def distance_matrix(self, array_FADs):
+    def distance_list(self, tuna):
         """
-        Calcule la matrice de distance entre un set
-        de DCP, fournis dans array_FADs (contient l'identifiant des DCP)
+        Returns an array of distances for each CAT performed by the tuna
+        taking into account the edge crosses
         """
-        # get the positions of the FADs which are in array_FADs
-        x = self.x[np.where([fad in array_FADs for fad in self.id])[0]]
-        y = self.y[np.where([fad in array_FADs for fad in self.id])[0]]
+        # get the positions and the side where the tuna crossed at the edge
+        edge_p = np.where(tuna.edge != 0)
+        edge_side = tuna.edge[edge_p]
         
-        x_line = np.repeat(x, len(x)).reshape(len(x),len(x))
-        x_col = x_line.transpose()
+        # reference to know which numbre in edge corresponds to which transformation of the FADs coordinates
+        edge_dict = {1:[-L,0],2:[0,L],3:[L,0],4:[0,-L]}
         
-        y_line = np.repeat(y, len(y)).reshape(len(y),len(y))
-        y_col = y_line.transpose()
+        # create a list with the id of FADs to which the tuna associated
+        # each element of the list contains [FAD id, array with the side crossing done before this association]
+        FADs_start_asso = tuna.num_asso_FAD[start_asso]
+        FADs_start_list = [[i] for i in FADs_start_asso]
+        for i in range(start_asso.shape[0]):
+            if (start_asso[i] >= edge_p).any():
+                FADs_start_list[i].append(edge_side[np.where(start_asso[i] >= edge_p)[1]])
         
-        return np.sqrt((y_line - y_col)**2 + (x_line - x_col)**2)
+        # identical as above, but for the ends of associations
+        FADs_end_asso = tuna.num_asso_FAD[end_asso]
+        FADs_end_list = [[i] for i in FADs_end_asso]
+        for i in range(end_asso.shape[0]):
+            if (end_asso[i] >= edge_p).any():
+                FADs_end_list[i].append(edge_side[np.where(end_asso[i] >= edge_p)[1]])
+        
+        # get the number of distances to calculate
+        # if the tuna is not associated at the end of its path
+        # the last complete time is a CRT. So we have the same number of
+        # CATs and CRTs, hence we delete the last time of end of association
+        if tuna.num_asso_FAD[-1] == 0:
+            rg = range(len(end_asso)-1)
+        else: # else, tha last complete time is a CAT, so we keep all the times
+        # and we have n+1 CATs and n CRTs in the tuna trajectory
+            rg = range(len(end_asso))
+        
+        dist = list()
+        for i in rg:
+            # get the positions of the FADs
+            x1 = self.x[np.where(self.id == int(FADs_end_list[i][0]))]
+            x2 = self.x[np.where(self.id == int(FADs_start_list[i][0]))]
+            y1 = self.y[np.where(self.id == int(FADs_end_list[i][0]))]
+            y2 = self.y[np.where(self.id == int(FADs_start_list[i][0]))]
+            # Correct them in case the tuna crossed by one side of the study area
+            if len(FADs_end_list[i]) > 1:
+                for j in FADs_end_list[i][1]:
+                    x1 += edge_dict[j][0]
+                    y1 += edge_dict[j][1]
+            if len(FADs_start_list[i]) > 1:
+                for j in FADs_start_list[i][1]:
+                    x2 += edge_dict[j][0]
+                    y2 += edge_dict[j][1]
+            
+            d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+            dist.append(d)
+        
+        return np.array(dist)
 
         
     def __repr__(self):
