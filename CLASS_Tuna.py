@@ -515,4 +515,21 @@ class TUNA:
         self.edge = tunaPath_array[:,6]
         
         
+    def correct_edge(self, edge_dict):
+        """
+        Correct the coordinates of the tuna trajectory
+        to take into account the edge crossings
+        For plotting
+        """
+        
+        # for each time the tuna crosses the edge
+        for i in np.where(self.edge != 0)[0]:
+            # we correct the coordinates according to the edge dictionnary
+            self.x[i:] += edge_dict[self.edge[i]][0]
+            self.y[i:] += edge_dict[self.edge[i]][1]
+        
+        # save zeros again when the tuna is moving in a straight line towards a FAD
+        self.x[np.where(self.x % L == 0)] = 0
+        self.y[np.where(self.y % L == 0)] = 0
+        
     

@@ -73,7 +73,7 @@ class FAD_Array:
             print("Warning: Wrong type or length of the given new_dr. Detection radius was not changed !")
     
         
-    def distance_list(self, tuna):
+    def distance_list(self, tuna, edge_dict):
         """
         Returns an array of distances for each CAT performed by the tuna
         taking into account the edge crosses
@@ -81,9 +81,6 @@ class FAD_Array:
         # get the positions and the side where the tuna crossed at the edge
         edge_p = np.where(tuna.edge != 0)
         edge_side = tuna.edge[edge_p]
-        
-        # reference to know which numbre in edge corresponds to which transformation of the FADs coordinates
-        edge_dict = {1:[-L,0],2:[0,L],3:[L,0],4:[0,-L]}
         
         # create a list with the id of FADs to which the tuna associated
         # each element of the list contains [FAD id, array with the side crossing done before this association]
@@ -140,4 +137,31 @@ class FAD_Array:
                                    self.nFAD,
                                    self.distFAD,
                                    self.frac)
+        
+
+
+    def correct_edge(self, tuna):
+        """
+        Add other FADs, to have an array covering the whole
+        tuna path
+        """
+        
+        x_rg = range(math.floor(min(tuna.x) / L), math.ceil(max(tuna.x) / L))
+        y_rg = range(math.floor(min(tuna.y) / L), math.ceil(max(tuna.y) / L))
+        
+        for i in x_rg:
+            if i != 0:
+                self.x = np.r_[self.x, self.x + i*L]
+                self.y = np.r_[self.y, self.y]
+                
+        for i in y_rg:
+            if i != 0:
+                self.x = np.r_[self.x, self.x]
+                self.y = np.r_[self.y, self.y + i*L]
+                
+        self.nFAD = len(self.x)
+        self.dr = np.repeat(self.dr, len(self.x)/len(self.dr))
+        self.has_buoy = np.repeat(self.has_buoy, len(self.x)/len(self.has_buoy))
+                
+                
         
