@@ -10,7 +10,7 @@ Does NOT work on its own
 Works after running the simulation, with the parameters of interest
 """
 
-r=1
+r=3
 
 plot_zoom = False
 
@@ -40,8 +40,8 @@ for step in np.arange(0, max(tuna.num_steps), H12):
     if step%H24<H12: col="blue"
     else: col = 'red'
     if step==0: step=1
-    plt.plot(tuna.x[(tuna.num_steps>=step)&(tuna.num_steps<=(step+H12))&(tuna.x!=0)], 
-             tuna.y[(tuna.num_steps>=step)&(tuna.num_steps<=(step+H12))&(tuna.x!=0)], 
+    plt.plot(tuna.x[(tuna.num_steps>=step)&(tuna.num_steps<=(step+H12))&((tuna.x!=0) * (tuna.y!=0))], 
+             tuna.y[(tuna.num_steps>=step)&(tuna.num_steps<=(step+H12))&((tuna.x!=0) * (tuna.y!=0))], 
              "-", color=col, alpha=0.6)
             #plt.plot(tunaPath_r[0:(p-1), 0], tunaPath_r[0:(p-1), 1], 'k--', alpha=0.4, label='tuna path')
         #> Plot limit of the env
