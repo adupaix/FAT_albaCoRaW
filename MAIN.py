@@ -43,7 +43,7 @@ os.chdir(path_script)
 #~ Set seed
 if REPRODUCTIBLE == False:
     while SEED == 10:
-        SEED = rd.randint(1, 1000)
+        SEED = rd.randint(1, 10000)
 rd.seed(SEED)
 np.random.seed(SEED)
 
@@ -204,7 +204,7 @@ if LIMIT_CAT_NB == True:
 
 path_output = str(path_script)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
-if environment == "random":
+if environment == "random" or environment == "square":
     output_folders.append('FAD_array')
 for folder in output_folders:
     os.makedirs(os.path.join(path_output,folder), exist_ok=True)
@@ -224,8 +224,8 @@ output_format = OUTPUT_FORMAT
 if CHECK_MAP == True or environment == "random":
     exec(open(path_script+"/PLOT_checkenv.py").read())
 
-# If the environment is random, save the FADs coordinates
-if environment == "random":
+# If the environment is square or random, save the FADs coordinates
+if environment == "random" or environment == "square":
     FADs.save()
 
 
