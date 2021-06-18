@@ -70,7 +70,7 @@ Environments:
     - random array = 9
 """
 #~ Study number
-STUDY = 3
+STUDY = 1 
 
 #~ Characteristics of the FAD array
 DIST_FAD = 100 #Distance between FADs, in km
