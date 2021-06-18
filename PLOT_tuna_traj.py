@@ -10,7 +10,7 @@ Does NOT work on its own
 Works after running the simulation, with the parameters of interest
 """
 
-r=3
+r=0
 
 plot_zoom = False
 
@@ -18,6 +18,7 @@ tuna.load(path_output, r)
 tuna.correct_edge(edge_dict)
 
 if environment == "random" or environment == "square":
+    FADs.load(path_output)
     FADs.correct_edge(tuna)
 
 fig=plt.figure(1) 

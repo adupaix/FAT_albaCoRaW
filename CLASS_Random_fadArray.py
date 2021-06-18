@@ -152,6 +152,22 @@ class FAD_Array:
         np.savetxt(str(path_output)+"/FAD_array/FADs_coords.csv", FADs_coords)
         
         
+    def load(self, path_output):
+        """
+        Read an array containing the FADs positions
+        and fill the FAD_Array data with it
+        """
+        FADs_coords = np.load(str(path_output)+"/FAD_array/FADs_coords.npy")
+        
+        self.id = FADs_coords[:,0]
+        self.x = FADs_coords[:,1]
+        self.y = FADs_coords[:,2]
+        self.dr = FADs_coords[:,3]
+        
+        self.nFAD = len(self.id)
+        self.has_buoy = self.dr != 0
+        
+        
     def correct_edge(self, tuna):
         """
         Add other FADs, to have an array covering the whole
