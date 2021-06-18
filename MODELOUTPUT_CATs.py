@@ -44,14 +44,9 @@ for r in range(NREPLICA):
     end_asso = end_asso[end_asso != np.max(tuna.num_steps)]
     
     if environment == "square" or environment == "random":
-        # get the list of the encountered FADs
-        array_FADs = np.unique(tuna.num_asso_FAD)
-        array_FADs = array_FADs[array_FADs != 0]
-    
-        # calculate the distance between these FADs
-        distFAD_mat = FADs.distance_matrix(array_FADs)
-        
-        FADs_ids = array_FADs
+        # get the list of the encountered FADs from the tuna object
+        # and calculate the distances
+        distFAD_list = FADs.distance_list(tuna)
     
     ## si le thon n'est pas associe au dernier pas de temps
     # c'est que le dernier temps complet dans la trajectoire est un CRT
@@ -68,13 +63,18 @@ for r in range(NREPLICA):
         # temps de fin du CAT i et de debut du CRT i
         t2 = start_asso[i]
         
+        cat = ((t2-t1)*STEP_TIME)/(24*3600) #calcul le CAT (en jour)
+        
         # DCP de depart
         fad1 = tuna.num_asso_FAD[t1]
         # DCP d'arrivee
-        fad2 = tuna.num_asso_FAD[t2]
+        fad2 = tuna.num_asso_FAD[t2]        
         
-        cat = ((t2-t1)*STEP_TIME)/(24*3600) #calcul le CAT (en jour)
-        dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
+        if environment == "square" or environment == "random":
+            dist = distFAD_list[i]
+        else:
+            dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
+        
         cart_array[nCAT,:] = np.array([r+1, t1, t2, fad1, fad2, cat, float(dist),1]) # stock: id thon, tps depart, tps arrivee, dcp depart, dcp arrivee, cat, dist entre dcp, bollen "is a CAT" (1)
         nCAT += 1
         if i != len(end_asso)-1:
