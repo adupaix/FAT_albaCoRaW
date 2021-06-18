@@ -46,7 +46,7 @@ for r in range(NREPLICA):
     if environment == "square" or environment == "random":
         # get the list of the encountered FADs from the tuna object
         # and calculate the distances
-        distFAD_list = FADs.distance_list(tuna)
+        distFAD_list = FADs.distance_list(tuna, edge_dict)
     
     ## si le thon n'est pas associe au dernier pas de temps
     # c'est que le dernier temps complet dans la trajectoire est un CRT
