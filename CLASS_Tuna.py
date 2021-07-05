@@ -383,7 +383,7 @@ class TUNA:
                 #si c'est le cas, on revient en arriere
                 TUNA.in_the_time_machine(self)
             else: #sinon:
-                if FADs.dr[associated_FAD-1]!=0: # on verifie que le dr du DCP n'est pas nul (S'il est nul, c'est que le DCP n'est pas equipe)
+                if FADs.dr[int(associated_FAD-1)]!=0: # on verifie que le dr du DCP n'est pas nul (S'il est nul, c'est que le DCP n'est pas equipe)
                     self.num_asso_FAD[p] = associated_FAD #et on enregistre la detection du thon
                     if not self.num_asso_FAD[p-1] == associated_FAD:
                         self.nb_visit +=1
