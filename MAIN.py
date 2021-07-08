@@ -43,7 +43,7 @@ os.chdir(path_script)
 #~ Set seed
 if REPRODUCTIBLE == False:
     while SEED == 10:
-        SEED = rd.randint(1, 10000)
+        SEED = rd.randint(1, 10**8)
 rd.seed(SEED)
 np.random.seed(SEED)
 
