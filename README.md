@@ -7,12 +7,18 @@ CRW model v1.0
 
 [![Latest Release](https://img.shields.io/github/release/CRW_model.svg)](https://github.com/CRW_model/releases) -->
 
-# Simulations of tuna trajectories in a FAD array
+Individual based model simulating tuna trajectories in an array of FADs, based on a Correlated Random Walk
 
-The model runs with Python 3.8.5
+# Run
 
-The conda environment to run the model is provided (env_CRW-model.yml)
+The model runs with [Python 3.8.5](https://docs.python.org/release/3.8.5/)
 
-Launch config files to launch the model (example of file in cfg folder). It will be launched using MAIN.py
+The [conda](https://docs.conda.io/projects/conda/en/latest/) environment to run the model is provided. To create, type : `conda env create -f env_CRW-model.yml`
 
-To plot tuna trajectories: run simulation, when it is done running, run PLOT_tuna_traj.py, with r = number of the tuna of interest.
+To run the model, type:
+
+`python cfg/ex_cgf.py` where `ex_cfg.py` is the configuration file (template available in the `cfg` folder)
+
+# Plot
+
+To plot tuna trajectories: run simulation in a Python environment. Then run `PLOT_tuna_traj.py`, with r the id of the tuna of interest.
