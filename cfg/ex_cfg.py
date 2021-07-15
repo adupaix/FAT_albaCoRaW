@@ -24,7 +24,7 @@ RESET = True
 
 #~ Choose a random seed (False) or set the seed to that the simulation is reproductible
 # !! if the SEED is set at another value than 10, the REPRODUCTIBLE argument is overriden and the seed will be set to the given value
-REPRODUCTIBLE = True
+REPRODUCTIBLE = False
 SEED = 10
 
 #~ Choose output format
@@ -41,7 +41,7 @@ LEAVE_AT_DR = False
 #~ Consider the whole simulation time (LIMIT_CAT_NB = False) or only until a certain number of CATs (True)
 # if True choose the number of CATs (NB_MAX_CAT)
 # !! If LIMIT_CAT_NB is True, even if the NB_MAX_CAT is not reached, the simulation will not be longer than the PATH_DURATION
-LIMIT_CAT_NB = False
+LIMIT_CAT_NB = True
 NB_MAX_CAT = 1
 
 #~ Wether to print verbose when the script is running
@@ -68,12 +68,13 @@ Environments:
     - Maldives 2018 without Huvadhoo atoll = 7
     - Maldives 2009 = 8
     - random array = 9
+    - randomized square array = 10
 """
 #~ Study number
-STUDY = 1 
+STUDY = 10
 
 #~ Characteristics of the FAD array
-DIST_FAD = 100 #Distance between FADs, in km
+DIST_FAD = 15 #Distance between FADs, in km
 L = 10*DIST_FAD #Width of the environment, in km.
 DR = 0.5 #Detection radius of FADs, in km
 

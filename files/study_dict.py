@@ -24,7 +24,8 @@ study_dict = {1 : ["square","","",[0,0],[0,L],""],
               6 : ["maldives",2018,["atoll1","atoll2","atoll3", "atoll4"], [73.19073, 2.979273], [-L/2,L/2],""],
               7 : ["maldives",2018,["atoll1","atoll3", "atoll4"], [73.19073, 2.979273], [-L/2,L/2],"_no_huva"],
               8 : ["maldives",2009,["atoll1", "atoll2", "atoll3", "atoll4"], [73.21022, 3.063778], [-L/2,L/2],""],
-              9 : ["random","","",[0,0],[0,L],""],}
+              9 : ["random","","",[0,0],[0,L],""],
+              10: ["square_rd","","",[0,0],[0,L],""]}
 
 environment = study_dict[STUDY][0]
 studyYear = study_dict[STUDY][1]

@@ -20,7 +20,7 @@ Modified on Apr 15 2021, by adupaix
 #   entre les DCP rencontres par le replicat. C'est un peu plus long, mais dans l'environnement theorique on
 #   peut se retrouver avec 250 000 DCP, ce qui fait 62*10**9 elements dans la matrice. Donc ca serait
 #   plus rapide avec quelques Tb de RAM, mais je ne les ai malheureusement pas...
-if environment != "square" and environment != "random":
+if environment not in ["square", "random", "square_rd"]:
     distFAD_mat = FADs.distance_matrix()
     FADs_ids = FADs.id
 
@@ -45,7 +45,7 @@ for r in range(NREPLICA):
     end_asso = np.setdiff1d(asso, lag_asso)
     end_asso = end_asso[end_asso != np.max(tuna.num_steps)]
     
-    if environment == "square" or environment == "random":
+    if environment in ["square","random","square_rd"]:
         # get the list of the encountered FADs from the tuna object
         # and calculate the distances
         distFAD_list = FADs.distance_list(tuna, edge_dict)
@@ -72,7 +72,7 @@ for r in range(NREPLICA):
         # DCP d'arrivee
         fad2 = tuna.num_asso_FAD[t2]        
         
-        if environment == "square" or environment == "random":
+        if environment in ["square","random","square_rd"]:
             dist = distFAD_list[i]
         else:
             dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
