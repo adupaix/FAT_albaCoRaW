@@ -49,7 +49,7 @@ elif environment == "maldives":
                  Island[j].y[i:i+2],
                  "-", color = "black")
 
-if environment in ["random","square_rd"]:
+if environment in ["square","random","square_rd"]:
     plt.savefig(path_output+"/FAD_array/env_plot.png")
     
 #%%############################################################################
