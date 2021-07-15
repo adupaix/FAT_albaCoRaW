@@ -83,12 +83,8 @@ if environment in ["random", "square", "square_rd"]:
         L = round(L/DIST_FAD)*DIST_FAD
 
 ## Charge the environment class
-if environment == "square":
-    exec(open(str(path_script)+"/CLASS_Square_fadArray.py").read())
-elif environment == "random":
-    exec(open(str(path_script)+"/CLASS_Random_fadArray.py").read())
-elif environment == "square_rd":
-    exec(open(str(path_script)+"/CLASS_Square_Random_fadArray.py").read())
+if environment in ["random", "square", "square_rd"]:
+    exec(open(str(path_script)+"/CLASS_Theoretical_fadArray.py").read())
 else:
     exec(open(str(path_script)+"/CLASS_Real_fadArray.py").read())
     exec(open(str(path_script)+"/CLASS_Land.py").read())
@@ -111,10 +107,8 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 #----------------
 
 ## Create the environement
-if environment == "square" or environment == "random":
-    FADs = FAD_Array(L = L, distFAD = DIST_FAD, detection_radius = DR)
-elif environment == "square_rd":
-    FADs = FAD_Array(L = L, distFAD = DIST_FAD, R0 = R0, detection_radius = DR)
+if environment in ["random", "square", "square_rd"]:
+    FADs = FAD_Array(environment = environment, L = L, distFAD = DIST_FAD, R0 = R0, detection_radius = DR)
 elif environment == "maldives":
     FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     Island = list()
@@ -226,7 +220,7 @@ output_format = OUTPUT_FORMAT
 
 #~~ RUN THE ENVIRONMENT ~~
 # Plot the environment (and save an image if environment is random)
-if CHECK_MAP == True or environment in ["random","square_rd"]:
+if CHECK_MAP == True or environment in ["square","random","square_rd"]:
     exec(open(path_script+"/PLOT_checkenv.py").read())
 
 # If the environment is square or random, save the FADs coordinates
