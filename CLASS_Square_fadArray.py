@@ -35,9 +35,9 @@ class FAD_Array:
                 
         """
             
-        fadRow  = round(L/distFAD)+1
-        self.x = np.repeat(np.arange(0, fadRow*distFAD, distFAD), fadRow) #longitude
-        self.y = np.tile(np.arange(0, fadRow*distFAD, distFAD), fadRow) #latitude
+        fadRow  = round(L/distFAD)
+        self.x = np.repeat(np.arange(distFAD/2, (fadRow)*distFAD, distFAD), fadRow) #longitude
+        self.y = np.tile(np.arange(distFAD/2, (fadRow)*distFAD, distFAD), fadRow) #latitude
             
         self.id = np.arange(1,fadRow**2+1) #id number
             

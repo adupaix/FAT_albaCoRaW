@@ -40,7 +40,7 @@ class FAD_Array:
                 
         """
         
-        fadRow  = round(L/distFAD)+1
+        fadRow  = round(L/distFAD)
         self.nFAD = fadRow**2 # number of FADs in the array
         
         self.x = np.random.rand(self.nFAD)*L #longitude
