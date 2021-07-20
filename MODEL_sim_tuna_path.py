@@ -40,8 +40,6 @@ for replica in range(NREPLICA):
     tuna.p_since_asso += 1
     
     
-    cpb_array = np.array([0]) #-> Check if replica go out of the L limit
-    
     ## While p has not reached the lifetime, simulate tuna movement
     # and while it has not reached the maximum number of associations wanted
     # tuna.p is incremented inside the OMove and CRWMove methods
@@ -52,7 +50,7 @@ for replica in range(NREPLICA):
         tuna.checkEnv(FADs)
                 
         ## Periodic condition on board
-        if environment == "square" or environment == "random":
+        if environment in ["square","random","square_rd"]:
             if tuna.x[tuna.p]>lims[1]:
                 tuna.x[tuna.p] = tuna.x[tuna.p] - L
                 tuna.edge[tuna.p] = 3
@@ -65,11 +63,7 @@ for replica in range(NREPLICA):
             elif tuna.y[tuna.p]<lims[0]:
                 tuna.y[tuna.p] = tuna.y[tuna.p] + L
                 tuna.edge[tuna.p] = 4
-        # elif tuna.x[tuna.p]>lims[1] or tuna.y[tuna.p]>lims[1] or tuna.x[tuna.p]<lims[0] or tuna.y[tuna.p]<lims[0]:
-            # cpb_array = np.hstack((cpb_array, 1))
-            # break
-
-        
+                
         ## For define the day/night behaviour change
         if tuna.p%H24<H12: 
             DAY = 0
