@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb  4 15:39:26 2021
+Created on Tue Jul 15 15:39:26 2021
+Adapted from CLASS_Square_fadArray.py
 
-Definition of the class used to create arrays of randomly distributed FADs
+Definition of the class used to create theoretical arrays of FADs
+Either square, random or randomized square array
 
 @author: adupaix
 """
 
 class FAD_Array:
     """
-    Class with contains an array of FADs, each FAD characterized by :
+    Class which contains an array of FADs, each FAD characterized by :
         - an id (1D array, with numbers from 1 to Nfad)
         - coordinates (two 1D arrays, one with x one with y)
         - presence of not of an acoustic receiver
     """
  
     
-    def __init__(self, L, distFAD, frac_with_buoy = 1, detection_radius = 0.5):
+    def __init__(self, environment, L, distFAD, R0, frac_with_buoy = 1, detection_radius = 0.5):
         """
         Takes as inputs:
+            - the environment name (one of ["random","square","square_rd"])
             - the size of the array to generate (L, in km)
             - the mean distance between FADs (distFAD, in km), used to determine the FAD density
             - the fraction of equipped FADs, default = 1
+            - the attraction radius of FADs (R0), used only if environment == "square_rd"
                 
             And generates a FAD array containing:
                 - two 1D arrays with FAD coordinates (x et y)
@@ -40,12 +44,11 @@ class FAD_Array:
                 
         """
         
+        self.environment = environment
+        
         fadRow  = round(L/distFAD)
         self.nFAD = fadRow**2 # number of FADs in the array
         
-        self.x = np.random.rand(self.nFAD)*L #longitude
-        self.y = np.random.rand(self.nFAD)*L #latitude
-            
         self.id = np.arange(1,self.nFAD+1) #id number
             
         self.has_buoy = np.r_[np.repeat(True, round((fadRow**2)*frac_with_buoy)),
@@ -59,6 +62,28 @@ class FAD_Array:
         self.distFAD = distFAD # distance between FADs
         self.L = L # width of the array
         self.frac = frac_with_buoy # fraction of FADs that are equipped with a buoy
+        
+        if environment == "random":
+            self.x = np.random.rand(self.nFAD)*L #longitude
+            self.y = np.random.rand(self.nFAD)*L #latitude
+        elif environment in ["square","square_rd"]:
+            self.x = np.repeat(np.arange(distFAD/2, (fadRow)*distFAD, distFAD), fadRow) #longitude
+            self.y = np.tile(np.arange(distFAD/2, (fadRow)*distFAD, distFAD), fadRow) #latitude
+            
+            if environment == "square_rd":        
+                #move the FADs on x and y axis but with condition (not fully randomized):
+                    ## R0 of FADs cannot overlap
+                self.x = self.x + np.random.uniform(low = R0 - distFAD/2, high = distFAD/2 - R0, size = fadRow**2)
+                self.y = self.y + np.random.uniform(low = R0 - distFAD/2, high = distFAD/2 - R0, size = fadRow**2)
+        
+                # FADs that went above the edge are moved to the other side of the study area
+                self.x[self.x < 0] = self.x[self.x < 0] + L
+                self.x[self.x > L] = self.x[self.x > L] - L
+                self.y[self.y < 0] = self.y[self.y < 0] + L
+                self.y[self.y > L] = self.y[self.y > L] - L
+            
+                #save the R0 for the display of the array
+                self.R0 = R0 
         
     
     def change_dr(self, new_dr):
@@ -131,16 +156,29 @@ class FAD_Array:
             dist.append(d)
         
         return np.array(dist)
-
+    
         
     def __repr__(self):
         """
         Method to represent the object
         """
-        return "Random FAD Array\n\n Array width: {} km\n Number of FADs: {}\n Mean distance between FADs: {} km\n Fraction of equipped FADs: {}".format(self.L,
+        if self.environment == "random":
+            return "Random FAD Array\n\n Array width: {} km\n Number of FADs: {}\n Mean distance between FADs: {} km\n Fraction of equipped FADs: {}".format(self.L,
                                    self.nFAD,
                                    self.distFAD,
                                    self.frac)
+        elif self.environment == "square":
+            return "Square FAD Array\n\n Array width: {} km\n Number of FADs: {}\n Distance between FADs: {} km\n Fraction of equipped FADs: {}".format(self.L,
+                                   self.nFAD,
+                                   self.distFAD,
+                                   self.frac)
+        elif self.environment == "square_rd":
+            return "Randomized square FAD Array\n\n Array width: {} km\n Number of FADs: {}\n Distance between FADs: {} km\n Fraction of equipped FADs: {}\n R0 associated to FADs: {} km".format(self.L,
+                                   self.nFAD,
+                                   self.distFAD,
+                                   self.frac,
+                                   self.R0)
+            
     
     def save(self):
         """
