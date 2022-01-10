@@ -1,5 +1,6 @@
-CRW model v1.0
-===============
+FAT albaCoRaW
+===================
+FAD Association by Tuna: A Lovely model BAsed on a COrrelated RAndom Walk
 
 <!-- ![License](https://img.shields.io/github/license/CRW_model)
 
@@ -7,7 +8,11 @@ CRW model v1.0
 
 [![Latest Release](https://img.shields.io/github/release/CRW_model.svg)](https://github.com/CRW_model/releases) -->
 
-Individual based model simulating tuna trajectories in an array of FADs, based on a Correlated Random Walk
+---
+
+Individual based model simulating tuna trajectories in an array of Fish Aggregating Devices (FADs), based on a Correlated Random Walk. This is the version of the model that was used to generate the results in the following publication:
+
+Pérez G., Dupaix A., Dagorn L., Deneubourg J-L., Holland K., Beeharry S., Capello M. (in press). Correlated Random Walk of tuna in Fish Aggregating Device arrays: field-based model from acoustic tagging. __Ecological Modelling__
 
 # Run
 
