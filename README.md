@@ -2,15 +2,13 @@ FAT albaCoRaW
 ===================
 FAD Association by Tuna: A Lovely model BAsed on a COrrelated RAndom Walk
 
-<!-- ![License](https://img.shields.io/github/license/CRW_model)
-
-[![DOI](https://zenodo.org/badge/)](https://zenodo.org/badge/)
-
-[![Latest Release](https://img.shields.io/github/release/CRW_model.svg)](https://github.com/CRW_model/releases) -->
+[![License](https://img.shields.io/github/license/adupaix/FAT_albaCoRaW)](https://github.com/adupaix/FAT_albaCoRaW/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/338344443.svg)](https://zenodo.org/badge/latestdoi/338344443)
+[![Latest Release](https://img.shields.io/github/release/adupaix/FAT_albaCoRaW)](https://github.com/adupaix/FAT_albaCoRaW/releases)
 
 ---
 
-Individual based model simulating tuna trajectories in an array of Fish Aggregating Devices (FADs), based on a Correlated Random Walk. This is the version of the model that was used to generate the results in the following publication:
+__Individual based model simulating tuna trajectories in an array of Fish Aggregating Devices (FADs), based on a Correlated Random Walk.__ This is the version of the model that was used to generate the results in the following publication:
 
 Pérez G., Dupaix A., Dagorn L., Deneubourg J-L., Holland K., Beeharry S., Capello M. (in press). Correlated Random Walk of tuna in Fish Aggregating Device arrays: field-based model from acoustic tagging. __Ecological Modelling__
 
