@@ -21,8 +21,11 @@ for replica in range(NREPLICA):
 
     ## First position
     # If real array and choose_fad_start is False, FAD chosen randomly among FADs used for actual experimental release
-    if CHOOSE_FAD_START == False and environment != "square" and environment != "random":
+    if CHOOSE_FAD_START == False and environment not in ["square", "random", "square_rd"]:
         fad_start = rd.choice(FADs.id[FADs.of_release != 0])
+    # If random array, choose a FAD randomly in the array
+    elif environment in ["random","square_rd"]:
+        fad_start = rd.choice(FADs.id)
     
     tuna.x[0] = FADs.x[FADs.id == fad_start]
     tuna.y[0] = FADs.y[FADs.id == fad_start]
@@ -37,8 +40,6 @@ for replica in range(NREPLICA):
     tuna.p_since_asso += 1
     
     
-    cpb_array = np.array([0]) #-> Check if replica go out of the L limit
-    
     ## While p has not reached the lifetime, simulate tuna movement
     # and while it has not reached the maximum number of associations wanted
     # tuna.p is incremented inside the OMove and CRWMove methods
@@ -48,21 +49,30 @@ for replica in range(NREPLICA):
         # also check if it is not doing a CATreturn of less than 24h (time machine)
         tuna.checkEnv(FADs)
                 
-        ## Periodic condition on board + Add the last fad when tuna go out of its zo
-        if tuna.x[tuna.p]>lims[1] or tuna.y[tuna.p]>lims[1] or tuna.x[tuna.p]<lims[0] or tuna.y[tuna.p]<lims[0]:
-            cpb_array = np.hstack((cpb_array, 1))
-            break
-        
+        ## Periodic condition on board
+        if environment in ["square","random","square_rd"]:
+            if tuna.x[tuna.p]>lims[1]:
+                tuna.x[tuna.p] = tuna.x[tuna.p] - L
+                tuna.edge[tuna.p] = 3
+            elif tuna.y[tuna.p]>lims[1]:
+                tuna.y[tuna.p] = tuna.y[tuna.p] - L
+                tuna.edge[tuna.p] = 2
+            elif tuna.x[tuna.p]<lims[0]:
+                tuna.x[tuna.p] = tuna.x[tuna.p] + L
+                tuna.edge[tuna.p] = 1
+            elif tuna.y[tuna.p]<lims[0]:
+                tuna.y[tuna.p] = tuna.y[tuna.p] + L
+                tuna.edge[tuna.p] = 4
+                
         ## For define the day/night behaviour change
         if tuna.p%H24<H12: 
             DAY = 0
-            tuna.last_FAD_reinit_R0 = 0
         else: 
             DAY = 1
         
         #~~~~
         ## BCRW -> All the cases when a tuna orients itself towards a FAD (only during daytime)
-        if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD_reinit_R0:
+        if DAY==1 and tuna.in_R0_FAD!=0 and tuna.in_R0_FAD!=tuna.last_FAD_reinit_24h:
             
             tuna.OMove(FADs, CRTs)
             
@@ -79,7 +89,7 @@ for replica in range(NREPLICA):
                     tuna.checkLand(Island[i])
             
             # if leaves a FAD, simple Random Walk
-            if tuna.p_since_asso == 0 and SRW_WHEN_DEPART == True:
+            if tuna.p_since_asso==0 and tuna.x[tuna.p] == FADs.x[FADs.id == tuna.in_R0_FAD] and tuna.y[tuna.p] == FADs.y[FADs.id == tuna.in_R0_FAD] and SRW_WHEN_DEPART == True:
                 tuna.RWMove(FADs)
             # else, Correlated Random Walk
             else:

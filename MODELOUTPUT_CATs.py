@@ -4,6 +4,8 @@
 Created on Fri Aug 14 09:21:51 2020
 
 @author: geraldine
+
+Modified on Apr 15 2021, by adupaix
 """
 
 
@@ -18,7 +20,7 @@ Created on Fri Aug 14 09:21:51 2020
 #   entre les DCP rencontres par le replicat. C'est un peu plus long, mais dans l'environnement theorique on
 #   peut se retrouver avec 250 000 DCP, ce qui fait 62*10**9 elements dans la matrice. Donc ca serait
 #   plus rapide avec quelques Tb de RAM, mais je ne les ai malheureusement pas...
-if environment != "square" and environment != "random":
+if environment not in ["square", "random", "square_rd"]:
     distFAD_mat = FADs.distance_matrix()
     FADs_ids = FADs.id
 
@@ -28,12 +30,12 @@ if environment != "square" and environment != "random":
 cart_array = np.zeros([NREPLICA*10000, 8]) # array a remplir
 nCAT = 0
 for r in range(NREPLICA):
-    tunaPath_array = np.load(os.path.join(path_output,"Path_tuna","tuna_n"+str(r+1)+".npy"))
-    # tunaPath_r_cat = tunaPath_array[tunaPath_array[:,5]!=0,:] # garde uniquement les lignes ou le thon est associe
     
-    asso = np.where(tunaPath_array[:,5]!=0)[0]
-    lead_asso = np.where(tunaPath_array[:,5]!=0)[0]+1
-    lag_asso = np.where(tunaPath_array[:,5]!=0)[0]-1
+    tuna.load(path_output, r) 
+        
+    asso = np.where(tuna.num_asso_FAD!=0)[0]
+    lead_asso = np.where(tuna.num_asso_FAD!=0)[0]+1
+    lag_asso = np.where(tuna.num_asso_FAD!=0)[0]-1
     
     # tous les temps ou le thon commence une association avec un DCP
     start_asso = np.setdiff1d(asso, lead_asso)
@@ -41,22 +43,17 @@ for r in range(NREPLICA):
     
     # tous les temps ou le thon termine une association avec un DCP
     end_asso = np.setdiff1d(asso, lag_asso)
-    end_asso = end_asso[end_asso != tunaPath_array.shape[0]-1]
+    end_asso = end_asso[end_asso != np.max(tuna.num_steps)]
     
-    if environment == "square" or environment == "random":
-        # get the list of the encountered FADs
-        array_FADs = np.unique(tunaPath_array[:,-1])
-        array_FADs = array_FADs[array_FADs != 0]
-    
-        # calculate the distance between these FADs
-        distFAD_mat = FADs.distance_matrix(array_FADs)
-        
-        FADs_ids = array_FADs
+    if environment in ["square","random","square_rd"]:
+        # get the list of the encountered FADs from the tuna object
+        # and calculate the distances
+        distFAD_list = FADs.distance_list(tuna, edge_dict)
     
     ## si le thon n'est pas associe au dernier pas de temps
     # c'est que le dernier temps complet dans la trajectoire est un CRT
     # donc on a autant de CAT que de CRT, donc supprime le dernier temps de fin d'association
-    if tunaPath_array[-1,5] == 0:
+    if tuna.num_asso_FAD[-1] == 0:
         rg = range(len(end_asso)-1)
     else: # sinon c'est un CAT, et on garde tous les temps
     # on a alors un CAT de plus que de CRT dans la traj
@@ -68,13 +65,18 @@ for r in range(NREPLICA):
         # temps de fin du CAT i et de debut du CRT i
         t2 = start_asso[i]
         
-        # DCP de depart
-        fad1 = tunaPath_array[t1,5]
-        # DCP d'arrivee
-        fad2 = tunaPath_array[t2,5]
-        
         cat = ((t2-t1)*STEP_TIME)/(24*3600) #calcul le CAT (en jour)
-        dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
+        
+        # DCP de depart
+        fad1 = tuna.num_asso_FAD[t1]
+        # DCP d'arrivee
+        fad2 = tuna.num_asso_FAD[t2]        
+        
+        if environment in ["square","random","square_rd"]:
+            dist = distFAD_list[i]
+        else:
+            dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
+        
         cart_array[nCAT,:] = np.array([r+1, t1, t2, fad1, fad2, cat, float(dist),1]) # stock: id thon, tps depart, tps arrivee, dcp depart, dcp arrivee, cat, dist entre dcp, bollen "is a CAT" (1)
         nCAT += 1
         if i != len(end_asso)-1:
@@ -83,6 +85,8 @@ for r in range(NREPLICA):
             crt = ((t3-t2)*STEP_TIME)/(24*3600) # recalcul le CRT (en jour)
             cart_array[nCAT,:] = np.array([r+1, t2, t3, fad2, fad2, crt, 0,0]) # stock: id thon, tps depart, tps arrivee, dcp, dcp, crt, dist (0 c'est un CRT), bolleen "is a CAT" (0)
             nCAT += 1       
+        
+        #### rajouter un tuna.save pour mettre a jour
         
 delete_row = np.where(cart_array[:,0]==0)[0]
 cart_array = np.delete(cart_array, delete_row, 0)

@@ -43,7 +43,7 @@ os.chdir(path_script)
 #~ Set seed
 if REPRODUCTIBLE == False:
     while SEED == 10:
-        SEED = rd.randint(1, 1000)
+        SEED = rd.randint(1, 10**8)
 rd.seed(SEED)
 np.random.seed(SEED)
 
@@ -62,6 +62,7 @@ Environments:
     - Maldives 2018 without Huvadhoo atoll = 7
     - Maldives 2009 = 8
     - random array = 9
+    - randomized square array = 10
 """
 
 #~~~ ENVIRONMENT
@@ -76,13 +77,14 @@ Environments:
 # WARNING: L is needed to charge the study dictionnary
 exec(open(str(path_machine)+"/study_dict.py").read())
 
-
+#~ Check the grid size
+if environment in ["random", "square", "square_rd"]:
+    if L % DIST_FAD != 0:
+        L = round(L/DIST_FAD)*DIST_FAD
 
 ## Charge the environment class
-if environment == "square":
-    exec(open(str(path_script)+"/CLASS_Square_fadArray.py").read())
-elif environment == "random":
-    exec(open(str(path_script)+"/CLASS_Random_fadArray.py").read())
+if environment in ["random", "square", "square_rd"]:
+    exec(open(str(path_script)+"/CLASS_Theoretical_fadArray.py").read())
 else:
     exec(open(str(path_script)+"/CLASS_Real_fadArray.py").read())
     exec(open(str(path_script)+"/CLASS_Land.py").read())
@@ -101,26 +103,24 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 #%%####################################
 #~~~~~ MODEL PARAMETERS ~~~~
 
-# model = 22 #day/night model (DN) NE SERT PLUS, A REMETTRE
-
 #~~~ ENVIRONMENT
 #----------------
 
 ## Create the environement
-if environment == "square" or environment == "random":
-    FADs = FAD_Array(L = L, distFAD = DIST_FAD, detection_radius = DR)
+if environment in ["random", "square", "square_rd"]:
+    FADs = FAD_Array(environment = environment, L = L, distFAD = DIST_FAD, R0 = R0, detection_radius = DR)
 elif environment == "maldives":
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     Island = list()
     for i in range(len(land_files)):
         Island.append( Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files[i]) )
     sigma_island = 2 # sigma used to get the alpha when go close to land
 elif len(land_files) > 0:
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     Island = Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files)
     sigma_island = 2 # sigma used to get the alpha when go close to land
 else:
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center)
+    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     
     
 #~~~ TUNA
@@ -131,8 +131,8 @@ if environment == "square":
     diag_fad = FADs.id[FADs.x == FADs.y]
     fad_start = diag_fad[int(len(diag_fad)/2)]
 # if random array, choose the closest FAD to the center of the study area
-elif environment == "random":
-    fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
+# elif environment == "random":
+#     fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
 elif CHOOSE_FAD_START == True:
     fad_start = None # get the FAD number here so it can be saved in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:
@@ -166,7 +166,7 @@ TUNA.change_m(M)
 #---------
 ## Add CRT when tuna associates with a FAD
 CRTs = [0]
-if ADD_CRTS == True and environment != "square" and environment != "maldives" and environment != "random":
+if ADD_CRTS == True and environment not in ["square","maldives","random","square_rd"]:
     crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
@@ -185,9 +185,9 @@ if LIMIT_CAT_NB == False:
 # ----------
 
 # Generate output folders
-if environment == "square" or environment == "random":
+if environment in ["square", "random", "square_rd"]:
     sim_name = environment+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
-    if environment == "random":
+    if environment in ["random","square_rd"]:
         sim_name = sim_name+"_seed"+str(SEED)
 elif CHOOSE_FAD_START == False:
     sim_name = environment+str(studyYear)+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
@@ -203,7 +203,7 @@ if LIMIT_CAT_NB == True:
 
 path_output = str(path_script)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
-if environment == "random":
+if environment in ["random","square","square_rd"]:
     output_folders.append('FAD_array')
 for folder in output_folders:
     os.makedirs(os.path.join(path_output,folder), exist_ok=True)
@@ -220,17 +220,17 @@ output_format = OUTPUT_FORMAT
 
 #~~ RUN THE ENVIRONMENT ~~
 # Plot the environment (and save an image if environment is random)
-if CHECK_MAP == True or environment == "random":
+if CHECK_MAP == True or environment in ["square","random","square_rd"]:
     exec(open(path_script+"/PLOT_checkenv.py").read())
 
-# If the environment is random, save the FADs coordinates
-if environment == "random":
+# If the environment is square or random, save the FADs coordinates
+if environment in ["random","square","square_rd"]:
     FADs.save()
 
 
 #~~ RUN THE SIMULATION ~~
 # Print information
-if environment == "square" or environment == "random":
+if environment in ["square","random","square_rd"]:
     print(environment+' | n tunas='+str(NREPLICA)+' | v='+str(TUNA.v)+' m/s | dist='+str(FADs.distFAD)+' km | Ro='+str(TUNA.R0)+' km | sigma='+str(round(TUNA.sigma,3))+' -> c='+str(TUNA.c)+' | Add CRTs = '+str(ADD_CRTS))
 else:
     print(environment+' '+str(studyYear)+' | n tunas='+str(NREPLICA)+' | v='+str(TUNA.v)+' m/s | Ro='+str(TUNA.R0)+' km | sigma='+str(round(TUNA.sigma,3))+' -> c='+str(TUNA.c)+' | Add CRTs = '+str(ADD_CRTS))
@@ -271,7 +271,7 @@ if VERBOSE == True:
 
 #~~ SAVE SUMMARY ~~
 
-L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
+lines = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
      "\n--------------",
      "\n",
      "\nNumber of simulated tunas : "+str(NREPLICA),
@@ -279,7 +279,7 @@ L = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.loc
      "\nSeed :"+str(SEED)
      ]
 summary = open(str(path_output)+"/Summary.txt", "w")
-summary.writelines(L)
+summary.writelines(lines)
 summary.close()
 
 

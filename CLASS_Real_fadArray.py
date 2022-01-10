@@ -3,36 +3,35 @@
 """
 Created on Mon Feb  8 11:20:40 2021
 
-Definition de la classe utilisee pour creer les environnements de DCP reels
+Definition of the class used to create real arrays of FADs
 
 @author: adupaix
 """
 
 class FAD_Array:
-    """Classe qui contient un ensemble
-    de DCP, tous caractérisés par :
-        - un identifiant (un array, avec des numeros de 1 a Nfad)
-        - des coordonnées (deux array, un avec x l'autre avec y')
-        - la presence ou non d'une bouee
+    """
+    Class with contains an array of FADs, each FAD characterized by :
+        - an id (1D array, with numbers from 1 to Nfad)
+        - coordinates (two 1D arrays, one with x one with y)
+        - presence of not of an acoustic receiver
         """
  
     
     def __init__(self, path, environment, studyYear, study_center, detection_radius = 0.5):
         """
-        Prend comme input:
-            - l'environnement d'interet (hawaii, maldive ou maurice)
-            - l'annee de l'etude
-            - le rayon de detection
+        Takes as inputs:
+            - the environment name (hawaii, maldive or maurice)
+            - the year of the study
+            - the detection radius
                 
-            Et genere un ensemble de DCP contenant:
-                - 2 array avec 1 colonne contenant les coordonnes de tous les DCP (x et y, dans un repere en km, centre sur le 1e DCP)
-                - 2 array avec une colonne contenant les coordonnes en degres (x_deg, y_deg)
-                - un array avec 1 colonne contenant l'identifiant des DCP (id)
-                - un array contenant un boleen par DCP, disant s'il a une bouee qui lui est associee (has_buoy)
-                    si frac_with_buoy != 1, les DCP sont aleatoirement equipes (de maniere a respecter la fraction)
-                - dr: un array contenant le rayon de detection par DCP (0 si pas de bouee, un nombre en km si le DCP est equipe)
-                - nFAD: le nombre de DCP dans l'environnement
-                - frac: la fraction de DCP equipes
+            And generates a FAD array containing:
+                - two 1D arrays with FAD coordinates (x et y, in a reference frame in km, centered on the center of gravity of the array)
+                - two 1D arrays with FAD coordinates in degrees (x_deg, y_deg)
+                - one 1D array with FAD identification numbers (id)
+                - one 1D array with boleens, to know if the FAD is equipped with a receiver (has_buoy)
+                - dr: 1D array containing the detection radius for each FAD (0 if no receiver, radius in km if the FAD is equipped)
+                - nFAD: number of FADs in the array
+                - frac: fraction of equipped FADs
                 
         """
         
@@ -87,10 +86,10 @@ class FAD_Array:
     
     def change_dr(self, new_dr):
         """
-        Methode pour changer le rayon de detection (dr) des DCPs
-        Prend comme argument soit un float unique (a), soit un array de dimension (1,nFAD) (b)
-        (a): toutes les bouees equipees prennent comme valeur de dr la valeur fournie
-        (b): le DCP i prend la valeur i du vecteur fourni
+        Method to change the detection radius (dr)
+        Takes as input either a unique float (a), either a 1D array of length nFAD (b)
+        (a): all the equipped receivers' dr take the given value
+        (b): FAD i takes the value i of the given array
         """
         if type(new_dr) is float:
             self.dr = self.has_buoy * new_dr
@@ -101,8 +100,8 @@ class FAD_Array:
     
     def distance_matrix(self):
         """
-        Calcule la matrice de distance entre
-        tous les DCP de l'array
+        Calculate the distance matrix between
+        all the FADs in the array
         """
         x_line = np.repeat(self.x, self.nFAD).reshape(self.nFAD,self.nFAD)
         x_col = x_line.transpose()
@@ -115,7 +114,8 @@ class FAD_Array:
 
         
     def __repr__(self):
-        """Methode pour afficher l objet
+        """
+        Method to represent the object
         """
         return "Real FAD Array\n\n Environment: {} \n Number of FADs: {}\n Fraction of equipped FADs: {}".format(self.env,
                                    self.nFAD,

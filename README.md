@@ -1,18 +1,29 @@
-# CRW model v1.0
+FAT albaCoRaW
+===================
+FAD Association by Tuna: A Lovely model BAsed on a COrrelated RAndom Walk
 
-## Simulations of tuna trajectories in a FAD array
+<!-- ![License](https://img.shields.io/github/license/CRW_model)
 
-Launch config files to launch the model (example of file in cfg folder). It will be launched using MAIN.py
+[![DOI](https://zenodo.org/badge/)](https://zenodo.org/badge/)
 
-To plot tuna trajectories: run simulation, when it is done running, run PLOT_tuna_traj.py, with r = number of the tuna of interest.
+[![Latest Release](https://img.shields.io/github/release/CRW_model.svg)](https://github.com/CRW_model/releases) -->
 
-## Comment
+---
 
-Behavior is identical to Geraldine's model, with the General parameters chosen in cfg/ex_cfg.py
+Individual based model simulating tuna trajectories in an array of Fish Aggregating Devices (FADs), based on a Correlated Random Walk. This is the version of the model that was used to generate the results in the following publication:
 
-## Futur developments
+Pérez G., Dupaix A., Dagorn L., Deneubourg J-L., Holland K., Beeharry S., Capello M. (in press). Correlated Random Walk of tuna in Fish Aggregating Device arrays: field-based model from acoustic tagging. __Ecological Modelling__
 
-* add condition at the edge of square FAD array simulations
-* several tunas at the same time (change class TUNA to TUNAS)
+# Run
 
+The model runs with [Python 3.8.5](https://docs.python.org/release/3.8.5/)
 
+The [conda](https://docs.conda.io/projects/conda/en/latest/) environment to run the model is provided. To create, type : `conda env create -f env_CRW-model.yml`
+
+To run the model, type:
+
+`python cfg/ex_cgf.py` where `ex_cfg.py` is the configuration file (template available in the `cfg` folder)
+
+# Plot
+
+To plot tuna trajectories: run simulation in a Python environment. Then run `PLOT_tuna_traj.py`, with r the id of the tuna of interest.
