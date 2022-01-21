@@ -130,13 +130,24 @@ else:
 if environment == "square":
     diag_fad = FADs.id[FADs.x == FADs.y]
     fad_start = diag_fad[int(len(diag_fad)/2)]
-# if random array, choose the closest FAD to the center of the study area
-# elif environment == "random":
-#     fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
+    fad_start = np.repeat(fad_start, repeats=NREPLICA)
+# If random array, choose a FAD randomly in the array
+elif environment in ["random","square_rd"]:
+    fad_start = np.random.choice(FADs.id, size=NREPLICA)
+# If we ask for the fad start
 elif CHOOSE_FAD_START == True:
     fad_start = None # get the FAD number here so it can be saved in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:
         fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
+    fad_start = np.repeat(fad_start, repeats=NREPLICA)
+# If real array and choose_fad_start is False, FAD chosen randomly among FADs used for actual experimental release
+else:
+    # chosen with uniform distribution among the FADs where release occured
+    if F_TO_PICK_FAD_START == "uniform":
+        fad_start = np.random.choice(FADs.id[FADs.of_release != 0], size=NREPLICA)
+    # or respect the actual proportions in the experiment
+    elif F_TO_PICK_FAD_START == "asData":
+        fad_start = np.random.choice(FADs.id, NREPLICA, p=[i/sum(FADs.of_release) for i in FADs.of_release])
 
 
 ## Orientation radius
@@ -276,7 +287,33 @@ lines = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time
      "\n",
      "\nNumber of simulated tunas : "+str(NREPLICA),
      "\nEnvironment type : "+str(environment),
-     "\nSeed :"+str(SEED)
+     "\nSeed : "+str(SEED),
+     "\n\n\nArguments :",
+     "\n------------",
+     "\n\nPATH : "+str(PATH),
+     "\nCHECK_MAP : "+str(CHECK_MAP),
+     "\nRESET : "+str(RESET),
+     "\nOUTPUT_FORMAT : "+str(OUTPUT_FORMAT),
+     "\n\nADD_CRTS : "+str(ADD_CRTS),
+     "\nLEAVE_AT_DR : "+str(LEAVE_AT_DR),
+     "\n\nLIMIT_CAT_NB : "+str(LIMIT_CAT_NB),
+     "\nNB_MAX_CAT : "+str(NB_MAX_CAT),
+     "\n\nVERBOSE : "+str(VERBOSE),
+     "\nTIME_MACHINE : "+str(TIME_MACHINE),
+     "\nSRW_WHEN_DEPART : "+str(SRW_WHEN_DEPART),
+     "\n\nSTUDY : "+str(STUDY),
+     "\n\nDIST_FAD : "+str(DIST_FAD),
+     "\nL : "+str(L),
+     "\nDR: "+str(DR),
+     "\n\nNREPLICA : "+str(NREPLICA),
+     "\nPATH_DURATION : "+str(PATH_DURATION),
+     "\nSTEP_TIME : "+str(STEP_TIME),
+     "\nCHOOSE_FAD_START : "+str(CHOOSE_FAD_START),
+     "\nF_TO_PICK_FAD_START : "+str(F_TO_PICK_FAD_START),
+     "\n\nR0 : "+str(R0),
+     "\nV : "+str(V),
+     "\nC : "+str(C),
+     "\nM : "+str(M)
      ]
 summary = open(str(path_output)+"/Summary.txt", "w")
 summary.writelines(lines)
