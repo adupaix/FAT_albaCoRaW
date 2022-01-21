@@ -130,13 +130,24 @@ else:
 if environment == "square":
     diag_fad = FADs.id[FADs.x == FADs.y]
     fad_start = diag_fad[int(len(diag_fad)/2)]
-# if random array, choose the closest FAD to the center of the study area
-# elif environment == "random":
-#     fad_start = FADs.id[np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2) == min(np.sqrt((FADs.x - L/2)**2 + (FADs.y - L/2)**2))]
+    fad_start = np.repeat(fad_start, repeats=NREPLICA)
+# If random array, choose a FAD randomly in the array
+elif environment in ["random","square_rd"]:
+    fad_start = np.random.choice(FADs.id, size=NREPLICA)
+# If we ask for the fad start
 elif CHOOSE_FAD_START == True:
     fad_start = None # get the FAD number here so it can be saved in the output folder name
     while fad_start not in FADs.id[FADs.of_release != 0]:
         fad_start = int(input("Choose the FAD of release in one of the following FADs: "+str(FADs.id[FADs.of_release != 0])))
+    fad_start = np.repeat(fad_start, repeats=NREPLICA)
+# If real array and choose_fad_start is False, FAD chosen randomly among FADs used for actual experimental release
+else:
+    # chosen with uniform distribution among the FADs where release occured
+    if F_TO_PICK_FAD_START == "uniform":
+        fad_start = np.random.choice(FADs.id[FADs.of_release != 0], size=NREPLICA)
+    # or respect the actual proportions in the experiment
+    elif F_TO_PICK_FAD_START == "asData":
+        fad_start = np.random.choice(FADs.id, NREPLICA, p=[i/sum(FADs.of_release) for i in FADs.of_release])
 
 
 ## Orientation radius
