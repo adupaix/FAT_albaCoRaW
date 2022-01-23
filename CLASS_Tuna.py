@@ -114,7 +114,7 @@ class TUNA:
         if TUNA.m == 0:
             return Npas-1
         else:
-            k=1
+            k=2
             r_mortality = rd.random()
             while r_mortality > TUNA.step_m and k<=Npas-1:
                 k += 1
