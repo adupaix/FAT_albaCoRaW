@@ -11,6 +11,8 @@ Modified on Apr 15 2021, by adupaix
 ###############################################################################
 #~~~~ Start the simulation ~~~~
 
+open(path_output+'/nb_of_time_travels.txt', 'a').close()
+
 for replica in range(NREPLICA):
     if VERBOSE==True:
         print("\nTuna n"+str(replica))
@@ -94,7 +96,9 @@ for replica in range(NREPLICA):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## Save the array containing the tuna trajectory
     tuna.save(path_output = path_output, file_format = output_format, tuna_number = replica+1)
-        
+    
+    with open(path_output+'/nb_of_time_travels.txt', 'a') as f:
+        f.write(str(tuna.nb_time_travels)+'\n')
     
     end_r = time.time()
     if VERBOSE == True:

@@ -104,6 +104,8 @@ class TUNA:
         self.time_machine = time_machine #determine si le thon revient en arriere dans le temps quand il fait un CATret<24h
         
         self.edge = np.zeros(self.lifetime) #pour condition au bord, determine si le thons sort de la zone d'etude
+        
+        self.nb_time_travels = 0 #counts the number of time travels if allowed
     
     def lifetime(Npas):
         """
@@ -322,6 +324,8 @@ class TUNA:
         self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / TUNA.sigma, (math.pi) / TUNA.sigma, loc=0, scale=TUNA.sigma, size = self.p_since_asso+1)
         
         self.p_since_asso = 0
+        
+        self.nb_time_travels += 1
         
         
         
