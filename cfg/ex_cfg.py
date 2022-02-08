@@ -48,7 +48,7 @@ NB_MAX_CAT = 1
 VERBOSE = True
 
 #~ Wether to go back in time or not when the tuna does a CATreturn < 24h
-TIME_MACHINE = False #NE PAS MODIFIER SUR CETTE VERSION DU MODELE (LONG...) 
+TIME_MACHINE = False
 
 #~ When a tuna leaves a FAD, does a simple Random Walk (True) or a Correlated Random Walk (False)
 SRW_WHEN_DEPART = True
@@ -73,7 +73,7 @@ Environments:
 #~ Study number
 STUDY = 10
 
-#~ Characteristics of the FAD array
+#~ Characteristics of the FAD array - Apply to square and randomized square arrays
 DIST_FAD = 15 #Distance between FADs, in km
 L = 10*DIST_FAD #Width of the environment, in km.
 DR = 0.5 #Detection radius of FADs, in km
@@ -91,8 +91,14 @@ PATH_DURATION = 20 # in days
 #~ Time step
 STEP_TIME = 100 # in seconds
 
-#~ Wether to choose the FAD of release or not
+#~ Wether to choose the FAD of release or not - Apply to real arrays
 CHOOSE_FAD_START = False
+
+#~ If the FAD of release if picked randomly (CHOOSE_FAD_START = False), choose the function used among:
+#  "uniform": the probability to pick a FAD is uniformly distributed among the FADs where release occured in the experiment
+#  "asData": the probability to pick a FAD is proportional with the number of tuna released at that FAD in the experiment
+# Apply to real arrays
+F_TO_PICK_FAD_START = "asData"
 
 #%%####################################
 #~~~ Individual tuna characteristics ~~

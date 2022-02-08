@@ -20,15 +20,8 @@ for replica in range(NREPLICA):
     tuna = TUNA(Npas, verbose = VERBOSE, time_machine = TIME_MACHINE, CRW = crw)
 
     ## First position
-    # If real array and choose_fad_start is False, FAD chosen randomly among FADs used for actual experimental release
-    if CHOOSE_FAD_START == False and environment not in ["square", "random", "square_rd"]:
-        fad_start = rd.choice(FADs.id[FADs.of_release != 0])
-    # If random array, choose a FAD randomly in the array
-    elif environment in ["random","square_rd"]:
-        fad_start = rd.choice(FADs.id)
-    
-    tuna.x[0] = FADs.x[FADs.id == fad_start]
-    tuna.y[0] = FADs.y[FADs.id == fad_start]
+    tuna.x[0] = FADs.x[FADs.id == fad_start[replica]]
+    tuna.y[0] = FADs.y[FADs.id == fad_start[replica]]
     tuna.checkEnv(FADs)
     
     ##Start the tuna path (first step, from p=0 to p=1)

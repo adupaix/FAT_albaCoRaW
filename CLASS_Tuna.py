@@ -114,7 +114,7 @@ class TUNA:
         if TUNA.m == 0:
             return Npas-1
         else:
-            k=1
+            k=2
             r_mortality = rd.random()
             while r_mortality > TUNA.step_m and k<=Npas-1:
                 k += 1
@@ -409,18 +409,30 @@ class TUNA:
         
         p = self.p
         
-        can_reach_land = Point(np.r_[self.x[p],self.y[p]]).buffer(TUNA.l).intersects(Island.line)
+        # build the circle around the tuna position
+        start_angle, end_angle = 0, 360 # In degrees -> to have a complete ring
+        numsegments = 1000
+        ## The coordinates of the arc
+        theta = np.radians(np.linspace(start_angle, end_angle, numsegments))
+        x = self.x[p] + TUNA.l * np.cos(theta)
+        y = self.y[p] + TUNA.l * np.sin(theta)
+        arc = geom.LineString(np.c_[x, y])
+            
+        can_reach_land = arc.intersects(Island.line)
         
         if can_reach_land:
             
-            # build the circle around the tuna position
-            start_angle, end_angle = 0, 360 # In degrees -> to have a complete ring
-            numsegments = 1000
-            ## The coordinates of the arc
-            theta = np.radians(np.linspace(start_angle, end_angle, numsegments))
-            x = self.x[p] + TUNA.l * np.cos(theta)
-            y = self.y[p] + TUNA.l * np.sin(theta)
-            arc = geom.LineString(np.c_[x, y])
+            # # get the line of the intersection between the disc and the island line
+            # intersection = Point(np.r_[self.x[p],self.y[p]]).buffer(TUNA.l).intersection(Island.line)
+            # if intersection.geom_type == 'LineString': # if the intersection is only a segment
+            #     # get the two intersects with the land
+            #     pos1 = list(intersection.coords)[0]
+            #     pos2 = list(intersection.coords)[1]
+            # elif intersection.geom_type == 'MultiLineString': # if the intersection is composed of several segments
+            #     # get the most intersections at the beginning and at the end of the lines
+            #     pos1 = list(intersection[0].coords)[0]
+            #     pos2 = list(intersection[len(intersection)].coords)[1]
+            # Probleme avec la selection des points dans le cas ou c est une MultiLineString
             
             # get the two intersects with the land
             pos1 = list(arc.intersection(Island.line)[0].coords)[0]
