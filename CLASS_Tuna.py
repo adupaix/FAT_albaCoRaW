@@ -144,7 +144,7 @@ class TUNA:
         Changes step_m at the same time
         """
         TUNA.m = new_m
-        TUNA.step_m = ((new_m / 100 ) * STEP_TIME)/(24*3600)
+        TUNA.step_m = 1 - math.exp((1/(24*3600/STEP_TIME))*math.log(1-new_m/100))
     
     
     ### ~~~ METHODES DE MOUVEMENT DES THONS
