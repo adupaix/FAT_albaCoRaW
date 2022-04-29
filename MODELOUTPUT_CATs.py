@@ -27,7 +27,7 @@ if environment not in ["square", "random", "square_rd"]:
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~ 2. CALCULATE CAT AND CRT
-cart_array = np.zeros([NREPLICA*10000, 8]) # array a remplir
+cart_array = np.zeros([NREPLICA*10000, 9]) # array a remplir
 nCAT = 0
 for r in range(NREPLICA):
     
@@ -47,7 +47,8 @@ for r in range(NREPLICA):
     
     if environment in ["square","random","square_rd"]:
         # get the list of the encountered FADs from the tuna object
-        # and calculate the distances
+        # and calculate the distances and the nearest neighbor (nn) number
+        # distFAD_list contains 2 columns
         distFAD_list = FADs.distance_list(tuna, edge_dict)
     
     ## si le thon n'est pas associe au dernier pas de temps
@@ -73,18 +74,21 @@ for r in range(NREPLICA):
         fad2 = tuna.num_asso_FAD[t2]        
         
         if environment in ["square","random","square_rd"]:
-            dist = distFAD_list[i]
+            dist = distFAD_list[i,0]
+            nn_nb = distFAD_list[i,1]
         else:
             dist = distFAD_mat[np.where(FADs_ids == fad1), np.where(FADs_ids == fad2)] #recupere la distance entre les deux DCP
-        
-        cart_array[nCAT,:] = np.array([r+1, t1, t2, fad1, fad2, cat, float(dist),1]) # stock: id thon, tps depart, tps arrivee, dcp depart, dcp arrivee, cat, dist entre dcp, bollen "is a CAT" (1)
+            nn_nb = np.where(np.sort(distFAD_mat[np.where(FADs_ids == fad1)]) == dist)[1]
+            
+        # save: id thon, tps depart, tps arrivee, dcp depart, dcp arrivee, cat, dist entre dcp, nn number, bollen "is a CAT" (1)
+        cart_array[nCAT,:] = np.array([r+1, t1, t2, fad1, fad2, cat, float(dist), int(nn_nb),1])
         nCAT += 1
         if i != len(end_asso)-1:
             # temps de fin du CRT i
             t3 = end_asso[i+1]
             crt = ((t3-t2)*STEP_TIME)/(24*3600) # recalcul le CRT (en jour)
-            cart_array[nCAT,:] = np.array([r+1, t2, t3, fad2, fad2, crt, 0,0]) # stock: id thon, tps depart, tps arrivee, dcp, dcp, crt, dist (0 c'est un CRT), bolleen "is a CAT" (0)
-            nCAT += 1       
+            cart_array[nCAT,:] = np.array([r+1, t2, t3, fad2, fad2, crt, 0,0,0]) # stock: id thon, tps depart, tps arrivee, dcp, dcp, crt, dist (0 c'est un CRT), nn number (0, did not move) bolleen "is a CAT" (0)
+            nCAT += 1
         
         #### rajouter un tuna.save pour mettre a jour
         
