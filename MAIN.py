@@ -197,9 +197,7 @@ if LIMIT_CAT_NB == False:
 
 # Generate output folders
 if environment in ["square", "random", "square_rd"]:
-    sim_name = environment+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
-    if environment in ["random","square_rd"]:
-        sim_name = sim_name+"_seed"+str(SEED)
+    sim_name = environment+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_distFAD"+str(FADs.distFAD)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)+"_seed"+str(SEED)
 elif CHOOSE_FAD_START == False:
     sim_name = environment+str(studyYear)+"_v"+str(TUNA.v)+"_m"+str(TUNA.m)+"_Ro"+str(TUNA.R0)+"_c"+str(TUNA.c)
 elif CHOOSE_FAD_START == True:
