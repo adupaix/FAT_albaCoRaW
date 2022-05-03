@@ -102,7 +102,7 @@ if output_format[1]=="csv":
     np.savetxt(str(path_output)+"/CATs/CARTs_array."+output_format[1], cart_array)
     
 ## Save the array containing only the CATs
-cat_array = cart_array[cart_array[:,7]!=0]
+cat_array = cart_array[cart_array[:,8]!=0]
 np.save(str(path_output)+"/CATs/CATs_array.npy", cat_array)
 if output_format[1]=="csv":
     np.savetxt(str(path_output)+"/CATs/CATs_array."+output_format[1], cat_array)
