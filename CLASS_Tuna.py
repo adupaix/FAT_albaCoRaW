@@ -320,6 +320,7 @@ class TUNA:
         self.last_FAD_reinit_24h = self.last_FAD_no_reinit
         
         self.alpha[self.p:(self.p+self.p_since_asso+1)] = truncnorm.rvs((-math.pi) / TUNA.sigma, (math.pi) / TUNA.sigma, loc=0, scale=TUNA.sigma, size = self.p_since_asso+1)
+        self.edge[self.p:(self.p+self.p_since_asso+1)] = 0
         
         self.p_since_asso = 0
         
