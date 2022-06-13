@@ -151,11 +151,6 @@ class FAD_Array:
             
             # Then, to get the nearest neighbor number
             # we consider the "arena" of LxL where the tuna was launched from and the 8 squares around
-            # FADs_x_for_nn = np.array(list(np.concatenate((self.x + edge_dict[1][0], self.x, self.x + edge_dict[3][0]))) * 3)
-            # FADs_y_for_nn = np.concatenate((np.array(list(self.y + edge_dict[2][1]) * 3),
-            #                                 np.array(list(self.y) * 3),
-            #                                 np.array(list(self.y + edge_dict[4][1]) * 3)))
-            
             FADs_x_for_nn = np.array(list(np.concatenate((FADs.x + edge_dict[1][0], FADs.x, FADs.x + edge_dict[3][0]))) * 3)
             FADs_y_for_nn = np.concatenate((np.array(list(FADs.y + edge_dict[2][1]) * 3),
                                             np.array(list(FADs.y) * 3),
@@ -179,7 +174,7 @@ class FAD_Array:
             
             # if the tuna traveled more than the length of the arena along one axis (x or y)
             # we add other arenas to the FADs_*_for_nn vectors
-            if np.round(abs(x2-x1) / FADs.L)[0] > 0 or np.round(abs(y2-y1) / FADs.L)[0] > 0:
+            if np.round(abs(x2-x1) / FADs.L)[0] > 1 or np.round(abs(y2-y1) / FADs.L)[0] > 1:
                 nb_of_arena_layers = int(max(np.round(abs(x2-x1) / FADs.L), np.round(abs(y2-y1) / FADs.L)))
                 if nb_of_arena_layers > 4:
                     raise ValueError('Tuna moved too far from the initial FAD to properly estimate the nearest neighbor number. Please contact us at amael.dupaix@ird.fr so the script can be adapted',
