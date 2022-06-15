@@ -144,17 +144,17 @@ class FAD_Array:
             y2 = FADs.y[np.where(FADs.id == int(FADs_start_list[i][0]))]
             
             # get the positions of the FADs
-            # x1 = self.x[np.where(self.id == int(FADs_end_list[i][0]))]
-            # x2 = self.x[np.where(self.id == int(FADs_start_list[i][0]))]
-            # y1 = self.y[np.where(self.id == int(FADs_end_list[i][0]))]
-            # y2 = self.y[np.where(self.id == int(FADs_start_list[i][0]))]
+            x1 = self.x[np.where(self.id == int(FADs_end_list[i][0]))] # departure FAD
+            x2 = self.x[np.where(self.id == int(FADs_start_list[i][0]))] # FAD of arrival
+            y1 = self.y[np.where(self.id == int(FADs_end_list[i][0]))]
+            y2 = self.y[np.where(self.id == int(FADs_start_list[i][0]))]
             
             # Then, to get the nearest neighbor number
-            # we consider the "arena" of LxL where the tuna was launched from and the 8 squares around
-            FADs_x_for_nn = np.array(list(np.concatenate((FADs.x + edge_dict[1][0], FADs.x, FADs.x + edge_dict[3][0]))) * 3)
-            FADs_y_for_nn = np.concatenate((np.array(list(FADs.y + edge_dict[2][1]) * 3),
-                                            np.array(list(FADs.y) * 3),
-                                            np.array(list(FADs.y + edge_dict[4][1]) * 3)))
+            # we consider the "arena" of LxL where the tuna was launched from
+            FADs_x_for_nn = self.x
+            FADs_y_for_nn = self.y
+            # FADs_x_for_nn = FADs.x
+            # FADs_y_for_nn = FADs.y
             
             # Correct the positions in case the tuna crossed by one side of the study area
             if len(FADs_end_list[i]) > 1:
@@ -172,21 +172,64 @@ class FAD_Array:
             d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
             dist.append(d)
             
-            # if the tuna traveled more than the length of the arena along one axis (x or y)
-            # we add other arenas to the FADs_*_for_nn vectors
-            if np.round(abs(x2-x1) / FADs.L)[0] > 1 or np.round(abs(y2-y1) / FADs.L)[0] > 1:
-                nb_of_arena_layers = int(max(np.round(abs(x2-x1) / FADs.L), np.round(abs(y2-y1) / FADs.L)))
-                if nb_of_arena_layers > 4:
-                    raise ValueError('Tuna moved too far from the initial FAD to properly estimate the nearest neighbor number. Please contact us at amael.dupaix@ird.fr so the script can be adapted',
-                                     'nb_of_arena_layers: '+str(nb_of_arena_layers),
-                                     'FADs_end_list: '+str(FADs_end_list),
-                                     'FADs_start_list: '+str(FADs_start_list))
-                FADs_x_for_nn = np.repeat(np.concatenate((FADs_x_for_nn + 3*edge_dict[1][0], FADs_x_for_nn, FADs_x_for_nn + 3*edge_dict[3][0])), repeats = 3)
-                FADs_y_for_nn = np.concatenate((np.repeat(FADs_y_for_nn + 3*edge_dict[2][1], repeats = 3),
-                                                np.repeat(FADs_y_for_nn, repeats = 3),
-                                                np.repeat(FADs_y_for_nn + 3*edge_dict[4][1], repeats = 3)))
-                    
-            # we compute the vector of distance from the starting FAD
+                        
+            ## Get the nearest neighbor number
+            # Check which arenas are, at least partly, included in the circle of
+            # center (x1,y1) and radius d
+            
+            # number of arena coordinates to check distance against
+            niter = round(2 * d / self.L)+10
+            # get the coordinates of the bottom left point of the arenas
+            uniqueXY = np.array([self.L * x for x in range(-niter+1, niter)])
+            # niter = round(2 * d / FADs.L)+10
+            # uniqueXY = np.array([FADs.L * x for x in range(-niter+1, niter)])
+            xCells = np.repeat(uniqueXY, repeats = len(uniqueXY))
+            yCells = np.tile(uniqueXY, reps = len(uniqueXY))
+            
+            # calculate the distance bewteen the arena point and the point (x1,y1)
+            dxs = xCells - x1
+            dys = yCells - y1
+            distancesSquared = np.add(dxs**2, dys**2)
+            # select arenas which are at less than d from the departure point (x1,y1)
+            selectedCells = np.where(distancesSquared <= d**2)[0]
+            # But if d is inferior to the distance between the departure point and
+            # the bottom-left corner of the closest arena, no arena is selected
+            # Hence, we add the closest arena
+            if len(selectedCells) == 0:
+                selectedCells = np.append(selectedCells, np.where(distancesSquared == min(distancesSquared)))
+                
+            selectedX = xCells[selectedCells]
+            selectedY = yCells[selectedCells]
+            
+            # Add the arenas on the left and the ones on the bottom of the selected arenas
+            toAddX = xCells[selectedCells] - self.L
+            toAddY = yCells[selectedCells] - self.L
+            # toAddX = xCells[selectedCells] - FADs.L
+            # toAddY = yCells[selectedCells] - FADs.L
+                        
+            # add arenas to the left
+            selectedX = np.append(selectedX, toAddX)
+            selectedY = np.append(selectedY, selectedY)
+            # add arenas on the bottom
+            selectedX = np.append(selectedX, xCells[selectedCells])
+            selectedY = np.append(selectedY, toAddY)
+            # add the arenas on the bottom left
+            selectedX = np.append(selectedX, min(selectedX))
+            selectedY = np.append(selectedY, min(selectedY))
+            
+            # coordinates of all the selected arenas
+            selectedCoords = np.unique(np.c_[selectedX,selectedY], axis = 0)    
+ 
+            # add the coordinates of the FADs in all the selected arenas to the coordinate list
+            # which will be used to calculate distances
+            for i in range(selectedCoords.shape[0]):
+                # FADs_x_for_nn = np.append(FADs_x_for_nn, FADs.x + selectedCoords[i,0])
+                # FADs_y_for_nn = np.append(FADs_y_for_nn, FADs.y + selectedCoords[i,1])
+                FADs_x_for_nn = np.append(FADs_x_for_nn, self.x + selectedCoords[i,0])
+                FADs_y_for_nn = np.append(FADs_y_for_nn, self.y + selectedCoords[i,1])
+            
+            
+            # Compute the vector of distances from the starting FAD
             distance_vect = np.sqrt((FADs_y_for_nn - y1)**2 + (FADs_x_for_nn - x1)**2)
             # and get the position corresponding the nn number
             nn = np.min(np.where(np.round(np.sort(distance_vect), decimals = 6) == round(d, ndigits = 6)))
