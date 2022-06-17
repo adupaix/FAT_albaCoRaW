@@ -90,7 +90,7 @@ class FAD_Array:
         """
         Method to change the detection radius (dr)
         Takes as input either a unique float (a), either a 1D array of length nFAD (b)
-        (a): all the equipped receivers' dr take the given value
+        (a): all the equiped receivers' dr take the given value
         (b): FAD i takes the value i of the given array
         """
         if type(new_dr) is float:
@@ -122,7 +122,7 @@ class FAD_Array:
         FADs_end_asso = tuna.num_asso_FAD[end_asso]
         FADs_end_list = [[i] for i in FADs_end_asso]
         for i in range(end_asso.shape[0]):
-            if (end_asso[i] >= edge_p).any():
+            if (end_asso[i] > edge_p).any():
                 FADs_end_list[i].append(edge_side[np.where(end_asso[i] >= edge_p)[1]])
         
         # get the number of distances to calculate
@@ -138,10 +138,10 @@ class FAD_Array:
         dist = list()
         nns = list()
         for i in rg:
-            x1 = FADs.x[np.where(FADs.id == int(FADs_end_list[i][0]))]
-            x2 = FADs.x[np.where(FADs.id == int(FADs_start_list[i][0]))]
-            y1 = FADs.y[np.where(FADs.id == int(FADs_end_list[i][0]))]
-            y2 = FADs.y[np.where(FADs.id == int(FADs_start_list[i][0]))]
+            # x1 = FADs.x[np.where(FADs.id == int(FADs_end_list[i][0]))]
+            # x2 = FADs.x[np.where(FADs.id == int(FADs_start_list[i][0]))]
+            # y1 = FADs.y[np.where(FADs.id == int(FADs_end_list[i][0]))]
+            # y2 = FADs.y[np.where(FADs.id == int(FADs_start_list[i][0]))]
             
             # get the positions of the FADs
             x1 = self.x[np.where(self.id == int(FADs_end_list[i][0]))] # departure FAD
@@ -151,10 +151,11 @@ class FAD_Array:
             
             # Then, to get the nearest neighbor number
             # we consider the "arena" of LxL where the tuna was launched from
-            FADs_x_for_nn = self.x
-            FADs_y_for_nn = self.y
-            # FADs_x_for_nn = FADs.x
-            # FADs_y_for_nn = FADs.y
+            ## !!! need to use .copy() or else if we modify FADs_x_for_nn it modifies self.x (behaves like a list)
+            FADs_x_for_nn = self.x.copy()
+            FADs_y_for_nn = self.y.copy()
+            # FADs_x_for_nn = FADs.x.copy()
+            # FADs_y_for_nn = FADs.y.copy()
             
             # Correct the positions in case the tuna crossed by one side of the study area
             if len(FADs_end_list[i]) > 1:
@@ -176,6 +177,8 @@ class FAD_Array:
             ## Get the nearest neighbor number
             # Check which arenas are, at least partly, included in the circle of
             # center (x1,y1) and radius d
+            # we call an "arena" the environment of LxL containing the FADs. As the model works on
+            # a torus, to calculate the nearest neighbor number we duplicate the "arena"
             
             # number of arena coordinates to check distance against
             niter = round(2 * d / self.L)+10
@@ -183,6 +186,7 @@ class FAD_Array:
             uniqueXY = np.array([self.L * x for x in range(-niter+1, niter)])
             # niter = round(2 * d / FADs.L)+10
             # uniqueXY = np.array([FADs.L * x for x in range(-niter+1, niter)])
+            
             xCells = np.repeat(uniqueXY, repeats = len(uniqueXY))
             yCells = np.tile(uniqueXY, reps = len(uniqueXY))
             
