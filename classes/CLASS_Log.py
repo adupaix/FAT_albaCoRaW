@@ -8,11 +8,27 @@ Definition de la classe Log
 @author: adupaix
 """
 
+def del_description(str_list):
+    """
+    Method to delete all the lines of method descriptions
+    """
+    i_d = [i for i in range(len(str_list)) if re.search('"""', str_list[i])]
+    i_s = [i_d[i] for i in range(len(i_d)) if i % 2 == 0]
+    i_e = [i_d[i] for i in range(len(i_d)) if i % 2 == 1]
+    to_del = list(range(i_s[0],i_e[0]+1))
+    if len(i_s)>1:
+        for i in range(len(i_s)-1):
+            to_del.extend(list(range(i_s[i+1],i_e[i+1]+1)))
+    for ele in sorted(to_del, reverse = True):
+        del str_list[ele]
+    
+        
+
 def del_after_pattern(string, pattern):
-        """
-        Method to keep only the part of a string before a given pattern
-        """
-        return string[0:string.find(pattern)]
+    """
+    Method to keep only the part of a string before a given pattern
+    """
+    return string[0:string.find(pattern)]
 
 
 class Log:
@@ -51,10 +67,11 @@ class Log:
         self.arg_lines = list()
         with open(self.full_name, 'r') as file:
             for line in file:
-                if re.search("=", line):
-                    self.arg_lines.append(line)
+                self.arg_lines.append(line)
                     
-        self.arg_lines = [x for x in self.arg_lines if not x.startswith('#')]
+        del_description(self.arg_lines)
+        
+        self.arg_lines = [x for x in self.arg_lines if (not x.startswith('#')) and re.search("=", x)]
         
         for i in range(len(self.arg_lines)):
             if re.search("#", self.arg_lines[i]):
