@@ -27,7 +27,7 @@ from shapely.geometry.polygon import LinearRing
 from descartes import PolygonPatch
 import time
 import csv as csv
-
+import re
 
 #~ Path
 path_files = PATH+'/files' #where the data files are saved
@@ -96,6 +96,18 @@ Npas = int(abs((PATH_DURATION*24*3600)/STEP_TIME)) # total number of timesteps
 ## charge the tuna class
 # WARNING: STEP_TIME is needed to initialize the TUNA class
 exec(open(str(path_class)+"/CLASS_Tuna.py").read())
+
+#~~~ LOG
+#---------
+exec(open(str(path_class)+"/CLASS_Log.py").read())
+# initialize the log
+log = Log(path = os.path.dirname(__file__),
+          fname = os.path.basename(__file__),
+          seed = SEED,
+          nreplica = NREPLICA,
+          environment = STUDY)
+# fill-in the log
+log.fill()
 
 
 
@@ -277,44 +289,9 @@ exec(open(str(path_model)+"/MODELOUTPUT_CATs.py").read())
 if VERBOSE == True:
     print("\nCATs saved in:\n    "+str(path_output)+"/CATs/CATs_array."+output_format[1])
 
-#~~ SAVE SUMMARY ~~
 
-lines = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
-     "\n--------------",
-     "\n",
-     "\nNumber of simulated tunas : "+str(NREPLICA),
-     "\nEnvironment type : "+str(environment),
-     "\nSeed : "+str(SEED),
-     "\n\n\nArguments :",
-     "\n------------",
-     "\n\nPATH : "+str(PATH),
-     "\nCHECK_MAP : "+str(CHECK_MAP),
-     "\nRESET : "+str(RESET),
-     "\nOUTPUT_FORMAT : "+str(OUTPUT_FORMAT),
-     "\n\nADD_CRTS : "+str(ADD_CRTS),
-     "\nLEAVE_AT_DR : "+str(LEAVE_AT_DR),
-     "\n\nLIMIT_CAT_NB : "+str(LIMIT_CAT_NB),
-     "\nNB_MAX_CAT : "+str(NB_MAX_CAT),
-     "\n\nVERBOSE : "+str(VERBOSE),
-     "\nTIME_MACHINE : "+str(TIME_MACHINE),
-     "\nSRW_WHEN_DEPART : "+str(SRW_WHEN_DEPART),
-     "\n\nSTUDY : "+str(STUDY),
-     "\n\nDIST_FAD : "+str(DIST_FAD),
-     "\nL : "+str(L),
-     "\nDR: "+str(DR),
-     "\n\nNREPLICA : "+str(NREPLICA),
-     "\nPATH_DURATION : "+str(PATH_DURATION),
-     "\nSTEP_TIME : "+str(STEP_TIME),
-     "\nCHOOSE_FAD_START : "+str(CHOOSE_FAD_START),
-     "\nF_TO_PICK_FAD_START : "+str(F_TO_PICK_FAD_START),
-     "\n\nR0 : "+str(R0),
-     "\nV : "+str(V),
-     "\nC : "+str(C),
-     "\nM : "+str(M)
-     ]
-summary = open(str(path_output)+"/Summary.txt", "w")
-summary.writelines(lines)
-summary.close()
+#~~ SAVE SUMMARY ~~
+log.save(path_output)
 
 
 

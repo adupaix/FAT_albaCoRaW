@@ -59,16 +59,16 @@ SRW_WHEN_DEPART = True
 """
 Environments:
     
-    - square array = 1
-    - Hawaii 2005 = 2
-    - Hawaii 2005 without land = 3
-    - Mauritius 2017 = 4
-    - Maldives 2017 = 5
-    - Maldives 2018 = 6
-    - Maldives 2018 without Huvadhoo atoll = 7
-    - Maldives 2009 = 8
-    - random array = 9
-    - randomized square array = 10
+    - square array:  1
+    - Hawaii 2005:  2
+    - Hawaii 2005 without land: 3
+    - Mauritius 2017: 4
+    - Maldives 2017: 5
+    - Maldives 2018: 6
+    - Maldives 2018 without Huvadhoo atoll: 7
+    - Maldives 2009: 8
+    - random array: 9
+    - randomized square array: 10
 """
 #~ Study number
 STUDY = 10
