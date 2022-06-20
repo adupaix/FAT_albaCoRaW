@@ -175,55 +175,33 @@ class FAD_Array:
             
                         
             ## Get the nearest neighbor number
-            # Check which arenas are, at least partly, included in the circle of
-            # center (x1,y1) and radius d
+            # Check which arenas are to be considered in the study
             # we call an "arena" the environment of LxL containing the FADs. As the model works on
             # a torus, to calculate the nearest neighbor number we duplicate the "arena"
+            min_xCell = math.floor((x1 - d) / self.L)
+            max_xCell = math.ceil((x1 + d) / self.L)
             
-            # number of arena coordinates to check distance against
-            niter = round(2 * d / self.L)+10
-            # get the coordinates of the bottom left point of the arenas
-            uniqueXY = np.array([self.L * x for x in range(-niter+1, niter)])
-            # niter = round(2 * d / FADs.L)+10
-            # uniqueXY = np.array([FADs.L * x for x in range(-niter+1, niter)])
+            min_yCell = math.floor((y1 - d) / self.L)
+            max_yCell = math.ceil((y1 + d) / self.L)
             
-            xCells = np.repeat(uniqueXY, repeats = len(uniqueXY))
-            yCells = np.tile(uniqueXY, reps = len(uniqueXY))
+            xCells = np.arange(min_xCell, max_xCell+1, 1)*self.L
+            yCells = np.arange(min_yCell, max_yCell+1, 1)*self.L
             
-            # calculate the distance bewteen the arena point and the point (x1,y1)
-            dxs = xCells - x1
-            dys = yCells - y1
-            distancesSquared = np.add(dxs**2, dys**2)
-            # select arenas which are at less than d from the departure point (x1,y1)
-            selectedCells = np.where(distancesSquared <= d**2)[0]
-            # But if d is inferior to the distance between the departure point and
-            # the bottom-left corner of the closest arena, no arena is selected
-            # Hence, we add the closest arena
-            if len(selectedCells) == 0:
-                selectedCells = np.append(selectedCells, np.where(distancesSquared == min(distancesSquared)))
-                
-            selectedX = xCells[selectedCells]
-            selectedY = yCells[selectedCells]
+            # min_xCell = math.floor((x1 - d) / FADs.L)
+            # max_xCell = math.ceil((x1 + d) / FADs.L)
             
-            # Add the arenas on the left and the ones on the bottom of the selected arenas
-            toAddX = xCells[selectedCells] - self.L
-            toAddY = yCells[selectedCells] - self.L
-            # toAddX = xCells[selectedCells] - FADs.L
-            # toAddY = yCells[selectedCells] - FADs.L
-                        
-            # add arenas to the left
-            selectedX = np.append(selectedX, toAddX)
-            selectedY = np.append(selectedY, selectedY)
-            # add arenas on the bottom
-            selectedX = np.append(selectedX, xCells[selectedCells])
-            selectedY = np.append(selectedY, toAddY)
-            # add the arenas on the bottom left
-            selectedX = np.append(selectedX, min(selectedX))
-            selectedY = np.append(selectedY, min(selectedY))
+            # min_yCell = math.floor((y1 - d) / FADs.L)
+            # max_yCell = math.ceil((y1 + d) / FADs.L)
+            
+            # xCells = np.arange(min_xCell, max_xCell+1, 1)*FADs.L
+            # yCells = np.arange(min_yCell, max_yCell+1, 1)*FADs.L
+            
+            xCells = np.repeat(xCells, repeats = len(yCells))
+            yCells = np.tile(yCells, reps = len(np.unique(xCells)))
             
             # coordinates of all the selected arenas
-            selectedCoords = np.unique(np.c_[selectedX,selectedY], axis = 0)    
- 
+            selectedCoords = np.unique(np.c_[xCells,yCells], axis = 0)
+            
             # add the coordinates of the FADs in all the selected arenas to the coordinate list
             # which will be used to calculate distances
             for i in range(selectedCoords.shape[0]):
