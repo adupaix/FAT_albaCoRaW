@@ -83,7 +83,7 @@ DR = 0.5 #Detection radius of FADs, in km
 #~~~ Simulation parameters ~~
 
 #~ Number of tunas to simulate
-NREPLICA = 100
+NREPLICA = 10
 
 #~ Maximum duration of a tuna path
 PATH_DURATION = 120 # in days

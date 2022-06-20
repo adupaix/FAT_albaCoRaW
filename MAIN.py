@@ -34,6 +34,7 @@ path_files = PATH+'/files' #where the data files are saved
 path_class = PATH+'/classes' # where the classes are saved
 path_model = PATH+'/model' # where the two routines (run model & calculate CATs) are saved
 path_plot = PATH+'/plot' # where the scripts for plots are saved
+path_cfg = PATH+'/cfg' # where the cfg files are saved
 
 #~ Change working directory
 os.chdir(PATH)
@@ -101,7 +102,7 @@ exec(open(str(path_class)+"/CLASS_Tuna.py").read())
 #---------
 exec(open(str(path_class)+"/CLASS_Log.py").read())
 # initialize the log
-log = Log(path = os.path.dirname(__file__),
+log = Log(path = path_cfg,
           fname = os.path.basename(__file__),
           seed = SEED,
           nreplica = NREPLICA,
