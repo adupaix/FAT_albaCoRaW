@@ -48,8 +48,7 @@ rd.seed(SEED)
 np.random.seed(SEED)
 
 #~ Tests
-if OUTPUT_FORMAT[0] not in ['npy', 'csv', None] or OUTPUT_FORMAT[1] not in ['npy', 'csv']:
-    raise Exception("Specified output formats are not compatible. Please see comments in ex_cfg.py")
+exec(open(str(path_files)+"/exceptions.py").read())
 
 
 #%%####################################
