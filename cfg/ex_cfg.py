@@ -30,7 +30,11 @@ SEED = 10
 #~ Choose output format
 # the first element is the output format of the tuna trajectories
 # the second is the format of the array containing CATs
-### For both, output is ALWAYS saved in npy, and will ALSO be saved in csv if ouput_format == "csv"
+## accepted arguments:
+#       'npy': output saved as .npy only
+#       'csv': output saved both as .npy and .csv
+#       None: Tuna trajectories are not kept at the end of the simulation.
+#             Only accepted for the first element.
 OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD

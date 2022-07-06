@@ -90,13 +90,17 @@ for r in range(NREPLICA):
             cart_array[nCAT,:] = np.array([r+1, t2, t3, fad2, fad2, crt, 0,0,0]) # stock: id thon, tps depart, tps arrivee, dcp, dcp, crt, dist (0 c'est un CRT), nn number (0, did not move) bolleen "is a CAT" (0)
             nCAT += 1
         
-        #### rajouter un tuna.save pour mettre a jour
+    if output_format[0] is None:
+        tuna.deleteFile(path_output, r)
+        
         
 delete_row = np.where(cart_array[:,0]==0)[0]
 cart_array = np.delete(cart_array, delete_row, 0)
 
-## Save the array containing CATs and CRTs
+if output_format[0] is None:
+    os.rmdir(path_output+"/Path_tuna")
 
+## Save the array containing CATs and CRTs
 np.save(str(path_output)+"/CATs/CARTs_array.npy", cart_array)
 if output_format[1]=="csv":
     np.savetxt(str(path_output)+"/CATs/CARTs_array."+output_format[1], cart_array)

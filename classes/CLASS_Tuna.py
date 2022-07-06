@@ -517,6 +517,17 @@ class TUNA:
         if self.verbose == True:   
             print("- Tuna trajectory saved")
             
+    def deleteFile(self, path_output, r):
+        """
+        Method to delete the tuna trajectory file
+        Inputs:
+            - path_output: folder where the file is
+            - file_format: format used to save (either 'csv' or 'npy')
+            
+        """
+
+        os.remove(str(path_output)+"/Path_tuna/tuna_n"+str(r+1)+".npy")
+            
             
     def load(self, path_output, r):
         """

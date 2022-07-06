@@ -47,6 +47,10 @@ if REPRODUCTIBLE == False:
 rd.seed(SEED)
 np.random.seed(SEED)
 
+#~ Tests
+if OUTPUT_FORMAT[0] not in ['npy', 'csv', None] or OUTPUT_FORMAT[1] not in ['npy', 'csv']:
+    raise Exception("Specified output formats are not compatible. Please see comments in ex_cfg.py")
+
 
 #%%####################################
 #~~~~ CHARGE CLASSES ~~~~
@@ -261,7 +265,11 @@ else:
 # a. check if the trajectories were already simulated
 files_exist = list()
 for i in range(NREPLICA):
-    files_exist.append(os.path.isfile(str(path_output)+"/Path_tuna/tuna_n"+str(i+1)+"."+output_format[0]))
+    if output_format[0] is None:
+        extention = "npy"
+    else:
+        extention = output_format[0]
+    files_exist.append(os.path.isfile(str(path_output)+"/Path_tuna/tuna_n"+str(i+1)+"."+extention))
 
 # b. simulate new trajectories if there are less trajectories saved than NREPLICA
 #    or if RESET has been set to True
