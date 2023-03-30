@@ -30,7 +30,11 @@ SEED = 10
 #~ Choose output format
 # the first element is the output format of the tuna trajectories
 # the second is the format of the array containing CATs
-### For both, output is ALWAYS saved in npy, and will ALSO be saved in csv if ouput_format == "csv"
+## accepted arguments:
+#       'npy': output saved as .npy only
+#       'csv': output saved both as .npy and .csv
+#       None: Tuna trajectories are not kept at the end of the simulation.
+#             Only accepted for the first element.
 OUTPUT_FORMAT = ["npy","csv"]
 
 #~ Add CRTs when reach a FAD
@@ -60,7 +64,7 @@ SRW_WHEN_DEPART = True
 Environments:
     
     - square array = 1
-    - Hawaii 2005 = 2
+    - Hawaii 2005 =  2
     - Hawaii 2005 without land = 3
     - Mauritius 2017 = 4
     - Maldives 2017 = 5
@@ -83,7 +87,7 @@ DR = 0.5 #Detection radius of FADs, in km
 #~~~ Simulation parameters ~~
 
 #~ Number of tunas to simulate
-NREPLICA = 100
+NREPLICA = 10
 
 #~ Maximum duration of a tuna path
 PATH_DURATION = 120 # in days
