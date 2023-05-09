@@ -27,17 +27,17 @@ from shapely.geometry.polygon import LinearRing
 from descartes import PolygonPatch
 import time
 import csv as csv
-
+import re
 
 #~ Path
-path_machine = PATH+'/files' #where the data files are saved
-path_script = PATH #where the script are save
-#Tu peux aussi creer un fichier .py avec ces deux precedentes lignes de code qui varient
-#en fonction de la machine que tu utilises pour ne pas avoir de probleme de chemin
-#> exec(open("path.py").read()) #pour executer le code
+path_files = PATH+'/files' #where the data files are saved
+path_class = PATH+'/classes' # where the classes are saved
+path_model = PATH+'/model' # where the two routines (run model & calculate CATs) are saved
+path_plot = PATH+'/plot' # where the scripts for plots are saved
+path_cfg = PATH+'/cfg' # where the cfg files are saved
 
 #~ Change working directory
-os.chdir(path_script)
+os.chdir(PATH)
 # os.getcwd()
 
 #~ Set seed
@@ -46,6 +46,9 @@ if REPRODUCTIBLE == False:
         SEED = rd.randint(1, 10**8)
 rd.seed(SEED)
 np.random.seed(SEED)
+
+#~ Tests
+exec(open(str(path_files)+"/exceptions.py").read())
 
 
 #%%####################################
@@ -75,7 +78,7 @@ Environments:
     # study_center (doesn't apply for square, coordinates of the centroid of the island for real envs)
     # lims (limites of the environment: 0;L if square, -L/2;L/2 if real envs)
 # WARNING: L is needed to charge the study dictionnary
-exec(open(str(path_machine)+"/study_dict.py").read())
+exec(open(str(path_files)+"/study_dict.py").read())
 
 #~ Check the grid size
 if environment in ["random", "square", "square_rd"]:
@@ -84,10 +87,10 @@ if environment in ["random", "square", "square_rd"]:
 
 ## Charge the environment class
 if environment in ["random", "square", "square_rd"]:
-    exec(open(str(path_script)+"/CLASS_Theoretical_fadArray.py").read())
+    exec(open(str(path_class)+"/CLASS_Theoretical_fadArray.py").read())
 else:
-    exec(open(str(path_script)+"/CLASS_Real_fadArray.py").read())
-    exec(open(str(path_script)+"/CLASS_Land.py").read())
+    exec(open(str(path_class)+"/CLASS_Real_fadArray.py").read())
+    exec(open(str(path_class)+"/CLASS_Land.py").read())
 
 #~~~ TUNA
 #---------
@@ -96,7 +99,19 @@ Npas = int(abs((PATH_DURATION*24*3600)/STEP_TIME)) # total number of timesteps
 
 ## charge the tuna class
 # WARNING: STEP_TIME is needed to initialize the TUNA class
-exec(open(str(path_script)+"/CLASS_Tuna.py").read())
+exec(open(str(path_class)+"/CLASS_Tuna.py").read())
+
+#~~~ LOG
+#---------
+exec(open(str(path_class)+"/CLASS_Log.py").read())
+# initialize the log
+log = Log(path = path_cfg,
+          fname = os.path.basename(__file__),
+          seed = SEED,
+          nreplica = NREPLICA,
+          environment = STUDY)
+# fill-in the log
+log.fill()
 
 
 
@@ -110,17 +125,17 @@ exec(open(str(path_script)+"/CLASS_Tuna.py").read())
 if environment in ["random", "square", "square_rd"]:
     FADs = FAD_Array(environment = environment, L = L, distFAD = DIST_FAD, R0 = R0, detection_radius = DR)
 elif environment == "maldives":
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
+    FADs = FAD_Array(path = path_files, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     Island = list()
     for i in range(len(land_files)):
-        Island.append( Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files[i]) )
+        Island.append( Land(path = path_files, environment = environment, study_center = study_center, land_file = land_files[i]) )
     sigma_island = 2 # sigma used to get the alpha when go close to land
 elif len(land_files) > 0:
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
-    Island = Land(path = path_machine, environment = environment, study_center = study_center, land_file = land_files)
+    FADs = FAD_Array(path = path_files, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
+    Island = Land(path = path_files, environment = environment, study_center = study_center, land_file = land_files)
     sigma_island = 2 # sigma used to get the alpha when go close to land
 else:
-    FADs = FAD_Array(path = path_machine, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
+    FADs = FAD_Array(path = path_files, environment = environment, studyYear = studyYear, study_center = study_center, detection_radius = DR)
     
     
 #~~~ TUNA
@@ -178,7 +193,7 @@ TUNA.change_m(M)
 ## Add CRT when tuna associates with a FAD
 CRTs = [0]
 if ADD_CRTS == True and environment not in ["square","maldives","random","square_rd"]:
-    crt_file = path_machine+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
+    crt_file = path_files+"/CRTnext_YFT0.7_"+environment+str(studyYear)+".txt"
     with open(crt_file) as f:
         lines = f.readlines()
     # enleve (dr/TUNA.l)*STEP_TIME/(3600*24)) aux valeurs de CRT car c'est environ le temps que les thons vont mettre a ressortir du detection radius
@@ -210,7 +225,7 @@ if ADD_CRTS == True:
 if LIMIT_CAT_NB == True:
     sim_name = sim_name+"_"+str(NB_MAX_CAT)+"CATonly"
 
-path_output = str(path_script)+"/modelOutput/"+sim_name
+path_output = str(PATH)+"/modelOutput/"+sim_name
 output_folders = ['Path_tuna','CATs']
 if environment in ["random","square","square_rd"]:
     output_folders.append('FAD_array')
@@ -230,7 +245,7 @@ output_format = OUTPUT_FORMAT
 #~~ RUN THE ENVIRONMENT ~~
 # Plot the environment (and save an image if environment is random)
 if CHECK_MAP == True or environment in ["square","random","square_rd"]:
-    exec(open(path_script+"/PLOT_checkenv.py").read())
+    exec(open(path_plot+"/PLOT_checkenv.py").read())
 
 # If the environment is square or random, save the FADs coordinates
 if environment in ["random","square","square_rd"]:
@@ -249,7 +264,11 @@ else:
 # a. check if the trajectories were already simulated
 files_exist = list()
 for i in range(NREPLICA):
-    files_exist.append(os.path.isfile(str(path_output)+"/Path_tuna/tuna_n"+str(i+1)+"."+output_format[0]))
+    if output_format[0] is None:
+        extention = "npy"
+    else:
+        extention = output_format[0]
+    files_exist.append(os.path.isfile(str(path_output)+"/Path_tuna/tuna_n"+str(i+1)+"."+extention))
 
 # b. simulate new trajectories if there are less trajectories saved than NREPLICA
 #    or if RESET has been set to True
@@ -257,7 +276,7 @@ if sum(files_exist)<NREPLICA or RESET == True:
     begin=list()
     end = list()
 
-    exec(open(str(path_script)+"/MODEL_sim_tuna_path.py").read())
+    exec(open(str(path_model)+"/MODEL_sim_tuna_path.py").read())
 
     times = [end[i] - begin[i] for i in range(len(end))]
     time_tot = sum(times)
@@ -273,49 +292,14 @@ if VERBOSE == True:
 
 
 #~~ CALCULATE CAT ~~
-exec(open(str(path_script)+"/MODELOUTPUT_CATs.py").read())
+exec(open(str(path_model)+"/MODELOUTPUT_CATs.py").read())
 
 if VERBOSE == True:
     print("\nCATs saved in:\n    "+str(path_output)+"/CATs/CATs_array."+output_format[1])
 
-#~~ SAVE SUMMARY ~~
 
-lines = ["Execution time : "+str(time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime())),
-     "\n--------------",
-     "\n",
-     "\nNumber of simulated tunas : "+str(NREPLICA),
-     "\nEnvironment type : "+str(environment),
-     "\nSeed : "+str(SEED),
-     "\n\n\nArguments :",
-     "\n------------",
-     "\n\nPATH : "+str(PATH),
-     "\nCHECK_MAP : "+str(CHECK_MAP),
-     "\nRESET : "+str(RESET),
-     "\nOUTPUT_FORMAT : "+str(OUTPUT_FORMAT),
-     "\n\nADD_CRTS : "+str(ADD_CRTS),
-     "\nLEAVE_AT_DR : "+str(LEAVE_AT_DR),
-     "\n\nLIMIT_CAT_NB : "+str(LIMIT_CAT_NB),
-     "\nNB_MAX_CAT : "+str(NB_MAX_CAT),
-     "\n\nVERBOSE : "+str(VERBOSE),
-     "\nTIME_MACHINE : "+str(TIME_MACHINE),
-     "\nSRW_WHEN_DEPART : "+str(SRW_WHEN_DEPART),
-     "\n\nSTUDY : "+str(STUDY),
-     "\n\nDIST_FAD : "+str(DIST_FAD),
-     "\nL : "+str(L),
-     "\nDR: "+str(DR),
-     "\n\nNREPLICA : "+str(NREPLICA),
-     "\nPATH_DURATION : "+str(PATH_DURATION),
-     "\nSTEP_TIME : "+str(STEP_TIME),
-     "\nCHOOSE_FAD_START : "+str(CHOOSE_FAD_START),
-     "\nF_TO_PICK_FAD_START : "+str(F_TO_PICK_FAD_START),
-     "\n\nR0 : "+str(R0),
-     "\nV : "+str(V),
-     "\nC : "+str(C),
-     "\nM : "+str(M)
-     ]
-summary = open(str(path_output)+"/Summary.txt", "w")
-summary.writelines(lines)
-summary.close()
+#~~ SAVE SUMMARY ~~
+log.save(path_output)
 
 
 
