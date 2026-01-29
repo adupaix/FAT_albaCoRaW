@@ -12,7 +12,7 @@ Config file to launch the model
 #~~~ General Parameters ~~
 
 #~ Path were the scripts are
-PATH = '/home/adupaix/Documents/CRW/CRW_model' # enter the path of the directory where the script are saved
+PATH = r'C:\Users\2025nt007\IRD\FAT_albaCoRaW' # enter the path of the directory where the script are saved
 
 #~ Plots
 CHECK_MAP = False
